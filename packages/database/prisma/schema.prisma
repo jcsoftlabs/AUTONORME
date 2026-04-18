@@ -1,0 +1,436 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTONORME — Schéma Prisma (Source de vérité de la base de données)
+// Version 1.0 — Avril 2026
+// PostgreSQL 16+ | Prisma ORM 5+
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────────────────
+
+enum Role {
+  CLIENT
+  GARAGE
+  SUPPLIER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ReminderStatus {
+  PENDING
+  SENT
+  CONFIRMED
+  SNOOZED
+  DONE
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PartCategory {
+  FREINAGE
+  MOTEUR
+  SUSPENSION
+  ELECTRIQUE
+  CARROSSERIE
+  AUTRE
+}
+
+enum OrderStatus {
+  CONFIRMED
+  PREPARED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  MONCASH
+  STRIPE
+  VIREMENT
+  AUTOFIN
+}
+
+enum DeliveryType {
+  GARAGE_PICKUP
+  HOME_DELIVERY
+}
+
+enum ConversationChannel {
+  WEB
+  MOBILE
+  WHATSAPP
+}
+
+// ─────────────────────────────────────────────────────────
+// AUTHENTIFICATION
+// ─────────────────────────────────────────────────────────
+
+/// Code OTP envoyé par WhatsApp ou SMS pour l'authentification
+model OtpCode {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+  @@index([expiresAt])
+  @@map("otp_codes")
+}
+
+/// Token de rafraîchissement JWT (30 jours, HttpOnly Cookie)
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ─────────────────────────────────────────────────────────
+// UTILISATEURS
+// ─────────────────────────────────────────────────────────
+
+/// Utilisateur de la plateforme AUTONORME
+model User {
+  id            String    @id @default(uuid())
+  /// Numéro de téléphone haïtien — identifiant unique (+509 XXXX XXXX)
+  phone         String    @unique
+  name          String
+  role          Role      @default(CLIENT)
+  /// Langue préférée : fr | ht | en
+  locale        String    @default("fr")
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  vehicles      Vehicle[]
+  appointments  Appointment[]
+  orders        Order[]
+  conversations Conversation[]
+  notifications Notification[]
+  reviews       Review[]
+  refreshTokens RefreshToken[]
+  supplier      Supplier?
+
+  @@index([phone])
+  @@index([role])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────
+// VÉHICULES
+// ─────────────────────────────────────────────────────────
+
+/// Véhicule enregistré par un client
+model Vehicle {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  make         String
+  model        String
+  year         Int
+  /// Numéro VIN — 17 caractères alphanumériques
+  vin          String?
+  /// essence | diesel | hybride
+  fuelType     String
+  mileage      Int?
+  color        String?
+  /// Plaque d'immatriculation haïtienne
+  plate        String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  records      MaintenanceRecord[]
+  reminders    MaintenanceReminder[]
+  appointments Appointment[]
+
+  @@index([userId])
+  @@map("vehicles")
+}
+
+/// Historique d'interventions sur un véhicule
+model MaintenanceRecord {
+  id         String   @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type       String
+  date       DateTime
+  garageName String?
+  mileageAt  Int?
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  @@index([vehicleId])
+  @@map("maintenance_records")
+}
+
+/// Rappels de maintenance planifiés
+model MaintenanceReminder {
+  id         String         @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type       String
+  dueDate    DateTime
+  status     ReminderStatus @default(PENDING)
+  notifiedAt DateTime?
+  createdAt  DateTime       @default(now())
+
+  @@index([vehicleId])
+  @@index([dueDate, status])
+  @@map("maintenance_reminders")
+}
+
+// ─────────────────────────────────────────────────────────
+// GARAGES
+// ─────────────────────────────────────────────────────────
+
+/// Garage partenaire AUTONORME
+model Garage {
+  id           String   @id @default(uuid())
+  /// ID de l'utilisateur propriétaire du garage (role: GARAGE)
+  ownerId      String?
+  name         String
+  /// Slug URL-friendly unique
+  slug         String   @unique
+  address      String
+  city         String?
+  /// Latitude pour géolocalisation
+  lat          Float
+  /// Longitude pour géolocalisation
+  lng          Float
+  phone        String?
+  description  String?
+  /// Ex: ["Toyota", "Nissan", "Honda", "Électrique"]
+  specialties  String[]
+  isVerified   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  rating       Float?
+  totalReviews Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  appointments Appointment[]
+  reviews      Review[]
+
+  @@index([isVerified, isActive])
+  @@map("garages")
+}
+
+/// Rendez-vous entre client et garage
+model Appointment {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  vehicleId String
+  vehicle   Vehicle           @relation(fields: [vehicleId], references: [id])
+  garageId  String
+  garage    Garage            @relation(fields: [garageId], references: [id])
+  datetime  DateTime
+  status    AppointmentStatus @default(PENDING)
+  notes     String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([garageId])
+  @@index([datetime, status])
+  @@map("appointments")
+}
+
+/// Avis client sur un garage
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  garageId  String
+  garage    Garage   @relation(fields: [garageId], references: [id])
+  /// Note de 1 à 5
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, garageId])
+  @@index([garageId])
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────────────────────
+// AUTOPARTS — MARKETPLACE PIÈCES
+// ─────────────────────────────────────────────────────────
+
+/// Revendeur de pièces automobiles
+model Supplier {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id])
+  shopName   String
+  address    String
+  city       String?
+  phone      String?
+  /// Zones de livraison couvertes
+  zones      String[]
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  parts      Part[]
+  orderItems OrderItem[]
+
+  @@map("suppliers")
+}
+
+/// Pièce automobile dans le catalogue AUTOparts
+model Part {
+  id                 String      @id @default(uuid())
+  name               String
+  category           PartCategory
+  supplierId         String
+  supplier           Supplier    @relation(fields: [supplierId], references: [id])
+  /// JSON: [{ make: "Toyota", model: "RAV4", years: [2015, 2016, 2017, 2018] }]
+  compatibleVehicles Json
+  /// Référence OEM du fabricant
+  oemReference       String?
+  /// Prix en Gourde haïtienne
+  priceHtg           Decimal     @db.Decimal(10, 2)
+  stockQty           Int         @default(0)
+  /// Localisation physique (ex: "Entrepôt Delmas 33")
+  location           String
+  importAvailable    Boolean     @default(false)
+  importDelayDays    Int?
+  /// URLs Cloudinary des images
+  images             String[]
+  isActive           Boolean     @default(true)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  // Relations
+  orderItems OrderItem[]
+
+  @@index([supplierId])
+  @@index([category])
+  @@index([isActive])
+  @@map("parts")
+}
+
+/// Commande client AUTOparts
+model Order {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  totalHtg        Decimal       @db.Decimal(10, 2)
+  status          OrderStatus   @default(CONFIRMED)
+  paymentMethod   PaymentMethod
+  deliveryType    DeliveryType
+  deliveryAddress String?
+  /// Référence de paiement externe (MonCash/Stripe)
+  paymentRef      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  items   OrderItem[]
+  invoice Invoice?
+
+  @@index([userId])
+  @@index([status])
+  @@map("orders")
+}
+
+/// Ligne de commande (une pièce dans une commande)
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  partId     String
+  part       Part     @relation(fields: [partId], references: [id])
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  qty        Int
+  /// Prix unitaire au moment de la commande (snapshot)
+  priceHtg   Decimal  @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+/// Facture générée après livraison
+model Invoice {
+  id       String   @id @default(uuid())
+  orderId  String   @unique
+  order    Order    @relation(fields: [orderId], references: [id])
+  /// Numéro de facture lisible : AUT-2026-XXXXX
+  number   String   @unique
+  /// URL Cloudinary du PDF
+  pdfUrl   String?
+  totalHtg Decimal  @db.Decimal(10, 2)
+  issuedAt DateTime @default(now())
+
+  @@map("invoices")
+}
+
+// ─────────────────────────────────────────────────────────
+// AUTOBOT — CONVERSATIONS IA
+// ─────────────────────────────────────────────────────────
+
+/// Session de conversation avec AutoBot
+model Conversation {
+  id      String              @id @default(uuid())
+  userId  String
+  user    User                @relation(fields: [userId], references: [id])
+  channel ConversationChannel
+  /// Array JSON: [{ role: "user"|"assistant", content: "...", timestamp: "..." }]
+  messages Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([channel])
+  @@map("conversations")
+}
+
+// ─────────────────────────────────────────────────────────
+// NOTIFICATIONS
+// ─────────────────────────────────────────────────────────
+
+/// Centre de notifications utilisateur
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  /// Données supplémentaires (ex: orderId, appointmentId)
+  data      Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}

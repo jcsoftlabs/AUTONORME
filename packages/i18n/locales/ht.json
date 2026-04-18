@@ -1,0 +1,171 @@
+{
+  "common": {
+    "loading": "Ap chaje...",
+    "error": "Te gen yon erè",
+    "retry": "Eseye ankò",
+    "cancel": "Anile",
+    "confirm": "Konfime",
+    "save": "Anrejistre",
+    "edit": "Modifye",
+    "delete": "Efase",
+    "search": "Fè yon rechèch",
+    "filter": "Filtre",
+    "back": "Retounen",
+    "next": "Swivan",
+    "previous": "Anvan",
+    "close": "Fèmen",
+    "submit": "Voye",
+    "yes": "Wi",
+    "no": "Non",
+    "or": "oswa",
+    "and": "ak"
+  },
+  "nav": {
+    "home": "Akèy",
+    "garages": "Garaj",
+    "parts": "Pyès otomobil",
+    "autobot": "AutoBot",
+    "maintenance": "Antretyen",
+    "about": "Sou nou",
+    "join": "Rejwenn nou",
+    "blog": "Blog",
+    "account": "Kont mwen",
+    "login": "Koneksyon",
+    "logout": "Dekonekte"
+  },
+  "auth": {
+    "title": "Konekte sou AUTONORME",
+    "phone_label": "Nimewo telefòn ou",
+    "phone_placeholder": "+509 XXXX XXXX",
+    "otp_title": "Kòd verifikasyon",
+    "otp_description": "Antre kòd ki te voye nan {phone}",
+    "otp_label": "Kòd 6 chif",
+    "otp_resend": "Voye yon lòt kòd",
+    "otp_resend_in": "Voye li ankò nan {seconds}s",
+    "send_otp": "Resevwa kòd mwen",
+    "verify": "Verifye",
+    "errors": {
+      "phone_invalid": "Nimewo telefòn pa valid (+509 XXXX XXXX)",
+      "otp_invalid": "Kòd la pa kòrèk. Eseye ankò.",
+      "otp_expired": "Kòd la expire. Mande yon nouvo kòd."
+    }
+  },
+  "vehicle": {
+    "title": "Machin mwen yo",
+    "add": "Ajoute yon machin",
+    "make": "Mak",
+    "model": "Modèl",
+    "year": "Ane",
+    "vin": "Nimewo VIN",
+    "vin_scan": "Eskane VIN la",
+    "fuel_type": "Kalite gaz",
+    "mileage": "Kilomètraj",
+    "color": "Koulè",
+    "plate": "Plak imatikilasyon",
+    "fuel_types": {
+      "essence": "Gazolin",
+      "diesel": "Dyèzèl",
+      "hybride": "Ibrid"
+    },
+    "errors": {
+      "vin_invalid": "Nimewo VIN pa valid (17 karaktè)"
+    }
+  },
+  "garage": {
+    "title": "Lis garaj yo",
+    "find": "Jwenn yon garaj",
+    "specialties": "Espesyalite",
+    "verified": "Garaj sètifye AUTONORME",
+    "rating": "{rating}/5 ({count} avis)",
+    "distance": "A {distance} km",
+    "appointment": "Pran yon randevou",
+    "call": "Rele",
+    "directions": "Wout pou ale"
+  },
+  "appointment": {
+    "title": "Randevou mwen yo",
+    "new": "Nouvo randevou",
+    "date": "Dat",
+    "time": "Lè",
+    "notes": "Nòt pou mekanisyen an",
+    "status": {
+      "pending": "Ap tann",
+      "confirmed": "Konfime",
+      "cancelled": "Anile",
+      "completed": "Fini"
+    },
+    "confirm": "Konfime randevou a",
+    "cancel": "Anile randevou a"
+  },
+  "parts": {
+    "title": "Pyès otomobil",
+    "search": "Chèche yon pyès...",
+    "compatible_with": "Konpatib ak {vehicle}",
+    "in_stock": "Disponib",
+    "out_of_stock": "Pa disponib lokal",
+    "import_available": "Kapab kòmande andeyò",
+    "import_delay": "Tan delivrans: {days} jou",
+    "price": "Pri: {price}",
+    "add_to_cart": "Ajoute nan panye",
+    "categories": {
+      "FREINAGE": "Fren",
+      "MOTEUR": "Motè",
+      "SUSPENSION": "Sispansyon",
+      "ELECTRIQUE": "Elektrik",
+      "CARROSSERIE": "Karosri",
+      "AUTRE": "Lòt"
+    }
+  },
+  "order": {
+    "title": "Kòmand mwen yo",
+    "status": {
+      "CONFIRMED": "Konfime",
+      "PREPARED": "Ap prepare",
+      "SHIPPED": "Ekspedye",
+      "DELIVERED": "Livre",
+      "CANCELLED": "Anile"
+    },
+    "payment": {
+      "MONCASH": "MonCash",
+      "STRIPE": "Kat bank",
+      "VIREMENT": "Vèsman",
+      "AUTOFIN": "AUTOFIN (pa tranche)"
+    },
+    "delivery": {
+      "GARAGE_PICKUP": "Pran nan garaj patnè",
+      "HOME_DELIVERY": "Livrazon lakay"
+    },
+    "total": "Total: {amount}"
+  },
+  "autobot": {
+    "title": "AutoBot",
+    "subtitle": "Asistan otomobil AUTONORME ou a",
+    "placeholder": "Poze kesyon ou...",
+    "typing": "AutoBot ap ekri...",
+    "escalate": "Pale ak yon konseye",
+    "new_conversation": "Nouvo konvèsasyon"
+  },
+  "maintenance": {
+    "title": "Plan antretyen",
+    "next_due": "Pwochen echeyans",
+    "overdue": "An reta",
+    "reminder_set": "Rapèl konfigire",
+    "types": {
+      "vidange": "Chanjman lwil",
+      "filtres": "Chanjman filtre",
+      "pneus": "Verifikasyon kawotchou",
+      "freins": "Kontwòl fren",
+      "courroie": "Kourwa distribisyon",
+      "climatisation": "Revizyon klimatizasyon"
+    }
+  },
+  "errors": {
+    "AUTONORME_PART_INCOMPATIBLE": "Pyès sa a pa konpatib ak machin ou a.",
+    "AUTONORME_PART_OUT_OF_STOCK": "Pyès sa a pa disponib lokal.",
+    "AUTONORME_GARAGE_UNAVAILABLE": "Garaj sa a pa disponib pou dat sa a.",
+    "AUTONORME_AUTH_OTP_INVALID": "Kòd verifikasyon an pa kòrèk.",
+    "AUTONORME_AUTH_OTP_EXPIRED": "Kòd la expire. Mande yon nouvo kòd.",
+    "AUTONORME_ORDER_PAYMENT_FAILED": "Peman an echwe. Eseye yon lòt mwayen peman.",
+    "AUTONORME_INTERNAL_ERROR": "Te gen yon erè entèn. Eseye ankò nan kèk minit."
+  }
+}

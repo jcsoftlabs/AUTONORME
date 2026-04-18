@@ -1,0 +1,171 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "submit": "Submit",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and"
+  },
+  "nav": {
+    "home": "Home",
+    "garages": "Garages",
+    "parts": "Auto parts",
+    "autobot": "AutoBot",
+    "maintenance": "Maintenance",
+    "about": "About",
+    "join": "Join",
+    "blog": "Blog",
+    "account": "My account",
+    "login": "Sign in",
+    "logout": "Sign out"
+  },
+  "auth": {
+    "title": "Sign in to AUTONORME",
+    "phone_label": "Your phone number",
+    "phone_placeholder": "+509 XXXX XXXX",
+    "otp_title": "Verification code",
+    "otp_description": "Enter the code sent to {phone}",
+    "otp_label": "6-digit code",
+    "otp_resend": "Resend code",
+    "otp_resend_in": "Resend in {seconds}s",
+    "send_otp": "Get my code",
+    "verify": "Verify",
+    "errors": {
+      "phone_invalid": "Invalid phone number (+509 XXXX XXXX)",
+      "otp_invalid": "Incorrect code. Please try again.",
+      "otp_expired": "Code expired. Request a new one."
+    }
+  },
+  "vehicle": {
+    "title": "My vehicles",
+    "add": "Add vehicle",
+    "make": "Make",
+    "model": "Model",
+    "year": "Year",
+    "vin": "VIN number",
+    "vin_scan": "Scan VIN",
+    "fuel_type": "Fuel type",
+    "mileage": "Mileage",
+    "color": "Color",
+    "plate": "License plate",
+    "fuel_types": {
+      "essence": "Gasoline",
+      "diesel": "Diesel",
+      "hybride": "Hybrid"
+    },
+    "errors": {
+      "vin_invalid": "Invalid VIN number (17 characters)"
+    }
+  },
+  "garage": {
+    "title": "Garage directory",
+    "find": "Find a garage",
+    "specialties": "Specialties",
+    "verified": "AUTONORME certified garage",
+    "rating": "{rating}/5 ({count} reviews)",
+    "distance": "{distance} km away",
+    "appointment": "Book appointment",
+    "call": "Call",
+    "directions": "Directions"
+  },
+  "appointment": {
+    "title": "My appointments",
+    "new": "New appointment",
+    "date": "Date",
+    "time": "Time",
+    "notes": "Notes for the mechanic",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "confirm": "Confirm appointment",
+    "cancel": "Cancel appointment"
+  },
+  "parts": {
+    "title": "Auto parts",
+    "search": "Search for a part...",
+    "compatible_with": "Compatible with {vehicle}",
+    "in_stock": "In stock",
+    "out_of_stock": "Local stock unavailable",
+    "import_available": "Import order available",
+    "import_delay": "Delivery: {days} days",
+    "price": "Price: {price}",
+    "add_to_cart": "Add to cart",
+    "categories": {
+      "FREINAGE": "Braking",
+      "MOTEUR": "Engine",
+      "SUSPENSION": "Suspension",
+      "ELECTRIQUE": "Electrical",
+      "CARROSSERIE": "Body",
+      "AUTRE": "Other"
+    }
+  },
+  "order": {
+    "title": "My orders",
+    "status": {
+      "CONFIRMED": "Confirmed",
+      "PREPARED": "Being prepared",
+      "SHIPPED": "Shipped",
+      "DELIVERED": "Delivered",
+      "CANCELLED": "Cancelled"
+    },
+    "payment": {
+      "MONCASH": "MonCash",
+      "STRIPE": "Credit card",
+      "VIREMENT": "Bank transfer",
+      "AUTOFIN": "AUTOFIN (installments)"
+    },
+    "delivery": {
+      "GARAGE_PICKUP": "Pick up at partner garage",
+      "HOME_DELIVERY": "Home delivery"
+    },
+    "total": "Total: {amount}"
+  },
+  "autobot": {
+    "title": "AutoBot",
+    "subtitle": "Your AUTONORME automotive assistant",
+    "placeholder": "Ask your question...",
+    "typing": "AutoBot is typing...",
+    "escalate": "Talk to an advisor",
+    "new_conversation": "New conversation"
+  },
+  "maintenance": {
+    "title": "Maintenance plan",
+    "next_due": "Next due",
+    "overdue": "Overdue",
+    "reminder_set": "Reminder set",
+    "types": {
+      "vidange": "Oil change",
+      "filtres": "Filter replacement",
+      "pneus": "Tire check",
+      "freins": "Brake inspection",
+      "courroie": "Timing belt",
+      "climatisation": "A/C service"
+    }
+  },
+  "errors": {
+    "AUTONORME_PART_INCOMPATIBLE": "This part is not compatible with your vehicle.",
+    "AUTONORME_PART_OUT_OF_STOCK": "This part is out of stock locally.",
+    "AUTONORME_GARAGE_UNAVAILABLE": "This garage is not available on that date.",
+    "AUTONORME_AUTH_OTP_INVALID": "Incorrect verification code.",
+    "AUTONORME_AUTH_OTP_EXPIRED": "Code expired. Please request a new one.",
+    "AUTONORME_ORDER_PAYMENT_FAILED": "Payment failed. Please try another payment method.",
+    "AUTONORME_INTERNAL_ERROR": "An internal error occurred. Please try again in a moment."
+  }
+}

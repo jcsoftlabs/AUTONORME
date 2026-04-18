@@ -1,0 +1,171 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "close": "Fermer",
+    "submit": "Envoyer",
+    "yes": "Oui",
+    "no": "Non",
+    "or": "ou",
+    "and": "et"
+  },
+  "nav": {
+    "home": "Accueil",
+    "garages": "Garages",
+    "parts": "Pièces auto",
+    "autobot": "AutoBot",
+    "maintenance": "Maintenance",
+    "about": "À propos",
+    "join": "Rejoindre",
+    "blog": "Blog",
+    "account": "Mon compte",
+    "login": "Connexion",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "title": "Connexion à AUTONORME",
+    "phone_label": "Votre numéro de téléphone",
+    "phone_placeholder": "+509 XXXX XXXX",
+    "otp_title": "Code de vérification",
+    "otp_description": "Entrez le code envoyé au {phone}",
+    "otp_label": "Code à 6 chiffres",
+    "otp_resend": "Renvoyer le code",
+    "otp_resend_in": "Renvoyer dans {seconds}s",
+    "send_otp": "Recevoir mon code",
+    "verify": "Vérifier",
+    "errors": {
+      "phone_invalid": "Numéro de téléphone invalide (+509 XXXX XXXX)",
+      "otp_invalid": "Code incorrect. Réessayez.",
+      "otp_expired": "Code expiré. Demandez un nouveau code."
+    }
+  },
+  "vehicle": {
+    "title": "Mes véhicules",
+    "add": "Ajouter un véhicule",
+    "make": "Marque",
+    "model": "Modèle",
+    "year": "Année",
+    "vin": "Numéro VIN",
+    "vin_scan": "Scanner le VIN",
+    "fuel_type": "Carburant",
+    "mileage": "Kilométrage",
+    "color": "Couleur",
+    "plate": "Plaque d'immatriculation",
+    "fuel_types": {
+      "essence": "Essence",
+      "diesel": "Diesel",
+      "hybride": "Hybride"
+    },
+    "errors": {
+      "vin_invalid": "Numéro VIN invalide (17 caractères)"
+    }
+  },
+  "garage": {
+    "title": "Annuaire des garages",
+    "find": "Trouver un garage",
+    "specialties": "Spécialités",
+    "verified": "Garage certifié AUTONORME",
+    "rating": "{rating}/5 ({count} avis)",
+    "distance": "À {distance} km",
+    "appointment": "Prendre rendez-vous",
+    "call": "Appeler",
+    "directions": "Itinéraire"
+  },
+  "appointment": {
+    "title": "Mes rendez-vous",
+    "new": "Nouveau rendez-vous",
+    "date": "Date",
+    "time": "Heure",
+    "notes": "Notes pour le mécanicien",
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "cancelled": "Annulé",
+      "completed": "Terminé"
+    },
+    "confirm": "Confirmer le rendez-vous",
+    "cancel": "Annuler le rendez-vous"
+  },
+  "parts": {
+    "title": "Pièces automobiles",
+    "search": "Chercher une pièce...",
+    "compatible_with": "Compatible avec {vehicle}",
+    "in_stock": "En stock",
+    "out_of_stock": "Rupture locale",
+    "import_available": "Commande import possible",
+    "import_delay": "Délai : {days} jours",
+    "price": "Prix : {price}",
+    "add_to_cart": "Ajouter au panier",
+    "categories": {
+      "FREINAGE": "Freinage",
+      "MOTEUR": "Moteur",
+      "SUSPENSION": "Suspension",
+      "ELECTRIQUE": "Électrique",
+      "CARROSSERIE": "Carrosserie",
+      "AUTRE": "Autre"
+    }
+  },
+  "order": {
+    "title": "Mes commandes",
+    "status": {
+      "CONFIRMED": "Confirmée",
+      "PREPARED": "En préparation",
+      "SHIPPED": "Expédiée",
+      "DELIVERED": "Livrée",
+      "CANCELLED": "Annulée"
+    },
+    "payment": {
+      "MONCASH": "MonCash",
+      "STRIPE": "Carte bancaire",
+      "VIREMENT": "Virement",
+      "AUTOFIN": "AUTOFIN (échelonné)"
+    },
+    "delivery": {
+      "GARAGE_PICKUP": "Retrait en garage partenaire",
+      "HOME_DELIVERY": "Livraison à domicile"
+    },
+    "total": "Total : {amount}"
+  },
+  "autobot": {
+    "title": "AutoBot",
+    "subtitle": "Votre assistant automobile AUTONORME",
+    "placeholder": "Posez votre question...",
+    "typing": "AutoBot écrit...",
+    "escalate": "Parler à un conseiller",
+    "new_conversation": "Nouvelle conversation"
+  },
+  "maintenance": {
+    "title": "Plan de maintenance",
+    "next_due": "Prochaine échéance",
+    "overdue": "En retard",
+    "reminder_set": "Rappel configuré",
+    "types": {
+      "vidange": "Vidange huile",
+      "filtres": "Remplacement filtres",
+      "pneus": "Vérification pneus",
+      "freins": "Contrôle freins",
+      "courroie": "Courroie de distribution",
+      "climatisation": "Révision climatisation"
+    }
+  },
+  "errors": {
+    "AUTONORME_PART_INCOMPATIBLE": "Cette pièce n'est pas compatible avec votre véhicule.",
+    "AUTONORME_PART_OUT_OF_STOCK": "Cette pièce est en rupture de stock localement.",
+    "AUTONORME_GARAGE_UNAVAILABLE": "Ce garage n'est pas disponible pour cette date.",
+    "AUTONORME_AUTH_OTP_INVALID": "Code de vérification incorrect.",
+    "AUTONORME_AUTH_OTP_EXPIRED": "Code expiré. Demandez un nouveau code.",
+    "AUTONORME_ORDER_PAYMENT_FAILED": "Le paiement a échoué. Essayez un autre moyen de paiement.",
+    "AUTONORME_INTERNAL_ERROR": "Une erreur interne est survenue. Réessayez dans quelques instants."
+  }
+}

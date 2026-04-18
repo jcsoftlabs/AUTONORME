@@ -1,0 +1,80 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   AUTONORME — Styles globaux
+   Design system : couleurs, typographie, variables CSS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Variables CSS — Design Tokens AUTONORME */
+:root {
+  /* Couleurs primaires (BLOC 1) */
+  --color-primary-900: #001F5C;
+  --color-primary-800: #002E7A;
+  --color-primary-700: #003B8E;
+  --color-primary-600: #0047B0;
+  --color-primary-500: #1565C0;
+  --color-primary-400: #4A90D9;
+  --color-primary-300: #7DB8E8;
+  --color-primary-200: #B3D4F0;
+  --color-primary-100: #D6E4F7;
+  --color-primary-50:  #EEF5FC;
+
+  /* Typographie */
+  --font-heading: 'Poppins', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  /* Fuseau horaire Haïti */
+  --timezone: 'America/Port-au-Prince';
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #0F0F0F;
+  background-color: #FFFFFF;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typographie */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* Accessibilité — focus visible (BLOC 11) */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Zones tactiles minimum 44x44px (WCAG 2.1 / BLOC 11) */
+button, a, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Images responsives */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Utilitaires Tailwind (si nécessaire) */
+.font-poppins { font-family: var(--font-heading); }
+.font-inter   { font-family: var(--font-body); }

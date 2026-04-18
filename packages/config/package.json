@@ -1,0 +1,11 @@
+{
+  "name": "@autonorme/config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "files": [
+    "eslint.base.js",
+    "prettier.config.js",
+    "tsconfig.base.json"
+  ]
+}
