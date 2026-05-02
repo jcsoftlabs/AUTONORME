@@ -44,7 +44,10 @@ async function bootstrap(): Promise<void> {
   );
 
   // ── Documentation Swagger (/api/docs) ─────────────────────────────────────
-  if (process.env['NODE_ENV'] !== 'production') {
+  const enableSwagger =
+    process.env['ENABLE_SWAGGER'] === 'true' || process.env['NODE_ENV'] !== 'production';
+
+  if (enableSwagger) {
     const config = new DocumentBuilder()
       .setTitle('AUTONORME API')
       .setDescription(
