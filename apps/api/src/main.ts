@@ -11,9 +11,14 @@ async function bootstrap(): Promise<void> {
   app.use(helmet());
 
   app.enableCors({
-    origin: (process.env['CORS_ORIGINS'] ?? 'http://localhost:3000')
-      .split(',')
-      .concat([/\.vercel\.app$/]),
+    origin: (origin: string | undefined, cb: (err: Error | null, allow: boolean) => void) => {
+      const allowed = (process.env['CORS_ORIGINS'] ?? 'http://localhost:3000').split(',');
+      if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Not allowed by CORS'), false);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],

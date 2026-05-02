@@ -1,7 +1,7 @@
 import {
   WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, MessageBody, ConnectedSocket,
 } from '@nestjs/websockets';
-import { UseGuards, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -19,7 +19,7 @@ interface ChatPayload {
 
 @WebSocketGateway({ namespace: '/autobot', cors: { origin: '*', credentials: true } })
 export class AutobotGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
+  @WebSocketServer() server!: Server;
   private readonly logger = new Logger(AutobotGateway.name);
 
   constructor(

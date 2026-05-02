@@ -4,7 +4,6 @@ import {
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
-import { WhatsappService } from './whatsapp.service';
 import { Public } from '../../shared/decorators/public.decorator';
 
 interface MetaWebhookBody {
@@ -23,10 +22,7 @@ interface MetaWebhookBody {
 export class WhatsappController {
   private readonly logger = new Logger(WhatsappController.name);
 
-  constructor(
-    private readonly whatsappService: WhatsappService,
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private readonly config: ConfigService) {}
 
   // Vérification webhook Meta (GET)
   @Public()

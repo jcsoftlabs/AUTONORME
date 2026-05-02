@@ -47,7 +47,7 @@ export class PartsService {
   // Vérification compatibilité (T-01 du BLOC 12 — critique)
   async checkCompatibility(partId: string, make: string, model: string, year: number): Promise<{ compatible: boolean; alternatives?: Part[] }> {
     const part = await this.findOne(partId);
-    const vehicles = part.compatibleVehicles as CompatibleVehicle[];
+    const vehicles = part.compatibleVehicles as unknown as CompatibleVehicle[];
 
     const compatible = vehicles.some(
       (v) =>

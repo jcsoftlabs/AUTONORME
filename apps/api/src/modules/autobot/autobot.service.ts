@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Anthropic from '@anthropic-ai/sdk';
 import { DatabaseService } from '../database/database.service';
+import type { Prisma } from '@prisma/client';
 
 // System prompt officiel AUTONORME (BLOC 6)
 const AUTOBOT_SYSTEM_PROMPT = `Tu es AutoBot, l'assistant intelligent de AUTONORME, la première plateforme automobile nationale d'Haïti. Tu es expert en véhicules (voitures, motos, tricycles), pièces automobiles, maintenance et réparations.
@@ -108,12 +109,11 @@ export class AutobotService {
 
       await this.db.conversation.upsert({
         where: { id: `${userId}_${channel}` },
-        create: { id: `${userId}_${channel}`, userId, channel, messages: updatedMessages },
-        update: { messages: updatedMessages },
+        create: { id: `${userId}_${channel}`, userId, channel, messages: updatedMessages as unknown as Prisma.InputJsonValue },
+        update: { messages: updatedMessages as unknown as Prisma.InputJsonValue },
       }).catch(() => {
-        // Si l'ID composite échoue, créer nouvelle conversation
         void this.db.conversation.create({
-          data: { userId, channel, messages: updatedMessages },
+          data: { userId, channel, messages: updatedMessages as unknown as Prisma.InputJsonValue },
         });
       });
 

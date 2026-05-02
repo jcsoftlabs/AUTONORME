@@ -25,7 +25,7 @@ export class MaintenanceService {
     });
   }
 
-  async createReminder(userId: string, dto: CreateReminderDto): Promise<MaintenanceReminder> {
+  async createReminder(_userId: string, dto: CreateReminderDto): Promise<MaintenanceReminder> {
     return this.db.maintenanceReminder.create({
       data: {
         vehicleId: dto.vehicleId,

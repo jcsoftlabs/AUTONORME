@@ -5,5 +5,5 @@ export class SendOtpDto {
   @ApiProperty({ example: '+50912345678', description: 'Numéro haïtien +509XXXXXXXX' })
   @IsString()
   @Matches(/^\+509\d{8}$/, { message: 'Format requis : +509XXXXXXXX' })
-  phone: string;
+  phone!: string;
 }

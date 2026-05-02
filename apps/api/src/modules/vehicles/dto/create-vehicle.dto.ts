@@ -6,26 +6,26 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateVehicleDto {
   @ApiProperty({ example: 'Toyota' })
   @IsString()
-  make: string;
+  make!: string;
 
   @ApiProperty({ example: 'RAV4' })
   @IsString()
-  model: string;
+  model!: string;
 
   @ApiProperty({ example: 2018 })
   @IsInt()
   @Min(1990)
   @Max(new Date().getFullYear() + 1)
-  year: number;
+  year!: number;
 
   @ApiProperty({ enum: ['essence', 'diesel', 'hybride'] })
   @IsEnum(['essence', 'diesel', 'hybride'])
-  fuelType: string;
+  fuelType!: string;
 
-  @ApiPropertyOptional({ example: 'JTMRFREV2JJ221452', description: 'VIN 17 caractères' })
+  @ApiPropertyOptional({ example: 'JTMRFREV2JJ221452' })
   @IsString()
   @IsOptional()
-  @Matches(/^[A-HJ-NPR-Z0-9]{17}$/i, { message: 'VIN invalide (17 caractères alphanumériques)' })
+  @Matches(/^[A-HJ-NPR-Z0-9]{17}$/i, { message: 'VIN invalide (17 caractères)' })
   vin?: string;
 
   @ApiPropertyOptional({ example: 45000 })

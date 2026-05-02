@@ -4,15 +4,15 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateAppointmentDto {
   @ApiProperty({ example: 'uuid-du-vehicule' })
   @IsUUID()
-  vehicleId: string;
+  vehicleId!: string;
 
   @ApiProperty({ example: 'uuid-du-garage' })
   @IsUUID()
-  garageId: string;
+  garageId!: string;
 
   @ApiProperty({ example: '2026-05-10T09:00:00.000Z' })
   @IsDateString()
-  datetime: string;
+  datetime!: string;
 
   @ApiPropertyOptional({ example: 'Bruit suspect au freinage arrière' })
   @IsString()

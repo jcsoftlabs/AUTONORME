@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import type { Notification } from '@prisma/client';
+import type { Notification, Prisma } from '@prisma/client';
 
 @Injectable()
 export class NotificationsService {
@@ -14,7 +14,7 @@ export class NotificationsService {
     });
   }
 
-  async markRead(id: string, userId: string): Promise<Notification> {
+  async markRead(id: string, _userId: string): Promise<Notification> {
     return this.db.notification.update({ where: { id }, data: { isRead: true } });
   }
 
@@ -27,6 +27,6 @@ export class NotificationsService {
   }
 
   async create(userId: string, type: string, title: string, body: string, data?: Record<string, unknown>): Promise<Notification> {
-    return this.db.notification.create({ data: { userId, type, title, body, data } });
+    return this.db.notification.create({ data: { userId, type, title, body, data: (data ?? undefined) as Prisma.InputJsonValue | undefined } });
   }
 }

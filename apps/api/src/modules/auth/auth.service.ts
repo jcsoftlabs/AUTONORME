@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { DatabaseService } from '../database/database.service';
 import { OtpService } from './otp.service';
@@ -15,7 +14,6 @@ export class AuthService {
   constructor(
     private readonly db: DatabaseService,
     private readonly jwt: JwtService,
-    private readonly config: ConfigService,
     private readonly otpService: OtpService,
   ) {}
 
