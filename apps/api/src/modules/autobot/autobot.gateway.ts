@@ -31,7 +31,7 @@ export class AutobotGateway implements OnGatewayConnection, OnGatewayDisconnect 
   async handleConnection(client: AuthenticatedSocket): Promise<void> {
     try {
       const token = client.handshake.auth['token'] as string | undefined
-        ?? (client.handshake.headers['authorization'] as string | undefined)?.replace('Bearer ', '');
+        ?? (client.handshake.headers['authorization'])?.replace('Bearer ', '');
 
       if (token) {
         const payload = this.jwtService.verify<{ sub: string }>(token, {
