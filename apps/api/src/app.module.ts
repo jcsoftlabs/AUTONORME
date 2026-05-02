@@ -12,14 +12,18 @@ import { RolesGuard } from './shared/guards/roles.guard';
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
 import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 
-// Modules métier — Phase 1
+// Modules métier — Phase 1 complète
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { GaragesModule } from './modules/garages/garages.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { PartsModule } from './modules/parts/parts.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { MaintenanceModule } from './modules/maintenance/maintenance.module';
 import { AutobotModule } from './modules/autobot/autobot.module';
+import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -45,7 +49,11 @@ import { AutobotModule } from './modules/autobot/autobot.module';
     GaragesModule,
     AppointmentsModule,
     PartsModule,
+    OrdersModule,
+    MaintenanceModule,
     AutobotModule,
+    WhatsappModule,
+    NotificationsModule,
   ],
   providers: [
     // Guards globaux (appliqués sur toutes les routes)
