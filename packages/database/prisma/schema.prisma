@@ -119,9 +119,13 @@ model User {
   role          Role      @default(CLIENT)
   /// Langue préférée : fr | ht | en
   locale        String    @default("fr")
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  isActive           Boolean   @default(true)
+  /// Secret TOTP Google Authenticator
+  twoFactorSecret    String?
+  /// Indicateur d'activation du 2FA
+  isTwoFactorEnabled Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   // Relations
   vehicles      Vehicle[]

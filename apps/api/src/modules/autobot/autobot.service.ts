@@ -91,20 +91,110 @@ export class AutobotService {
     ];
 
     try {
-      const response = await this.client.messages.create({
-        model: this.model,
-        max_tokens: 1024,
-        system: AUTOBOT_SYSTEM_PROMPT + context,
-        messages,
-      });
+      let finalReply = '';
+      let isDone = false;
 
-      const reply = response.content[0].type === 'text' ? response.content[0].text : '';
+      while (!isDone) {
+        const response = await this.client.messages.create({
+          model: this.model,
+          max_tokens: 1024,
+          system: AUTOBOT_SYSTEM_PROMPT + context,
+          messages,
+          tools: [
+            {
+              name: 'check_part_compatibility',
+              description: 'Vérifier si une pièce est compatible avec un véhicule',
+              input_schema: {
+                type: 'object',
+                properties: {
+                  part_name: { type: 'string', description: 'Nom de la pièce (ex: plaquettes de frein)' },
+                  vehicle_make: { type: 'string', description: 'Marque du véhicule' },
+                  vehicle_model: { type: 'string', description: 'Modèle du véhicule' }
+                },
+                required: ['part_name', 'vehicle_make', 'vehicle_model'],
+              },
+            },
+            {
+              name: 'get_stock',
+              description: 'Obtenir la quantité en stock et le prix d\'une pièce',
+              input_schema: {
+                type: 'object',
+                properties: {
+                  part_name: { type: 'string', description: 'Nom exact de la pièce' }
+                },
+                required: ['part_name'],
+              },
+            },
+            {
+              name: 'find_nearest_garage',
+              description: 'Trouver un garage partenaire dans une ville spécifique',
+              input_schema: {
+                type: 'object',
+                properties: {
+                  city: { type: 'string', description: 'Nom de la ville en Haïti' }
+                },
+                required: ['city'],
+              },
+            }
+          ],
+        });
+
+        // Ajouter la réponse de l'assistant au contexte des messages
+        messages.push({ role: 'assistant', content: response.content });
+
+        if (response.stop_reason === 'tool_use') {
+          const toolUseBlock = response.content.find((b) => b.type === 'tool_use') as Anthropic.ToolUseBlock;
+          let toolResult = '';
+
+          try {
+            if (toolUseBlock.name === 'check_part_compatibility') {
+              const args = toolUseBlock.input as any;
+              toolResult = `Recherche de ${args.part_name} pour ${args.vehicle_make} ${args.vehicle_model}: Oui, cette pièce est compatible.`; // Mock for now
+            } else if (toolUseBlock.name === 'get_stock') {
+              const args = toolUseBlock.input as any;
+              const parts = await this.db.part.findMany({
+                where: { name: { contains: args.part_name, mode: 'insensitive' } },
+                take: 1,
+              });
+              toolResult = parts.length > 0 
+                ? `En stock: ${parts[0].stockQty}, Prix: ${parts[0].priceHtg} HTG` 
+                : 'Pièce non trouvée en stock.';
+            } else if (toolUseBlock.name === 'find_nearest_garage') {
+              const args = toolUseBlock.input as any;
+              const garages = await this.db.garage.findMany({
+                where: { city: { contains: args.city, mode: 'insensitive' } },
+                take: 3,
+              });
+              toolResult = garages.length > 0
+                ? garages.map(g => `${g.name} (${g.address})`).join(', ')
+                : `Aucun garage trouvé à ${args.city}.`;
+            }
+          } catch (e) {
+            toolResult = `Erreur lors de l'exécution de l'outil: ${(e as Error).message}`;
+          }
+
+          // Renvoyer le résultat à Claude
+          messages.push({
+            role: 'user',
+            content: [
+              {
+                type: 'tool_result',
+                tool_use_id: toolUseBlock.id,
+                content: toolResult,
+              },
+            ],
+          });
+        } else {
+          isDone = true;
+          finalReply = response.content.find(c => c.type === 'text')?.text || '';
+        }
+      }
 
       // Persister la conversation
       const updatedMessages = [
         ...history,
         { role: 'user' as const, content: userMessage, timestamp: new Date().toISOString() },
-        { role: 'assistant' as const, content: reply, timestamp: new Date().toISOString() },
+        { role: 'assistant' as const, content: finalReply, timestamp: new Date().toISOString() },
       ];
 
       await this.db.conversation.upsert({
@@ -117,7 +207,7 @@ export class AutobotService {
         });
       });
 
-      return reply;
+      return finalReply;
     } catch (error) {
       this.logger.error('Claude API error', error);
       throw error;

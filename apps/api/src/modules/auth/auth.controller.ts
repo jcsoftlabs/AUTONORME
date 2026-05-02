@@ -7,13 +7,16 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { SendOtpDto } from './dto/send-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { Public } from '../../shared/decorators/public.decorator';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -38,15 +41,21 @@ export class AuthController {
   ) {
     const result = await this.authService.verifyOtp(dto.phone, dto.code);
 
-    // Refresh token en HttpOnly cookie sécurisé
-    res.cookie('refresh_token', result.accessToken, {
-      httpOnly: true,
-      secure: process.env['NODE_ENV'] === 'production',
-      sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
+    if (result.requires2FA) {
+      return result; // Renvoie { requires2FA: true, tempToken: "..." } sans setter de cookie
+    }
 
-    return result;
+    // Set le vrai refresh token en cookie s'il y a un login normal
+    if (result.refreshToken) {
+      res.cookie('refresh_token', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env['NODE_ENV'] === 'production',
+        sameSite: 'strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+    }
+
+    return { accessToken: result.accessToken, user: result.user };
   }
 
   @Public()
@@ -57,5 +66,53 @@ export class AuthController {
     const token = (req.cookies as Record<string, string> | undefined)?.['refresh_token'];
     if (!token) throw new UnauthorizedException();
     return this.authService.refresh(token);
+  }
+
+  // ── 2FA Routes ─────────────────────────────────────────────────────────────
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/generate')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Générer le secret 2FA et le QR Code pour l\'utilisateur connecté' })
+  async generateTwoFactorSecret(@CurrentUser() user: any) {
+    return this.authService.generateTwoFactorSecret(user.id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/turn-on')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Activer le 2FA après avoir scanné le QR Code (1er code de vérification)' })
+  async turnOnTwoFactorAuthentication(
+    @CurrentUser() user: any,
+    @Body('code') code: string,
+  ) {
+    await this.authService.turnOnTwoFactorAuthentication(user.id, code);
+    return { success: true, message: '2FA activé avec succès' };
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/authenticate')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'S\'authentifier avec le code 2FA (nécessite le tempToken)' })
+  async authenticateTwoFactor(
+    @CurrentUser() user: any,
+    @Body('code') code: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.verifyTwoFactor(user.id, code);
+
+    if (result.refreshToken) {
+      res.cookie('refresh_token', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env['NODE_ENV'] === 'production',
+        sameSite: 'strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+    }
+
+    return { accessToken: result.accessToken, user: result.user };
   }
 }
