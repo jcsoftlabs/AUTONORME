@@ -1,5 +1,8 @@
 import Header from '../../../components/layout/Header';
 import AutoBotInterface from '../../../components/autobot/AutoBotInterface';
+import Footer from '../../../components/layout/Footer';
+import styles from '../../../components/autobot/autobot.module.css';
+import { getTranslations } from 'next-intl/server';
 
 export const metadata = {
   title: 'AutoBot IA — Votre Assistant Automobile Intelligent',
@@ -22,15 +25,31 @@ export const metadata = {
   },
 };
 
-export default function AutoBotPage() {
+export default async function AutoBotPage({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'AutoBot' });
+
   return (
-    <main style={{ fontFamily: 'var(--font-body)', background: 'var(--color-neutral-50)', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <main className={styles.page} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
-      
-      {/* Container Chat */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: '4.5rem', overflow: 'hidden' }}>
+
+      <section className={styles.hero}>
+        <div className={`container ${styles.heroInner}`}>
+          <span className={styles.eyebrow}>{t('hero_eyebrow')}</span>
+          <h1 className={styles.title}>{t('hero_title')}</h1>
+          <p className={styles.subtitle}>{t('hero_subtitle')}</p>
+          <div className={styles.heroHighlights}>
+            <span className={styles.heroHighlight}>{t('hero_highlight_1')}</span>
+            <span className={styles.heroHighlight}>{t('hero_highlight_2')}</span>
+            <span className={styles.heroHighlight}>{t('hero_highlight_3')}</span>
+          </div>
+        </div>
+      </section>
+
+      <div className={`container ${styles.content}`}>
         <AutoBotInterface />
       </div>
+
+      <Footer />
     </main>
   );
 }

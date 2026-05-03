@@ -1,149 +1,172 @@
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+
 import Header from '../../../../components/layout/Header';
 import Footer from '../../../../components/layout/Footer';
-import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import styles from '../../../../components/marketplace.module.css';
+
+type Garage = {
+  id: string;
+  slug: string;
+  name: string;
+  address: string;
+  city?: string | null;
+  lat: number;
+  lng: number;
+  phone?: string | null;
+  description?: string | null;
+  specialties: string[];
+  isVerified: boolean;
+  rating?: number | null;
+  totalReviews: number;
+};
+
+async function getGarage(slug: string): Promise<Garage | null> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const response = await fetch(`${apiUrl}/api/v1/garages/${slug}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error('Failed to load garage');
+
+  const payload = await response.json();
+  return payload.data as Garage;
+}
+
+function sanitizePhone(phone?: string | null) {
+  if (!phone) return null;
+  return phone.replace(/[^\d+]/g, '');
+}
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  // En production, fetch data pour le titre
   return {
     title: `Garage ${params.id} — AUTONORME`,
     description: 'Prenez rendez-vous dans ce garage certifié AUTONORME.',
-    openGraph: {
-      title: `Garage ${params.id} — AUTONORME`,
-      description: 'Prenez rendez-vous dans ce garage certifié AUTONORME.',
-      url: `https://autonorme.com/garages/${params.id}`,
-      siteName: 'AUTONORME',
-      images: [
-        {
-          url: '/og-garage-detail.png',
-          width: 1200,
-          height: 630,
-          alt: `Garage ${params.id} AUTONORME`,
-        },
-      ],
-      locale: 'fr_FR',
-      type: 'article',
-    },
   };
 }
 
-export default function GarageDetailsPage({ params }: { params: { id: string } }) {
-  const t = useTranslations('Garages');
-  // MOCK DATA pour la structure visuelle
-  const garage = {
-    id: params.id,
-    name: 'Garage Moderne Auto',
-    address: '15 Rue Delmas, Port-au-Prince',
-    rating: 4.8,
-    reviewsCount: 124,
-    isCertified: true,
-    specialties: ['Mécanique générale', 'Climatisation', 'Électricité'],
-    description: 'Le Garage Moderne Auto est votre partenaire de confiance depuis plus de 10 ans. Nous offrons des services rapides et fiables pour tous types de véhicules.',
-    services: [
-      { name: 'Vidange et filtres', price: 'À partir de 5000 HTG' },
-      { name: 'Diagnostic électronique', price: 'À partir de 2500 HTG' },
-      { name: 'Changement plaquettes de frein', price: 'À partir de 4000 HTG' },
-    ]
-  };
+export default async function GarageDetailsPage({
+  params,
+}: {
+  params: { locale: string; id: string };
+}) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'Garages' });
+  const garage = await getGarage(params.id);
+
+  if (!garage) {
+    notFound();
+  }
+
+  const phone = sanitizePhone(garage.phone);
+  const whatsappLink = phone ? `https://wa.me/${phone.replace(/^\+/, '')}` : null;
+  const telLink = phone ? `tel:${phone}` : null;
+  const mapsLink = `https://www.google.com/maps/search/?api=1&query=${garage.lat},${garage.lng}`;
 
   return (
-    <main style={{ fontFamily: 'var(--font-body)', background: 'var(--color-neutral-50)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <main className={styles.pageShell} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
-      
-      <div style={{ background: 'var(--color-primary-900)', paddingTop: '11rem', paddingBottom: '3rem', color: '#FFFFFF' }}>
-        <div className="container">
-          <Link href="/fr/garages" style={{ color: 'var(--color-primary-200)', textDecoration: 'none', fontSize: '0.875rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: 'var(--space-md)' }}>
+
+      <section className={styles.pageHero}>
+        <div className={`container ${styles.pageHeroInner}`}>
+          <Link href={`/${params.locale}/garages`} className={styles.backLink}>
             {t('back_list')}
           </Link>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-lg)' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', marginBottom: 'var(--space-xs)' }}>
-                <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 'clamp(2rem, 4vw, 2.5rem)', margin: 0 }}>
-                  {garage.name}
-                </h1>
-                {garage.isCertified && (
-                  <span style={{ background: '#DCFCE7', color: '#16A34A', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', fontSize: '0.75rem', fontWeight: 700 }}>
-                    CERTIFIÉ AUTONORME
-                  </span>
-                )}
-              </div>
-              <p style={{ fontSize: '1rem', color: 'var(--color-primary-100)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                📍 {garage.address}
-              </p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.1)', padding: 'var(--space-md) var(--space-xl)', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-accent-gold)', marginBottom: '0.25rem' }}>
-                ⭐ {garage.rating}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-200)' }}>
-                {garage.reviewsCount} avis clients
-              </div>
-            </div>
+          <span className={styles.pageEyebrow}>{t('detail_eyebrow')}</span>
+          <h1 className={styles.pageTitle}>{garage.name}</h1>
+          <p className={styles.pageSubtitle}>
+            {garage.city || t('city_unavailable')} · {garage.address}
+          </p>
+          <div className={styles.heroHighlights}>
+            {garage.isVerified && <span className={styles.heroHighlight}>{t('verified_badge')}</span>}
+            <span className={styles.heroHighlight}>
+              {t('rating_short')} {garage.rating ? garage.rating.toFixed(1) : t('rating_unavailable')}
+            </span>
+            <span className={styles.heroHighlight}>
+              {garage.totalReviews > 0
+                ? t('reviews_label', { count: garage.totalReviews })
+                : t('reviews_new')}
+            </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="container" style={{ flex: 1, padding: 'var(--space-2xl) 0', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)' }}>
-        <style>{`
-          @media (min-width: 1024px) {
-            .details-layout { grid-template-columns: 2fr 1fr !important; }
-          }
-        `}</style>
-        
-        <div className="details-layout" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)', alignItems: 'start' }}>
-          
-          {/* Main Content */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2xl)' }}>
-            <section>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.5rem', marginBottom: 'var(--space-md)' }}>{t('details_title')}</h2>
-              <p style={{ fontSize: '1rem', lineHeight: 1.6, color: 'var(--color-neutral-600)' }}>
-                {garage.description}
+      <div className={`container ${styles.contentWrap}`}>
+        <div className={styles.detailGrid}>
+          <div className={styles.detailContent}>
+            <section className={styles.detailSection}>
+              <h2 className={styles.detailSectionTitle}>{t('details_title')}</h2>
+              <p className={styles.detailText}>
+                {garage.description || t('detail_description_fallback')}
               </p>
             </section>
 
-            <section>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.5rem', marginBottom: 'var(--space-md)' }}>{t('specialties')}</h2>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-sm)' }}>
-                {garage.specialties.map(spec => (
-                  <span key={spec} style={{ background: 'var(--color-neutral-200)', color: 'var(--color-neutral-800)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', fontSize: '0.875rem', fontWeight: 500 }}>
-                    {spec}
+            <section className={styles.detailSection}>
+              <h2 className={styles.detailSectionTitle}>{t('specialties')}</h2>
+              <div className={styles.specialtyRow}>
+                {garage.specialties?.length > 0 ? (
+                  garage.specialties.map((specialty) => (
+                    <span key={specialty} className={styles.specialtyTag}>
+                      {specialty}
+                    </span>
+                  ))
+                ) : (
+                  <p className={styles.detailText}>{t('specialties_fallback')}</p>
+                )}
+              </div>
+            </section>
+
+            <section className={styles.detailSection}>
+              <h2 className={styles.detailSectionTitle}>{t('field_observations_title')}</h2>
+              <div className={styles.detailStats}>
+                <div className={styles.detailStat}>
+                  <span className={styles.detailStatLabel}>{t('field_city')}</span>
+                  <span className={styles.detailStatValue}>{garage.city || t('city_unavailable')}</span>
+                </div>
+                <div className={styles.detailStat}>
+                  <span className={styles.detailStatLabel}>{t('field_phone')}</span>
+                  <span className={styles.detailStatValue}>{garage.phone || t('contact_request_only')}</span>
+                </div>
+                <div className={styles.detailStat}>
+                  <span className={styles.detailStatLabel}>{t('field_status')}</span>
+                  <span className={styles.detailStatValue}>
+                    {garage.isVerified ? t('verified_badge') : t('verification_pending')}
                   </span>
-                ))}
-              </div>
-            </section>
-
-            <section>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.5rem', marginBottom: 'var(--space-md)' }}>{t('services')}</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-                {garage.services.map((service, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', borderBottom: '1px solid var(--color-neutral-200)' }}>
-                    <span style={{ fontWeight: 500, color: 'var(--color-neutral-800)' }}>{service.name}</span>
-                    <span style={{ color: 'var(--color-primary-600)', fontWeight: 600 }}>{service.price}</span>
-                  </div>
-                ))}
+                </div>
               </div>
             </section>
           </div>
 
-          {/* Sidebar Action */}
-          <div style={{ position: 'sticky', top: '6rem', background: '#FFFFFF', padding: 'var(--space-xl)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--color-neutral-200)' }}>
-            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.25rem', marginBottom: 'var(--space-lg)' }}>
-              {t('need_maintenance')}
-            </h3>
-            <p style={{ fontSize: '0.9375rem', color: 'var(--color-neutral-500)', marginBottom: 'var(--space-xl)' }}>
-              {t('book_desc')}
-            </p>
-            
-            <Link href="/fr/compte/login" style={{ textDecoration: 'none' }}>
-              <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: 'var(--space-md)' }}>
-                {t('book_btn')}
-              </button>
-            </Link>
-            <div style={{ textAlign: 'center', fontSize: '0.8125rem', color: 'var(--color-neutral-400)' }}>
-              {t('login_required')}
+          <aside className={styles.detailSidebar}>
+            <div className={styles.ctaPanel}>
+              <h3 className={styles.panelTitle}>{t('need_maintenance')}</h3>
+              <p className={styles.panelText}>{t('book_desc')}</p>
+
+              <div className={styles.ctaButtons}>
+                <Link href={`/${params.locale}/compte/login`} className="btn btn-primary" style={{ width: '100%' }}>
+                  {t('book_btn')}
+                </Link>
+                {telLink && (
+                  <Link href={telLink} className={styles.secondaryLinkBtn}>
+                    {t('call_cta')}
+                  </Link>
+                )}
+                {whatsappLink && (
+                  <Link href={whatsappLink} className={styles.secondaryLinkBtn} target="_blank" rel="noreferrer">
+                    {t('whatsapp_cta')}
+                  </Link>
+                )}
+                <Link href={mapsLink} className={styles.secondaryLinkBtn} target="_blank" rel="noreferrer">
+                  {t('directions_cta')}
+                </Link>
+              </div>
+
+              <div style={{ marginTop: '1rem' }} className={styles.panelText}>
+                {t('login_required')}
+              </div>
             </div>
-          </div>
-
+          </aside>
         </div>
       </div>
 

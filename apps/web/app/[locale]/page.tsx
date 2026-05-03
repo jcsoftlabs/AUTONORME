@@ -6,6 +6,7 @@ import FeaturesSection from '../../components/sections/FeaturesSection';
 import StatsSection from '../../components/sections/StatsSection';
 import AutoBotPreviewSection from '../../components/sections/AutoBotPreviewSection';
 import CTASection from '../../components/sections/CTASection';
+import styles from '../../components/homepage.module.css';
 
 export const metadata: Metadata = {
   title: 'AUTONORME — L\'auto. Normée. Connectée.',
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <main style={{ fontFamily: 'var(--font-body)' }}>
+    <main className={styles.homePage} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
       <HeroSection />
       <FeaturesSection />

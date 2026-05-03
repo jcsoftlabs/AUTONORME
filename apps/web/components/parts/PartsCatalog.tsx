@@ -1,167 +1,193 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { fetchApi } from '../../lib/api-client';
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 
-interface Part {
+import { fetchApi } from '../../lib/api-client';
+import styles from '../marketplace.module.css';
+
+type SupplierSummary = {
+  shopName: string;
+  city?: string | null;
+};
+
+type Part = {
   id: string;
   name: string;
-  partNumber: string;
-  brand: string;
-  price: number;
-  stockQuantity: number;
-  imageUrl?: string;
-}
+  category: string;
+  supplier: SupplierSummary;
+  oemReference?: string | null;
+  priceHtg: string | number;
+  stockQty: number;
+  location: string;
+  importAvailable: boolean;
+  importDelayDays?: number | null;
+};
+
+const categoryOptions = [
+  'FREINAGE',
+  'MOTEUR',
+  'SUSPENSION',
+  'ELECTRIQUE',
+  'CARROSSERIE',
+  'AUTRE',
+] as const;
 
 export default function PartsCatalog() {
   const t = useTranslations('Parts');
   const locale = useLocale();
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('ALL');
+  const [category, setCategory] = useState<string>('ALL');
 
   const { data: parts, isLoading, error } = useQuery<Part[]>({
-    queryKey: ['parts'],
-    queryFn: () => fetchApi('/parts'),
+    queryKey: ['parts', category],
+    queryFn: () =>
+      fetchApi('/parts', {
+        params: category === 'ALL' ? undefined : { category },
+      }),
   });
 
-  const filteredParts = parts?.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.brand.toLowerCase().includes(search.toLowerCase());
-    // MOCK FILTER: In a real app, backend handles filtering or category matches part category id
-    return matchesSearch;
+  const filteredParts = (parts ?? []).filter((part) => {
+    const query = search.trim().toLowerCase();
+    if (!query) return true;
+
+    return (
+      part.name.toLowerCase().includes(query) ||
+      (part.supplier?.shopName ?? '').toLowerCase().includes(query) ||
+      (part.supplier?.city ?? '').toLowerCase().includes(query) ||
+      (part.oemReference ?? '').toLowerCase().includes(query) ||
+      part.category.toLowerCase().includes(query)
+    );
   });
+
+  const formatPrice = (value: string | number) =>
+    Number(value).toLocaleString(locale === 'en' ? 'en-US' : 'fr-HT');
+
+  const getStockClassName = (part: Part) => {
+    if (part.stockQty > 0) return styles.stockOk;
+    if (part.importAvailable) return styles.stockWarn;
+    return styles.stockOut;
+  };
+
+  const getStockLabel = (part: Part) => {
+    if (part.stockQty > 0) return `${part.stockQty} ${t('stock_in')}`;
+    if (part.importAvailable && part.importDelayDays) {
+      return t('import_delay', { days: part.importDelayDays });
+    }
+    if (part.importAvailable) return t('import_available');
+    return t('stock_out');
+  };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)' }}>
-      <style>{`
-        @media (min-width: 1024px) {
-          .catalog-layout { grid-template-columns: 280px 1fr !important; }
-        }
-      `}</style>
-      
-      <div className="catalog-layout" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)', alignItems: 'start' }}>
-        
-        {/* Sidebar: Filters */}
-        <div style={{ background: '#FFFFFF', padding: 'var(--space-xl)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-neutral-200)' }}>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', marginBottom: 'var(--space-lg)' }}>
-            Filtres
-          </h3>
-          
+    <div className={styles.catalogGrid}>
+      <div className={styles.catalogLayout}>
+        <aside className={styles.catalogSidebar}>
+          <h3 className={styles.panelTitle}>{t('filters_title')}</h3>
+
           <div style={{ marginBottom: 'var(--space-xl)' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: 'var(--space-sm)' }}>
-              Rechercher une pièce
-            </label>
-            <input
-              type="text"
-              placeholder={t('search_placeholder')}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--color-neutral-300)',
-                fontSize: '0.9375rem',
-                outline: 'none',
-              }}
-            />
+            <span className={styles.sectionLabel}>{t('search_label')}</span>
+            <div className={styles.filterInputWrap}>
+              <span className={styles.filterIcon}>⌕</span>
+              <input
+                type="text"
+                placeholder={t('search_placeholder')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={styles.filterInput}
+              />
+            </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: 'var(--space-sm)' }}>
-              Catégorie
-            </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
-              {['Toutes', 'Freinage', 'Moteur', 'Transmission', 'Suspension'].map(cat => (
-                <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9375rem', color: 'var(--color-neutral-600)' }}>
-                  <input type="radio" name="category" value={cat} checked={category === (cat === 'Toutes' ? 'ALL' : cat)} onChange={() => setCategory(cat === 'Toutes' ? 'ALL' : cat)} />
-                  {cat}
-                </label>
+            <span className={styles.sectionLabel}>{t('category_label')}</span>
+            <div className={styles.chipRow}>
+              <button
+                type="button"
+                className={`${styles.chip} ${category === 'ALL' ? styles.chipActive : ''}`}
+                onClick={() => setCategory('ALL')}
+              >
+                {t('category_all')}
+              </button>
+              {categoryOptions.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  className={`${styles.chip} ${category === item ? styles.chipActive : ''}`}
+                  onClick={() => setCategory(item)}
+                >
+                  {t(`category_${item.toLowerCase()}`)}
+                </button>
               ))}
             </div>
           </div>
-        </div>
+        </aside>
 
-        {/* Main Grid */}
         <div>
-          {/* Header row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xl)' }}>
-            <div style={{ color: 'var(--color-neutral-600)', fontSize: '0.9375rem' }}>
-              {filteredParts?.length || 0} résultat(s)
+          <div className={styles.catalogResultsHeader}>
+            <div className={styles.resultsMeta}>
+              <span>
+                {filteredParts.length} {t('results_count')}
+              </span>
+              <span>{t('results_hint')}</span>
             </div>
-            <select style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-300)', fontSize: '0.875rem' }}>
-              <option>Trier par popularité</option>
-              <option>Prix croissant</option>
-              <option>Prix décroissant</option>
+            <select className={styles.catalogSelect} defaultValue="stock">
+              <option value="stock">{t('sort_stock')}</option>
+              <option value="price-asc">{t('sort_price_asc')}</option>
+              <option value="price-desc">{t('sort_price_desc')}</option>
             </select>
           </div>
 
-          {/* Loading */}
           {isLoading && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--space-lg)' }}>
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="animate-pulse" style={{ height: '320px', background: 'var(--color-neutral-200)', borderRadius: 'var(--radius-lg)' }} />
+            <div className={styles.partsGrid}>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className={styles.skeletonCard} style={{ height: '20rem' }} />
               ))}
             </div>
           )}
 
-          {/* Error */}
-          {error && (
-            <div style={{ padding: 'var(--space-xl)', background: '#FEE2E2', color: '#B91C1C', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
-              Une erreur s&apos;est produite lors du chargement du catalogue.
-            </div>
-          )}
+          {error && <div className={styles.errorBox}>{t('load_error')}</div>}
 
-          {/* Empty */}
-          {(!isLoading && !error && (!filteredParts || filteredParts.length === 0)) && (
-            <div style={{ padding: 'var(--space-4xl)', textAlign: 'center', background: '#FFFFFF', borderRadius: 'var(--radius-xl)', border: '1px dashed var(--color-neutral-300)' }}>
-              <div style={{ fontSize: '3rem', marginBottom: 'var(--space-md)' }}>🛒</div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.25rem', marginBottom: '0.5rem' }}>Aucune pièce trouvée</h3>
-              <p style={{ color: 'var(--color-neutral-500)', maxWidth: '300px', margin: '0 auto' }}>
-                {search ? 'Essayez avec un autre mot-clé.' : 'Le catalogue est actuellement en cours de mise à jour.'}
+          {!isLoading && !error && filteredParts.length === 0 && (
+            <div className={styles.stateBox}>
+              <h3 className={styles.stateTitle}>{t('empty_title')}</h3>
+              <p className={styles.panelText}>
+                {search ? t('empty_search') : t('empty_default')}
               </p>
             </div>
           )}
 
-          {/* Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--space-lg)' }}>
-            {filteredParts?.map(part => (
+          <div className={styles.partsGrid}>
+            {filteredParts.map((part) => (
               <Link href={`/${locale}/pieces/${part.id}`} key={part.id} style={{ textDecoration: 'none' }}>
-                <div className="card" style={{ display: 'flex', flexDirection: 'column', background: '#FFFFFF', padding: '0', overflow: 'hidden', height: '100%' }}>
-                  {/* Image Placeholder */}
-                  <div style={{ height: '180px', background: 'var(--color-neutral-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
-                    ⚙️
-                  </div>
-                  
-                  <div style={{ padding: 'var(--space-lg)', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary-600)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                    {part.brand}
-                  </div>
-                  <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1rem', color: 'var(--color-neutral-900)', marginBottom: '0.5rem', lineHeight: 1.4 }}>
-                    {part.name}
-                  </h4>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-neutral-500)', marginBottom: 'var(--space-md)' }}>
-                    Réf: {part.partNumber}
-                  </div>
-                  
-                  <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                    <div>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-neutral-900)' }}>
-                        {part.price.toLocaleString('fr-HT')} HTG
+                <article className={styles.partCard}>
+                  <div className={styles.partVisual}>{part.category.slice(0, 2)}</div>
+                  <div className={styles.partCardBody}>
+                    <span className={styles.partBadge}>{t(`category_${part.category.toLowerCase()}`)}</span>
+                    <div className={styles.partBrand}>{part.supplier?.shopName || t('supplier_fallback')}</div>
+                    <h4 className={styles.partName}>{part.name}</h4>
+                    <div className={styles.partMeta}>
+                      {t('reference_short')} {part.oemReference || t('reference_missing')}
+                    </div>
+                    <div className={styles.partMeta}>
+                      {part.location} · {part.supplier?.city || t('city_unavailable')}
+                    </div>
+
+                    <div className={styles.partBottom}>
+                      <div>
+                        <div className={styles.partPrice}>{formatPrice(part.priceHtg)} HTG</div>
+                        <div className={getStockClassName(part)}>{getStockLabel(part)}</div>
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: part.stockQuantity > 0 ? '#16A34A' : '#DC2626', fontWeight: 600 }}>
-                        {part.stockQuantity > 0 ? `${part.stockQuantity} ${t('stock_in')}` : t('stock_out')}
+                      <div className={styles.supplierMeta}>
+                        <span className={styles.garageLinkText}>{t('view_part')}</span>
                       </div>
                     </div>
                   </div>
-                  </div>
-                </div>
+                </article>
               </Link>
             ))}
           </div>
-
         </div>
       </div>
     </div>

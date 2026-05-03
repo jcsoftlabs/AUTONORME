@@ -3,6 +3,7 @@ import Footer from '../../../components/layout/Footer';
 import GarageList from '../../../components/garages/GarageList';
 import GarageMapPlaceholder from '../../../components/garages/GarageMapPlaceholder';
 import { useTranslations } from 'next-intl';
+import styles from '../../../components/marketplace.module.css';
 
 export const metadata = {
   title: 'Trouver un Garage Certifié — AUTONORME',
@@ -29,41 +30,31 @@ export default function GaragesPage() {
   const t = useTranslations('Garages');
 
   return (
-    <main style={{ fontFamily: 'var(--font-body)', background: 'var(--color-neutral-50)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <main className={styles.pageShell} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
-      
-      {/* Page Header */}
-      <div style={{ background: 'var(--color-primary-900)', paddingTop: '11rem', paddingBottom: '4rem', color: '#FFFFFF' }}>
-        <div className="container">
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'var(--space-md)', color: '#FFFFFF' }}>
-            {t('title')}
-          </h1>
-          <p style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.8)', maxWidth: '600px' }}>
-            {t('subtitle')}
-          </p>
-        </div>
-      </div>
 
-      {/* Main Content Layout */}
-      <div className="container" style={{ flex: 1, padding: 'var(--space-2xl) 0', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)' }}>
-        <style>{`
-          @media (min-width: 1024px) {
-            .garages-layout { grid-template-columns: 350px 1fr !important; }
-          }
-        `}</style>
-        
-        <div className="garages-layout" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-xl)', alignItems: 'start' }}>
-          
-          {/* Left Column: List & Filters */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)', height: '100%' }}>
+      <section className={styles.pageHero}>
+        <div className={`container ${styles.pageHeroInner}`}>
+          <span className={styles.pageEyebrow}>{t('eyebrow')}</span>
+          <h1 className={styles.pageTitle}>{t('title')}</h1>
+          <p className={styles.pageSubtitle}>{t('subtitle')}</p>
+          <div className={styles.heroHighlights}>
+            <span className={styles.heroHighlight}>{t('highlight_1')}</span>
+            <span className={styles.heroHighlight}>{t('highlight_2')}</span>
+            <span className={styles.heroHighlight}>{t('highlight_3')}</span>
+          </div>
+        </div>
+      </section>
+
+      <div className={`container ${styles.contentWrap}`}>
+        <div className={styles.twoColumnLayout}>
+          <div>
             <GarageList />
           </div>
 
-          {/* Right Column: Map */}
-          <div style={{ position: 'sticky', top: '5.5rem', height: 'calc(100vh - 7rem)' }}>
+          <div className={styles.stickyRail}>
             <GarageMapPlaceholder />
           </div>
-
         </div>
       </div>
 

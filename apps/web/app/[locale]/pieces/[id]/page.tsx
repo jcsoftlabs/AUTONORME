@@ -1,119 +1,190 @@
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+
 import Header from '../../../../components/layout/Header';
 import Footer from '../../../../components/layout/Footer';
-import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import styles from '../../../../components/marketplace.module.css';
+
+type CompatibleVehicle = {
+  make: string;
+  model: string;
+  years: number[];
+};
+
+type Supplier = {
+  shopName: string;
+  city?: string | null;
+  zones: string[];
+};
+
+type Part = {
+  id: string;
+  name: string;
+  category: string;
+  supplier: Supplier;
+  compatibleVehicles: CompatibleVehicle[];
+  oemReference?: string | null;
+  priceHtg: string | number;
+  stockQty: number;
+  location: string;
+  importAvailable: boolean;
+  importDelayDays?: number | null;
+  images: string[];
+};
+
+async function getPart(id: string): Promise<Part | null> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const response = await fetch(`${apiUrl}/api/v1/parts/${id}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error('Failed to load part');
+
+  const payload = await response.json();
+  return payload.data as Part;
+}
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   return {
     title: `Pièce ${params.id} — AUTONORME`,
     description: 'Achetez cette pièce automobile en ligne avec garantie.',
-    openGraph: {
-      title: `Pièce ${params.id} — AUTONORME`,
-      description: 'Achetez cette pièce automobile en ligne avec garantie.',
-      url: `https://autonorme.com/pieces/${params.id}`,
-      siteName: 'AUTONORME',
-      images: [
-        {
-          url: '/og-piece-detail.png',
-          width: 1200,
-          height: 630,
-          alt: `Pièce ${params.id} AUTONORME`,
-        },
-      ],
-      locale: 'fr_FR',
-      type: 'article',
-    },
   };
 }
 
-export default function PartDetailsPage({ params }: { params: { id: string } }) {
-  const t = useTranslations('Parts');
-  // MOCK DATA pour la structure visuelle
-  const part = {
-    id: params.id,
-    name: 'Plaquettes de frein avant Céramique',
-    brand: 'Bosch',
-    partNumber: 'BP-12445',
-    price: 4500,
-    stock: 12,
-    description: 'Plaquettes de frein en céramique haute performance. Conçues pour réduire la poussière et offrir un freinage silencieux.',
-    compatibility: ['Toyota RAV4 2015-2021', 'Toyota Camry 2018-2022', 'Lexus NX 2015-2020'],
-  };
+export default async function PartDetailsPage({
+  params,
+}: {
+  params: { locale: string; id: string };
+}) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'Parts' });
+  const part = await getPart(params.id);
+
+  if (!part) notFound();
+
+  const price = Number(part.priceHtg).toLocaleString(params.locale === 'en' ? 'en-US' : 'fr-HT');
+  const stockLabel =
+    part.stockQty > 0
+      ? `${part.stockQty} ${t('stock_in')}`
+      : part.importAvailable && part.importDelayDays
+        ? t('import_delay', { days: part.importDelayDays })
+        : part.importAvailable
+          ? t('import_available')
+          : t('stock_out');
 
   return (
-    <main style={{ fontFamily: 'var(--font-body)', background: 'var(--color-neutral-50)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <main className={styles.pageShell} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
-      
-      <div style={{ background: '#FFFFFF', borderBottom: '1px solid var(--color-neutral-200)', paddingTop: '6rem' }}>
+
+      <div className={styles.breadcrumbWrap}>
         <div className="container" style={{ padding: 'var(--space-md) 0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--color-neutral-500)' }}>
-            <Link href="/fr/pieces" style={{ color: 'inherit', textDecoration: 'none' }}>{t('back_catalog')}</Link>
+          <div className={styles.breadcrumb}>
+            <Link href={`/${params.locale}/pieces`} style={{ color: 'inherit', textDecoration: 'none' }}>
+              {t('back_catalog')}
+            </Link>
             <span>/</span>
             <span style={{ color: 'var(--color-neutral-900)' }}>{part.name}</span>
           </div>
         </div>
       </div>
 
-      <div className="container" style={{ flex: 1, padding: 'var(--space-2xl) 0', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)' }}>
-        <style>{`
-          @media (min-width: 1024px) {
-            .product-layout { grid-template-columns: 1fr 400px !important; }
-          }
-        `}</style>
-        
-        <div className="product-layout" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-2xl)', alignItems: 'start' }}>
-          
-          {/* Main Product Info */}
+      <div className={`container ${styles.contentWrap}`}>
+        <div className={styles.productGrid}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2xl)' }}>
-            {/* Image Placeholder */}
-            <div style={{ width: '100%', height: '400px', background: 'var(--color-neutral-100)', borderRadius: 'var(--radius-2xl)', border: '1px solid var(--color-neutral-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem' }}>
-              ⚙️
+            <div className={styles.productVisual}>
+              {part.category.slice(0, 2)}
             </div>
 
-            <section>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.5rem', marginBottom: 'var(--space-md)' }}>{t('desc_title')}</h2>
-              <p style={{ fontSize: '1.0625rem', lineHeight: 1.6, color: 'var(--color-neutral-600)' }}>
-                {part.description}
-              </p>
+            <section className={styles.productSection}>
+              <h2 className={styles.detailSectionTitle}>{t('desc_title')}</h2>
+              <p className={styles.detailText}>{t('detail_description')}</p>
             </section>
 
-            <section>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.5rem', marginBottom: 'var(--space-md)' }}>{t('compatibility')}</h2>
-              <ul style={{ margin: 0, padding: '0 0 0 1.25rem', color: 'var(--color-neutral-600)', lineHeight: 1.8 }}>
-                {part.compatibility.map(v => <li key={v}>{v}</li>)}
-              </ul>
+            <section className={styles.productSection}>
+              <h2 className={styles.detailSectionTitle}>{t('compatibility')}</h2>
+              {part.compatibleVehicles?.length > 0 ? (
+                <ul className={styles.compatibilityList}>
+                  {part.compatibleVehicles.map((vehicle) => (
+                    <li key={`${vehicle.make}-${vehicle.model}`}>
+                      {vehicle.make} {vehicle.model} ({vehicle.years.join(', ')})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className={styles.detailText}>{t('compatibility_fallback')}</p>
+              )}
+            </section>
+
+            <section className={styles.productSection}>
+              <h2 className={styles.detailSectionTitle}>{t('supplier_title')}</h2>
+              <div className={styles.detailStats}>
+                <div className={styles.detailStat}>
+                  <span className={styles.detailStatLabel}>{t('supplier_shop')}</span>
+                  <span className={styles.detailStatValue}>{part.supplier?.shopName || t('supplier_fallback')}</span>
+                </div>
+                <div className={styles.detailStat}>
+                  <span className={styles.detailStatLabel}>{t('supplier_city')}</span>
+                  <span className={styles.detailStatValue}>{part.supplier?.city || t('city_unavailable')}</span>
+                </div>
+                <div className={styles.detailStat}>
+                  <span className={styles.detailStatLabel}>{t('supplier_location')}</span>
+                  <span className={styles.detailStatValue}>{part.location}</span>
+                </div>
+              </div>
+
+              {part.supplier?.zones?.length > 0 && (
+                <div className={styles.zoneList}>
+                  {part.supplier.zones.map((zone) => (
+                    <span key={zone} className={styles.specialtyTag}>
+                      {zone}
+                    </span>
+                  ))}
+                </div>
+              )}
             </section>
           </div>
 
-          {/* Sidebar Action / Cart */}
-          <div style={{ position: 'sticky', top: '6rem', background: '#FFFFFF', padding: 'var(--space-2xl)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-xl)', border: '1px solid var(--color-neutral-200)' }}>
-            <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-primary-600)', textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
-              {part.brand}
+          <aside className={styles.productSidebar}>
+            <div className={styles.partBadge}>{t(`category_${part.category.toLowerCase()}`)}</div>
+            <div style={{ marginTop: '0.9rem' }} className={styles.partBrand}>
+              {part.supplier?.shopName || t('supplier_fallback')}
             </div>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2rem', marginBottom: '0.5rem', lineHeight: 1.2 }}>
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2rem', margin: '0.45rem 0 0.6rem', lineHeight: 1.2 }}>
               {part.name}
             </h1>
-            <div style={{ fontSize: '0.9375rem', color: 'var(--color-neutral-500)', marginBottom: 'var(--space-xl)' }}>
-              {t('ref')} {part.partNumber}
-            </div>
-            
-            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--color-neutral-900)', marginBottom: 'var(--space-md)' }}>
-              {part.price.toLocaleString('fr-HT')} HTG
+            <div className={styles.partMeta}>
+              {t('ref')} {part.oemReference || t('reference_missing')}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 'var(--space-2xl)', fontSize: '0.9375rem', fontWeight: 600, color: part.stock > 0 ? '#16A34A' : '#DC2626' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: part.stock > 0 ? '#16A34A' : '#DC2626' }}></span>
-              {part.stock > 0 ? `${part.stock} ${t('stock_in')}` : t('stock_out')}
+            <div style={{ margin: '1.2rem 0 0.8rem' }} className={styles.partPrice}>
+              {price} HTG
             </div>
-            
-            <button className="btn btn-primary" disabled={part.stock === 0} style={{ width: '100%', justifyContent: 'center', marginBottom: 'var(--space-md)' }}>
-              {t('add_cart')}
-            </button>
-            <div style={{ textAlign: 'center', fontSize: '0.8125rem', color: 'var(--color-neutral-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-              <span>🛡️</span> {t('warranty')}
-            </div>
-          </div>
 
+            <div className={part.stockQty > 0 ? styles.stockOk : part.importAvailable ? styles.stockWarn : styles.stockOut}>
+              {stockLabel}
+            </div>
+
+            <div className={styles.ctaButtons}>
+              <button className="btn btn-primary" style={{ width: '100%' }} disabled={part.stockQty === 0 && !part.importAvailable}>
+                {t('add_cart')}
+              </button>
+              <Link href={`/${params.locale}/autobot`} className={styles.secondaryLinkBtn}>
+                {t('autobot_cta')}
+              </Link>
+              <Link href={`/${params.locale}/compte/login`} className={styles.secondaryLinkBtn}>
+                {t('compatibility_login_cta')}
+              </Link>
+            </div>
+
+            <div className={styles.ctaNote}>
+              {t('compatibility_note')}
+            </div>
+
+            <div className={styles.ctaNote}>
+              {t('warranty')}
+            </div>
+          </aside>
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import Header from '../../../components/layout/Header';
 import Footer from '../../../components/layout/Footer';
 import PartsCatalog from '../../../components/parts/PartsCatalog';
 import { useTranslations } from 'next-intl';
+import styles from '../../../components/marketplace.module.css';
 
 export const metadata = {
   title: 'Catalogue AUTOparts — AUTONORME',
@@ -28,23 +29,23 @@ export default function PartsPage() {
   const t = useTranslations('Parts');
 
   return (
-    <main style={{ fontFamily: 'var(--font-body)', background: 'var(--color-neutral-50)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <main className={styles.pageShell} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
-      
-      {/* Page Header */}
-      <div style={{ background: 'linear-gradient(135deg, var(--color-primary-900), var(--color-primary-800))', paddingTop: '11rem', paddingBottom: '4rem', color: '#FFFFFF' }}>
-        <div className="container">
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'var(--space-md)' }}>
-            {t('title')}
-          </h1>
-          <p style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.8)', maxWidth: '600px' }}>
-            {t('subtitle')}
-          </p>
-        </div>
-      </div>
 
-      {/* Main Content Layout */}
-      <div className="container" style={{ flex: 1, padding: 'var(--space-2xl) 0' }}>
+      <section className={styles.pageHero}>
+        <div className={`container ${styles.pageHeroInner}`}>
+          <span className={styles.pageEyebrow}>{t('eyebrow')}</span>
+          <h1 className={styles.pageTitle}>{t('title')}</h1>
+          <p className={styles.pageSubtitle}>{t('subtitle')}</p>
+          <div className={styles.heroHighlights}>
+            <span className={styles.heroHighlight}>{t('highlight_1')}</span>
+            <span className={styles.heroHighlight}>{t('highlight_2')}</span>
+            <span className={styles.heroHighlight}>{t('highlight_3')}</span>
+          </div>
+        </div>
+      </section>
+
+      <div className={`container ${styles.contentWrap}`}>
         <PartsCatalog />
       </div>
 

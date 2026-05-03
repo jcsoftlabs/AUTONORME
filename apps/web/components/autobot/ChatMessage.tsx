@@ -1,5 +1,7 @@
 'use client';
 
+import styles from './autobot.module.css';
+
 export interface Message {
   id: string;
   role: 'user' | 'assistant';
@@ -12,60 +14,20 @@ export default function ChatMessage({ message }: { message: Message }) {
 
   return (
     <div
-      style={{
-        display: 'flex',
-        flexDirection: isUser ? 'row-reverse' : 'row',
-        alignItems: 'flex-end',
-        gap: 'var(--space-sm)',
-        alignSelf: isUser ? 'flex-end' : 'flex-start',
-        maxWidth: '85%',
-      }}
+      className={`${styles.messageRow} ${isUser ? styles.messageRowUser : styles.messageRowAssistant}`}
     >
-      {/* Avatar (seulement pour le bot) */}
-      {!isUser && (
-        <div
-          style={{
-            width: '2.25rem',
-            height: '2.25rem',
-            background: 'var(--color-primary-100)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.125rem',
-            flexShrink: 0,
-          }}
-        >
-          🤖
-        </div>
-      )}
+      {!isUser && <div className={styles.assistantAvatar}>AI</div>}
 
-      {/* Bulle de message */}
       <div
-        style={{
-          background: isUser ? 'var(--color-primary-600)' : '#FFFFFF',
-          color: isUser ? '#FFFFFF' : 'var(--color-neutral-900)',
-          padding: '0.875rem 1.125rem',
-          borderRadius: '1rem',
-          borderBottomRightRadius: isUser ? '0.25rem' : '1rem',
-          borderBottomLeftRadius: !isUser ? '0.25rem' : '1rem',
-          boxShadow: 'var(--shadow-sm)',
-          border: isUser ? 'none' : '1px solid var(--color-neutral-200)',
-          fontSize: '0.9375rem',
-          lineHeight: 1.5,
-          position: 'relative',
-        }}
+        className={`${styles.messageBubble} ${
+          isUser ? styles.messageBubbleUser : styles.messageBubbleAssistant
+        }`}
       >
-        {message.content}
-        
-        {/* Timestamp discret */}
+        <div>{message.content}</div>
         <div
-          style={{
-            fontSize: '0.625rem',
-            color: isUser ? 'rgba(255,255,255,0.7)' : 'var(--color-neutral-400)',
-            marginTop: '0.25rem',
-            textAlign: isUser ? 'right' : 'left',
-          }}
+          className={`${styles.timestamp} ${
+            isUser ? styles.timestampUser : styles.timestampAssistant
+          }`}
         >
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>

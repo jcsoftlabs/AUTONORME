@@ -39,15 +39,12 @@ export default function Header() {
         right: 0,
         zIndex: 'var(--z-sticky)' as unknown as number,
         transition: 'all var(--transition-base)',
-        background: solidHeader
-          ? 'rgba(255, 255, 255, 0.98)'
-          : 'transparent',
+        background: solidHeader ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
         backdropFilter: solidHeader ? 'blur(20px)' : 'none',
         borderBottom: solidHeader ? '1px solid var(--color-neutral-200)' : '1px solid transparent',
         boxShadow: solidHeader ? 'var(--shadow-sm)' : 'none',
       }}
     >
-      {/* Top Bar */}
       <div className="container">
         <div
           style={{
@@ -57,9 +54,7 @@ export default function Header() {
             height: '5rem',
           }}
         >
-          {/* Left: Search Bar (Desktop) / Hamburger (Mobile) */}
           <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-            {/* Hamburger mobile */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="nav-mobile-btn"
@@ -94,7 +89,6 @@ export default function Header() {
               ))}
             </button>
 
-            {/* Search Desktop */}
             <div className="nav-desktop" style={{ width: '100%', maxWidth: '280px' }}>
               <div
                 style={{
@@ -106,7 +100,17 @@ export default function Header() {
                   border: solidHeader ? '1px solid var(--color-neutral-200)' : '1px solid rgba(255,255,255,0.2)',
                 }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solidHeader ? 'var(--color-neutral-500)' : 'rgba(255,255,255,0.7)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={solidHeader ? 'var(--color-neutral-500)' : 'rgba(255,255,255,0.7)'}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ marginRight: '8px' }}
+                >
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -126,7 +130,6 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Center: Logo */}
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
             <Link href={`/${locale}`} style={{ display: 'flex', alignItems: 'center' }}>
               <Image
@@ -140,21 +143,23 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Right: Actions */}
           <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 'var(--space-sm)' }}>
             <div className="nav-desktop">
               <LanguageSwitcher isSolid={solidHeader} />
             </div>
-            <Link href={`/${locale}/compte/login`} style={{ 
-              color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
-              fontWeight: 600,
-              fontSize: '0.9375rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              textDecoration: 'none',
-              padding: '0.5rem'
-            }}>
+            <Link
+              href={`/${locale}/compte/login`}
+              style={{
+                color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                fontWeight: 600,
+                fontSize: '0.9375rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                textDecoration: 'none',
+                padding: '0.5rem',
+              }}
+            >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
@@ -165,8 +170,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Bottom Bar (Secondary Nav) - Desktop Only */}
-      <div 
+      <div
         className="nav-desktop"
         style={{
           borderTop: solidHeader ? '1px solid var(--color-neutral-200)' : '1px solid rgba(255,255,255,0.1)',
@@ -213,7 +217,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Menu mobile */}
       {isMenuOpen && (
         <div
           style={{
@@ -223,7 +226,6 @@ export default function Header() {
             boxShadow: 'var(--shadow-lg)',
           }}
         >
-          {/* Mobile Search */}
           <div style={{ marginBottom: 'var(--space-md)' }}>
             <div
               style={{
