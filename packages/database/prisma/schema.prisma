@@ -75,6 +75,127 @@ enum ConversationChannel {
   WHATSAPP
 }
 
+enum FuelType {
+  essence
+  diesel
+  hybride
+  electrique
+}
+
+enum VehicleBodyType {
+  SUV
+  SEDAN
+  HATCHBACK
+  PICKUP
+  VAN
+  MOTO
+  TRICYCLE
+  AUTRE
+}
+
+enum TransmissionType {
+  MANUELLE
+  AUTOMATIQUE
+  CVT
+  AUTRE
+}
+
+enum DrivetrainType {
+  FWD
+  RWD
+  AWD
+  FOUR_X_FOUR
+}
+
+enum VehicleUsageType {
+  PERSONNEL
+  COMMERCIAL
+  MIXTE
+}
+
+enum VehicleStatus {
+  ACTIVE
+  IMMOBILIZED
+  SOLD
+  ARCHIVED
+}
+
+enum OwnershipType {
+  OWNER
+  FLEET
+  LEASE
+}
+
+enum VehicleSource {
+  MANUAL
+  ONBOARDING
+  AUTOBOT
+  WHATSAPP
+  IMPORT
+}
+
+enum ReminderPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ServiceStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum InspectionType {
+  GENERAL
+  PRE_PURCHASE
+  BRAKES
+  ENGINE
+  SUSPENSION
+  ELECTRICAL
+}
+
+enum InspectionResult {
+  OK
+  WARNING
+  CRITICAL
+}
+
+enum IncidentType {
+  ACCIDENT
+  BREAKDOWN
+  OVERHEAT
+  BATTERY
+  TIRE
+  OTHER
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum VehicleDocumentType {
+  REGISTRATION
+  INSURANCE
+  INVOICE
+  INSPECTION_REPORT
+  MAINTENANCE_PROOF
+  PHOTO
+  OTHER
+}
+
+enum VehicleRiskFlagType {
+  MILEAGE_INCONSISTENCY
+  MISSING_HISTORY
+  OVERDUE_MAINTENANCE
+  LOW_DATA_CONFIDENCE
+  REPEATED_BREAKDOWN
+}
+
 // ─────────────────────────────────────────────────────────
 // AUTHENTIFICATION
 // ─────────────────────────────────────────────────────────
@@ -153,41 +274,88 @@ model Vehicle {
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   make         String
   model        String
+  trim         String?
   year         Int
+  bodyType     VehicleBodyType?
   /// Numéro VIN — 17 caractères alphanumériques
-  vin          String?
+  vin          String?   @unique
   /// essence | diesel | hybride
-  fuelType     String
+  fuelType     FuelType
+  transmission TransmissionType?
+  engine       String?
+  drivetrain   DrivetrainType?
   mileage      Int?
+  averageMonthlyMileage Int?
   color        String?
   /// Plaque d'immatriculation haïtienne
   plate        String?
+  usageType    VehicleUsageType?
+  primaryCity  String?
+  primaryZone  String?
+  isPrimaryVehicle Boolean @default(false)
+  status       VehicleStatus @default(ACTIVE)
+  purchaseDate DateTime?
+  purchaseMileage Int?
+  ownershipType OwnershipType @default(OWNER)
+  source       VehicleSource @default(MANUAL)
+  tireSize     String?
+  batterySpec  String?
+  oilSpec      String?
+  coolantSpec  String?
+  brakeSpec    String?
+  vehicleScore Int?
+  vehicleScoreUpdatedAt DateTime?
+  historyCompleteness Int?
+  maintenanceDiscipline Int?
+  dataConfidenceScore Int?
+  locale       String?   @default("fr")
+  lastActivityAt DateTime?
   isActive     Boolean   @default(true)
+  archivedAt   DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   // Relations
-  records      MaintenanceRecord[]
-  reminders    MaintenanceReminder[]
-  appointments Appointment[]
+  records            MaintenanceRecord[]
+  reminders          MaintenanceReminder[]
+  appointments       Appointment[]
+  orders             Order[]
+  partsInstallations PartsInstallation[]
+  inspections        VehicleInspection[]
+  incidents          VehicleIncident[]
+  documents          VehicleDocument[]
+  riskFlags          VehicleRiskFlag[]
 
-  @@index([userId])
+  @@index([userId, isActive])
+  @@index([vin])
+  @@index([plate])
+  @@index([make, model, year])
   @@map("vehicles")
 }
 
 /// Historique d'interventions sur un véhicule
 model MaintenanceRecord {
-  id         String   @id @default(uuid())
-  vehicleId  String
-  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  type       String
-  date       DateTime
-  garageName String?
-  mileageAt  Int?
-  notes      String?
-  createdAt  DateTime @default(now())
+  id             String   @id @default(uuid())
+  vehicleId      String
+  vehicle        Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type           String
+  status         ServiceStatus @default(COMPLETED)
+  date           DateTime
+  nextDueDate    DateTime?
+  nextDueMileage Int?
+  garageId       String?
+  garage         Garage?  @relation(fields: [garageId], references: [id])
+  garageName     String?
+  mileageAt      Int?
+  totalCostHtg   Decimal? @db.Decimal(10, 2)
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  @@index([vehicleId])
+  installedParts PartsInstallation[]
+  documents      VehicleDocument[]
+
+  @@index([vehicleId, date])
   @@map("maintenance_records")
 }
 
@@ -198,9 +366,13 @@ model MaintenanceReminder {
   vehicle    Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type       String
   dueDate    DateTime
+  dueMileage Int?
   status     ReminderStatus @default(PENDING)
+  priority   ReminderPriority @default(MEDIUM)
   notifiedAt DateTime?
+  confirmedAt DateTime?
   createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
 
   @@index([vehicleId])
   @@index([dueDate, status])
@@ -239,6 +411,7 @@ model Garage {
   // Relations
   appointments Appointment[]
   reviews      Review[]
+  records      MaintenanceRecord[]
 
   @@index([isVerified, isActive])
   @@map("garages")
@@ -334,7 +507,8 @@ model Part {
   updatedAt          DateTime    @updatedAt
 
   // Relations
-  orderItems OrderItem[]
+  orderItems         OrderItem[]
+  partsInstallations PartsInstallation[]
 
   @@index([supplierId])
   @@index([category])
@@ -347,6 +521,8 @@ model Order {
   id              String        @id @default(uuid())
   userId          String
   user            User          @relation(fields: [userId], references: [id])
+  vehicleId       String?
+  vehicle         Vehicle?      @relation(fields: [vehicleId], references: [id])
   totalHtg        Decimal       @db.Decimal(10, 2)
   status          OrderStatus   @default(CONFIRMED)
   paymentMethod   PaymentMethod
@@ -362,6 +538,7 @@ model Order {
   invoice Invoice?
 
   @@index([userId])
+  @@index([vehicleId])
   @@index([status])
   @@map("orders")
 }
@@ -437,4 +614,89 @@ model Notification {
 
   @@index([userId, isRead])
   @@map("notifications")
+}
+
+model PartsInstallation {
+  id                  String             @id @default(uuid())
+  vehicleId           String
+  vehicle             Vehicle            @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  maintenanceRecordId String?
+  maintenanceRecord   MaintenanceRecord? @relation(fields: [maintenanceRecordId], references: [id])
+  partId              String?
+  part                Part?              @relation(fields: [partId], references: [id])
+  nameSnapshot        String
+  oemReference        String?
+  quantity            Int                @default(1)
+  unitPriceHtg        Decimal?           @db.Decimal(10, 2)
+  installedAt         DateTime
+  mileageAt           Int?
+  notes               String?
+
+  @@index([vehicleId, installedAt])
+  @@map("parts_installations")
+}
+
+model VehicleInspection {
+  id             String           @id @default(uuid())
+  vehicleId      String
+  vehicle        Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  inspectionType InspectionType
+  inspectionDate DateTime
+  mileageAt      Int?
+  summary        String?
+  result         InspectionResult
+  notes          String?
+  createdAt      DateTime         @default(now())
+
+  @@index([vehicleId, inspectionDate])
+  @@map("vehicle_inspections")
+}
+
+model VehicleIncident {
+  id               String           @id @default(uuid())
+  vehicleId        String
+  vehicle          Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  incidentType     IncidentType
+  incidentDate     DateTime
+  description      String
+  severity         IncidentSeverity?
+  estimatedCostHtg Decimal?         @db.Decimal(10, 2)
+  resolvedAt       DateTime?
+  createdAt        DateTime         @default(now())
+
+  @@index([vehicleId, incidentDate])
+  @@map("vehicle_incidents")
+}
+
+model VehicleDocument {
+  id                  String             @id @default(uuid())
+  vehicleId           String
+  vehicle             Vehicle            @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  maintenanceRecordId String?
+  maintenanceRecord   MaintenanceRecord? @relation(fields: [maintenanceRecordId], references: [id])
+  type                VehicleDocumentType
+  title               String
+  fileUrl             String
+  mimeType            String?
+  issuedAt            DateTime?
+  expiresAt           DateTime?
+  createdAt           DateTime           @default(now())
+
+  @@index([vehicleId, type])
+  @@map("vehicle_documents")
+}
+
+model VehicleRiskFlag {
+  id         String           @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type       VehicleRiskFlagType
+  severity   IncidentSeverity @default(MEDIUM)
+  message    String
+  isResolved Boolean          @default(false)
+  resolvedAt DateTime?
+  createdAt  DateTime         @default(now())
+
+  @@index([vehicleId, isResolved])
+  @@map("vehicle_risk_flags")
 }
