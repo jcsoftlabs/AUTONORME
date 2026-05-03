@@ -12,8 +12,15 @@ export default function Footer() {
   const platformLinks = [
     { href: `/${locale}/garages`, label: t('find_garage') },
     { href: `/${locale}/pieces`, label: t('parts') },
+    { href: `/${locale}/maintenance`, label: t('maintenance') },
     { href: `/${locale}/autobot`, label: t('autobot') },
     { href: `/${locale}/compte/login`, label: t('customer_space') },
+  ];
+
+  const companyLinks = [
+    { href: `/${locale}/a-propos`, label: t('about') },
+    { href: `/${locale}/blog`, label: t('blog') },
+    { href: `/${locale}/rejoindre`, label: t('join') },
   ];
 
   const resources = [t('support_fr_ht_en'), t('verified_network'), t('smart_guidance')];
@@ -39,6 +46,7 @@ export default function Footer() {
           </div>
 
           <FooterColumn title={t('platform')} links={platformLinks} />
+          <FooterColumn title={t('company')} links={companyLinks} />
           <FooterFacts title={t('professionals')} facts={resources} />
         </div>
       </div>

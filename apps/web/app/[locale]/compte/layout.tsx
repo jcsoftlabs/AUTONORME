@@ -61,9 +61,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { label: t('nav_overview'), href: `/${locale}/compte`, icon: '📊' },
-    { label: t('nav_appointments'), href: `/${locale}/compte/rdv`, icon: '📅' },
+    { label: t('nav_appointments'), href: `/${locale}/compte/rendez-vous`, icon: '📅' },
     { label: t('nav_orders'), href: `/${locale}/compte/commandes`, icon: '📦' },
-    { label: t('nav_vehicle'), href: `/${locale}/compte/vehicule`, icon: '🚗' },
+    { label: t('nav_vehicle'), href: `/${locale}/compte/vehicules`, icon: '🚗' },
+    { label: t('nav_maintenance'), href: `/${locale}/compte/maintenance`, icon: '🛎️' },
+    { label: t('nav_notifications'), href: `/${locale}/compte/notifications`, icon: '🔔' },
+    { label: t('nav_profile'), href: `/${locale}/compte/profil`, icon: '👤' },
   ];
 
   return (
@@ -127,13 +130,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             @media (min-width: 1024px) {
               .mobile-header { display: none !important; }
             }
+            @media (max-width: 640px) {
+              .account-content { padding: 1.25rem !important; }
+            }
           `}</style>
           <Image src="/log.png" alt="AUTONORME" width={120} height={30} style={{ objectFit: 'contain' }} />
-          <button onClick={handleLogout} style={{ background: 'none', border: 'none', fontSize: '1.25rem' }}>🚪</button>
+          <button
+            onClick={handleLogout}
+            aria-label={t('logout')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '44px',
+              height: '44px',
+              borderRadius: '9999px',
+              border: '1px solid var(--color-neutral-200)',
+              background: '#FFFFFF',
+              color: 'var(--color-neutral-700)',
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
         </div>
 
         {/* Dynamic Content */}
-        <div style={{ padding: 'var(--space-2xl)', flex: 1, overflowY: 'auto' }}>
+        <div className="account-content" style={{ padding: 'var(--space-2xl)', flex: 1, overflowY: 'auto' }}>
           {children}
         </div>
       </main>

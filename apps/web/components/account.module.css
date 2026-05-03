@@ -1,0 +1,294 @@
+.page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin-bottom: 0.45rem;
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--color-neutral-950);
+}
+
+.subtitle {
+  max-width: 64ch;
+  color: var(--color-neutral-600);
+  font-size: 1rem;
+}
+
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.pill {
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  border: 1px solid var(--color-neutral-200);
+  color: var(--color-neutral-700);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  padding: 1.2rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 1px solid var(--color-neutral-200);
+  box-shadow: var(--shadow-card);
+}
+
+.statLabel {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--color-neutral-500);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.statValue {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-neutral-950);
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.statHint {
+  color: var(--color-neutral-500);
+  font-size: 0.92rem;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: 1.25rem;
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  padding: 1.35rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--color-neutral-200);
+  background: #ffffff;
+  box-shadow: var(--shadow-card);
+}
+
+.cardTitle {
+  margin-bottom: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-neutral-950);
+}
+
+.cardText {
+  color: var(--color-neutral-600);
+  font-size: 0.95rem;
+}
+
+.list {
+  display: grid;
+  gap: 0.95rem;
+  margin-top: 1rem;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.95rem;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.listItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.itemLabel {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-neutral-950);
+  font-weight: 700;
+}
+
+.itemMeta {
+  color: var(--color-neutral-500);
+  font-size: 0.92rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 102px;
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badgePrimary {
+  background: rgba(21, 101, 192, 0.12);
+  color: var(--color-primary-700);
+}
+
+.badgeWarning {
+  background: rgba(245, 158, 11, 0.16);
+  color: #9a6700;
+}
+
+.badgeSuccess {
+  background: rgba(22, 163, 74, 0.14);
+  color: #12703a;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.vehicleCard {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.vehicleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 1.2rem;
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+  font-size: 1.9rem;
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 1rem;
+  margin-top: 1rem;
+}
+
+.dataCell {
+  padding: 0.85rem 0.95rem;
+  border-radius: 1rem;
+  background: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.dataLabel {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--color-neutral-500);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dataValue {
+  color: var(--color-neutral-950);
+  font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+  .twoCol,
+  .statsGrid,
+  .grid2,
+  .dataGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .hero {
+    gap: 0.85rem;
+  }
+
+  .subtitle {
+    font-size: 0.97rem;
+  }
+
+  .pillRow {
+    width: 100%;
+  }
+
+  .pill {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .statCard,
+  .card {
+    padding: 1.1rem;
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .badge {
+    min-width: 0;
+    align-self: flex-start;
+  }
+
+  .ctaRow {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ctaRow :global(.btn) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .vehicleCard {
+    grid-template-columns: 1fr;
+  }
+}
