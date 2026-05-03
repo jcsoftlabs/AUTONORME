@@ -1,73 +1,65 @@
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function HeroSection() {
+  const t = useTranslations('HomePage');
+  const locale = useLocale();
+
   return (
     <section
       id="hero"
       style={{
         position: 'relative',
-        minHeight: '100vh',
+        minHeight: '100svh',
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
         background: 'linear-gradient(135deg, var(--color-primary-900) 0%, var(--color-primary-700) 50%, var(--color-primary-500) 100%)',
       }}
     >
-      {/* Fond animé — blobs décoratifs */}
+      {/* Fond structuré Pro */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-        <div
-          className="animate-blob"
-          style={{
-            position: 'absolute',
-            top: '-10%',
-            right: '-5%',
-            width: '600px',
-            height: '600px',
-            background: 'radial-gradient(circle, rgba(74, 144, 217, 0.25) 0%, transparent 70%)',
-            borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
-          }}
-        />
-        <div
-          className="animate-blob delay-300"
-          style={{
-            position: 'absolute',
-            bottom: '-20%',
-            left: '-10%',
-            width: '500px',
-            height: '500px',
-            background: 'radial-gradient(circle, rgba(0, 71, 176, 0.3) 0%, transparent 70%)',
-            borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%',
-          }}
-        />
-        {/* Grille en pointillés */}
+        {/* Lignes diagonales subtiles / texture mécanique */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)`,
-            backgroundSize: '40px 40px',
+            backgroundImage: `repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 12px)`,
+            backgroundSize: '100% 100%',
           }}
         />
-        {/* Gradient en overlay pour lisibilité */}
+        {/* Gradient en overlay pour profondeur et lisibilité */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to bottom, rgba(0,31,92,0.3) 0%, transparent 50%, rgba(0,31,92,0.5) 100%)',
+            background: 'linear-gradient(to right, rgba(0,31,92,0.8) 0%, rgba(0,31,92,0.4) 50%, transparent 100%)',
           }}
         />
       </div>
 
-      <div className="container" style={{ position: 'relative', zIndex: 1, paddingTop: '6rem', paddingBottom: '4rem' }}>
+      <div className="container" style={{ position: 'relative', zIndex: 1, paddingTop: '11rem', paddingBottom: '6rem' }}>
         <div style={{ maxWidth: '760px' }}>
 
           {/* Badge */}
           <div
-            className="animate-fade-up badge badge-glow"
-            style={{ marginBottom: 'var(--space-xl)' }}
+            className="animate-fade-up"
+            style={{ 
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '0.375rem 1rem',
+              borderRadius: 'var(--radius-sm)',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              color: '#FFFFFF',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              marginBottom: 'var(--space-xl)'
+            }}
           >
-            <span>🇭🇹</span>
-            <span>Première plateforme automobile nationale d&apos;Haïti</span>
+            {t('badge')}
           </div>
 
           {/* Titre principal */}
@@ -76,17 +68,17 @@ export default function HeroSection() {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 900,
-              fontSize: 'clamp(2.75rem, 6vw, 5rem)',
+              fontSize: 'clamp(1.875rem, 6vw, 5rem)',
               lineHeight: 1.05,
               color: '#FFFFFF',
               marginBottom: 'var(--space-xl)',
-              letterSpacing: '-0.03em',
+              letterSpacing: '-0.02em',
             }}
           >
-            L&apos;auto.{' '}
-            <span className="text-gradient-gold">Normée.</span>
+            {t('title_start')}{' '}
+            <span className="text-gradient-gold">{t('title_highlight')}</span>
             <br />
-            Connectée.
+            {t('title_end')}
           </h1>
 
           {/* Sous-titre */}
@@ -100,8 +92,7 @@ export default function HeroSection() {
               marginBottom: 'var(--space-2xl)',
             }}
           >
-            Trouvez un garage certifié, commandez vos pièces auto, gérez votre maintenance
-            et consultez <strong style={{ color: '#FFFFFF' }}>AutoBot</strong> — votre assistant IA automobile — tout en un.
+            {t('subtitle')} <strong style={{ color: '#FFFFFF' }}>{t('subtitle_strong')}</strong> {t('subtitle_end')}
           </p>
 
           {/* CTAs */}
@@ -109,45 +100,62 @@ export default function HeroSection() {
             className="animate-fade-up delay-300"
             style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', alignItems: 'center' }}
           >
-            <Link href="/fr/garages" className="btn btn-lg btn-white">
-              <span>🔍</span>
-              Trouver un garage
-            </Link>
-            <Link href="/fr/autobot" className="btn btn-lg btn-ghost-white">
-              <span>🤖</span>
-              Parler à AutoBot
-            </Link>
+            <style>{`
+              @media (max-width: 640px) {
+                .hero-ctas { flex-direction: column !important; }
+                .hero-ctas a { width: 100%; justify-content: center; min-height: 52px; }
+              }
+            `}</style>
+            <div className="hero-ctas" style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', alignItems: 'center', width: '100%' }}>
+              <Link href={`/${locale}/garages`} className="btn btn-lg" style={{ background: '#FFFFFF', color: 'var(--color-primary-900)', fontWeight: 700, borderRadius: 'var(--radius-sm)' }}>
+                {t('find_garage')}
+              </Link>
+              <Link href={`/${locale}/pieces`} className="btn btn-lg" style={{ background: 'transparent', color: '#FFFFFF', border: '2px solid rgba(255,255,255,0.3)', fontWeight: 700, borderRadius: 'var(--radius-sm)' }}>
+                Catalogue de pièces
+              </Link>
+            </div>
           </div>
 
-          {/* Indicateurs de confiance */}
+          {/* Stat Bar */}
           <div
             className="animate-fade-up delay-400"
             style={{
               display: 'flex',
-              gap: 'var(--space-2xl)',
+              gap: 0,
               marginTop: 'var(--space-3xl)',
+              background: 'var(--color-primary-800)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              overflow: 'hidden',
               flexWrap: 'wrap',
             }}
           >
             {[
-              { value: '200+', label: 'Garages partenaires' },
-              { value: '5 000+', label: 'Pièces disponibles' },
-              { value: '3', label: 'Langues (FR, HT, EN)' },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 800,
-                    fontSize: '1.875rem',
-                    color: '#FFFFFF',
-                    lineHeight: 1,
-                    marginBottom: '0.25rem',
-                  }}
-                >
+              { value: '200+', label: t('stat_garages') },
+              { value: '5 000+', label: t('stat_parts') },
+              { value: '3', label: t('stat_langs') },
+            ].map((stat, i) => (
+              <div
+                key={stat.label}
+                style={{
+                  flex: 1,
+                  minWidth: '100px',
+                  padding: 'var(--space-lg) var(--space-xl)',
+                  textAlign: 'center',
+                  borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                }}
+              >
+                <div style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 800,
+                  fontSize: 'clamp(1.25rem, 3vw, 1.875rem)',
+                  color: 'var(--color-accent-gold)',
+                  lineHeight: 1,
+                  marginBottom: '0.25rem',
+                }}>
                   {stat.value}
                 </div>
-                <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--color-primary-100)', fontWeight: 500 }}>
                   {stat.label}
                 </div>
               </div>
@@ -155,142 +163,6 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-
-      {/* Carte flottante décorative */}
-      <div
-        className="animate-float"
-        style={{
-          position: 'absolute',
-          right: '5%',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'none',
-          zIndex: 1,
-        }}
-        id="hero-card-float"
-      >
-        <div
-          className="glass"
-          style={{
-            borderRadius: 'var(--radius-xl)',
-            padding: 'var(--space-xl)',
-            width: '320px',
-            boxShadow: 'var(--shadow-2xl)',
-          }}
-        >
-          {/* Mini chat AutoBot preview */}
-          <div style={{ marginBottom: 'var(--space-md)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-md)' }}>
-              <div
-                style={{
-                  width: '2.5rem',
-                  height: '2.5rem',
-                  background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-accent-gold))',
-                  borderRadius: 'var(--radius-full)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.125rem',
-                }}
-              >
-                🤖
-              </div>
-              <div>
-                <div style={{ color: '#FFFFFF', fontWeight: 700, fontSize: '0.9375rem', fontFamily: 'var(--font-heading)' }}>AutoBot</div>
-                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem' }}>● En ligne</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
-              <div
-                style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '0 var(--radius-md) var(--radius-md) var(--radius-md)',
-                  padding: '0.75rem',
-                  fontSize: '0.875rem',
-                  color: '#FFFFFF',
-                  maxWidth: '80%',
-                }}
-              >
-                Bonjou! Kijan mwen ka ede ou jodi a? 🇭🇹
-              </div>
-              <div
-                style={{
-                  background: 'var(--color-primary-500)',
-                  borderRadius: 'var(--radius-md) 0 var(--radius-md) var(--radius-md)',
-                  padding: '0.75rem',
-                  fontSize: '0.875rem',
-                  color: '#FFFFFF',
-                  alignSelf: 'flex-end',
-                  maxWidth: '80%',
-                }}
-              >
-                Mwen bezwen chanje frèn Toyota RAV4 2019
-              </div>
-              <div
-                style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '0 var(--radius-md) var(--radius-md) var(--radius-md)',
-                  padding: '0.75rem',
-                  fontSize: '0.875rem',
-                  color: '#FFFFFF',
-                  maxWidth: '90%',
-                }}
-              >
-                ✅ En stock: 8 unités — 4 500 HTG. 3 garages certifiés près de vous!
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Flèche scroll */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 'var(--space-xl)',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.5rem',
-          color: 'rgba(255,255,255,0.5)',
-          cursor: 'pointer',
-          zIndex: 1,
-        }}
-      >
-        <span style={{ fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          Découvrir
-        </span>
-        <div
-          style={{
-            width: '1.5rem',
-            height: '2.5rem',
-            border: '2px solid rgba(255,255,255,0.3)',
-            borderRadius: 'var(--radius-full)',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            padding: '0.25rem',
-          }}
-        >
-          <div
-            style={{
-              width: '4px',
-              height: '8px',
-              background: 'rgba(255,255,255,0.7)',
-              borderRadius: 'var(--radius-full)',
-              animation: 'float 1.5s ease-in-out infinite',
-            }}
-          />
-        </div>
-      </div>
-
-      <style>{`
-        @media (min-width: 1024px) {
-          #hero-card-float { display: block !important; }
-        }
-      `}</style>
     </section>
   );
 }

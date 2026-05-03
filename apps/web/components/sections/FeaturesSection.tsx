@@ -1,68 +1,90 @@
+'use client';
+
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 
 const features = [
   {
-    icon: '🏪',
-    color: '#003B8E',
-    colorLight: '#D6E4F7',
+    icon: '🏻',
+    color: 'var(--color-primary-700)',
+    colorLight: 'var(--color-primary-100)',
     title: 'Réseau de Garages',
     description: 'Accédez à 200+ garages certifiés à travers Haïti. Géolocalisation, spécialités, avis clients et prise de RDV en ligne.',
-    link: '/fr/garages',
+    href: '/garages',
     cta: 'Explorer les garages',
     highlights: ['Géolocalisation', 'Avis vérifiés', 'RDV en ligne'],
   },
   {
     icon: '⚙️',
-    color: '#1565C0',
-    colorLight: '#EEF5FC',
+    color: 'var(--color-primary-500)',
+    colorLight: 'var(--color-primary-50)',
     title: 'AUTOparts Catalogue',
-    description: 'Plus de 5 000 pièces disponibles. Vérification automatique de compatibilité avec votre véhicule, stock en temps réel.',
-    link: '/fr/pieces',
+    description: 'Plus de 5 000 pièces disponibles. Vérification automatique de compatibilité avec votre véhicule, stock en temps réel.',
+    href: '/pieces',
     cta: 'Parcourir le catalogue',
-    highlights: ['5 000+ pièces', 'Compatibilité auto', 'Stock en temps réel'],
+    highlights: ['5 000+ pièces', 'Compatibilité auto', 'Stock en temps réel'],
   },
   {
     icon: '🤖',
-    color: '#7C3AED',
+    color: 'var(--color-accent-purple)',
     colorLight: '#EDE9FE',
     title: 'AutoBot IA',
     description: 'Votre assistant automobile intelligent en Français, Créole haïtien et Anglais. Conseils, diagnostic, recommandations personnalisées.',
-    link: '/fr/autobot',
+    href: '/autobot',
     cta: 'Essayer AutoBot',
     highlights: ['Trilingue FR/HT/EN', 'Disponible 24/7', 'IA contextuelle'],
   },
 ];
 
 export default function FeaturesSection() {
+  const locale = useLocale();
+
   return (
     <section id="features" className="section" style={{ background: 'var(--color-neutral-50)' }}>
       <div className="container">
         <div className="section-header">
-          <span className="section-eyebrow">Ce que nous offrons</span>
+          <span style={{
+            display: 'inline-block',
+            padding: '0.25rem 0.875rem',
+            borderRadius: 'var(--radius-full)',
+            background: 'var(--color-primary-50)',
+            color: 'var(--color-primary-500)',
+            fontSize: '0.6875rem',
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase' as const,
+            marginBottom: 'var(--space-md)',
+          }}>Ce que nous offrons</span>
           <h2 className="section-title">
             Tout ce dont vous avez besoin,<br />
             <span style={{ color: 'var(--color-primary-500)' }}>en un seul endroit</span>
           </h2>
           <p className="section-subtitle">
-            AUTONORME réunit garages, pièces automobiles et intelligence artificielle pour transformer 
+            AUTONORME réunit garages, pièces automobiles et intelligence artificielle pour transformer
             votre expérience automobile en Haïti.
           </p>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: 'var(--space-xl)',
-          }}
-        >
+        <style>{`
+          .features-grid { grid-template-columns: 1fr !important; }
+          @media (min-width: 640px) { .features-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+          @media (min-width: 1024px) { .features-grid { grid-template-columns: repeat(3, 1fr) !important; } }
+          @media (hover: hover) {
+            .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg) !important; }
+          }
+          .feature-card:active { transform: scale(0.98); }
+        `}</style>
+
+        <div className="features-grid" style={{ display: 'grid', gap: 'var(--space-xl)' }}>
           {features.map((feature, i) => (
             <div
               key={feature.title}
-              className="card"
+              className="card feature-card"
               style={{
                 padding: 'var(--space-2xl)',
                 animationDelay: `${i * 0.15}s`,
+                transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
               {/* Icône */}
@@ -122,7 +144,7 @@ export default function FeaturesSection() {
 
               {/* CTA */}
               <Link
-                href={feature.link}
+                href={`/${locale}${feature.href}`}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -130,8 +152,9 @@ export default function FeaturesSection() {
                   color: feature.color,
                   fontWeight: 600,
                   fontSize: '0.9375rem',
-                  minHeight: '44px',
+                  minHeight: '48px',
                   transition: 'gap var(--transition-fast)',
+                  textDecoration: 'none',
                 }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.gap = '0.75rem'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.gap = '0.375rem'; }}

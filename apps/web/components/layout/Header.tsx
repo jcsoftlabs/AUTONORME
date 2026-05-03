@@ -3,17 +3,26 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-const navLinks = [
-  { href: '/garages', label: 'Garages' },
-  { href: '/pieces', label: 'AUTOparts' },
-  { href: '/maintenance', label: 'Maintenance' },
-  { href: '/autobot', label: 'AutoBot IA' },
-];
+import LanguageSwitcher from '../shared/LanguageSwitcher';
+import { useTranslations, useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+  const t = useTranslations('Header');
+  const locale = useLocale();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isHomePage = pathname === '/fr' || pathname === '/ht' || pathname === '/en' || pathname === '/';
+  const solidHeader = !isHomePage || isScrolled;
+
+  const navLinks = [
+    { href: '/garages', label: t('garages') },
+    { href: '/pieces', label: t('parts') },
+    { href: '/maintenance', label: t('maintenance') },
+    { href: '/autobot', label: t('autobot') },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -30,82 +39,170 @@ export default function Header() {
         right: 0,
         zIndex: 'var(--z-sticky)' as unknown as number,
         transition: 'all var(--transition-base)',
-        background: isScrolled
-          ? 'rgba(255, 255, 255, 0.95)'
+        background: solidHeader
+          ? 'rgba(255, 255, 255, 0.98)'
           : 'transparent',
-        backdropFilter: isScrolled ? 'blur(20px)' : 'none',
-        borderBottom: isScrolled ? '1px solid var(--color-neutral-200)' : '1px solid transparent',
-        boxShadow: isScrolled ? 'var(--shadow-sm)' : 'none',
+        backdropFilter: solidHeader ? 'blur(20px)' : 'none',
+        borderBottom: solidHeader ? '1px solid var(--color-neutral-200)' : '1px solid transparent',
+        boxShadow: solidHeader ? 'var(--shadow-sm)' : 'none',
       }}
     >
+      {/* Top Bar */}
       <div className="container">
-        <nav
+        <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: '4.5rem',
+            height: '5rem',
           }}
         >
-          {/* Logo */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-            <Image
-              src="/logo-auto.PNG"
-              alt="AUTONORME"
-              width={36}
-              height={36}
+          {/* Left: Search Bar (Desktop) / Hamburger (Mobile) */}
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+            {/* Hamburger mobile */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="nav-mobile-btn"
+              aria-label="Menu"
               style={{
-                borderRadius: '0.5rem',
-                boxShadow: '0 2px 8px rgba(0, 59, 142, 0.3)',
-              }}
-            />
-            <span
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 800,
-                fontSize: '1.25rem',
-                color: isScrolled ? 'var(--color-primary-700)' : '#FFFFFF',
-                letterSpacing: '-0.02em',
+                display: 'none',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '0.5rem',
+                marginRight: '0.5rem',
+                minHeight: '44px',
+                minWidth: '44px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                gap: '5px',
               }}
             >
-              AUTO<span style={{ color: isScrolled ? 'var(--color-primary-500)' : 'rgba(255,255,255,0.7)' }}>NORME</span>
-            </span>
-          </Link>
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  style={{
+                    display: 'block',
+                    width: '22px',
+                    height: '2px',
+                    background: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                    borderRadius: '2px',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                />
+              ))}
+            </button>
 
-          {/* Nav desktop */}
+            {/* Search Desktop */}
+            <div className="nav-desktop" style={{ width: '100%', maxWidth: '280px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: solidHeader ? 'var(--color-neutral-100)' : 'rgba(255,255,255,0.1)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.5rem 1rem',
+                  border: solidHeader ? '1px solid var(--color-neutral-200)' : '1px solid rgba(255,255,255,0.2)',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solidHeader ? 'var(--color-neutral-500)' : 'rgba(255,255,255,0.7)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Que cherchez-vous ?"
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                    fontSize: '0.875rem',
+                    width: '100%',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Center: Logo */}
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            <Link href={`/${locale}`} style={{ display: 'flex', alignItems: 'center' }}>
+              <Image
+                src="/log.png"
+                alt="AUTONORME"
+                width={200}
+                height={50}
+                style={{ objectFit: 'contain' }}
+                priority
+              />
+            </Link>
+          </div>
+
+          {/* Right: Actions */}
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 'var(--space-sm)' }}>
+            <div className="nav-desktop">
+              <LanguageSwitcher isSolid={solidHeader} />
+            </div>
+            <Link href={`/${locale}/compte/login`} style={{ 
+              color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+              fontWeight: 600,
+              fontSize: '0.9375rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              textDecoration: 'none',
+              padding: '0.5rem'
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span className="nav-desktop">{t('login')}</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar (Secondary Nav) - Desktop Only */}
+      <div 
+        className="nav-desktop"
+        style={{
+          borderTop: solidHeader ? '1px solid var(--color-neutral-200)' : '1px solid rgba(255,255,255,0.1)',
+          background: solidHeader ? 'transparent' : 'rgba(0,0,0,0.2)',
+        }}
+      >
+        <div className="container">
           <ul
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.25rem',
+              justifyContent: 'center',
+              gap: 'var(--space-xl)',
               listStyle: 'none',
               margin: 0,
-              padding: 0,
+              padding: '0.75rem 0',
             }}
-            className="nav-desktop"
           >
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={`/fr${link.href}`}
+                  href={`/${locale}${link.href}`}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '0.5rem 0.875rem',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: '0.9375rem',
-                    fontWeight: 500,
-                    color: isScrolled ? 'var(--color-neutral-700)' : 'rgba(255,255,255,0.9)',
-                    transition: 'all var(--transition-fast)',
-                    minHeight: '44px',
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: solidHeader ? 'var(--color-neutral-600)' : 'rgba(255,255,255,0.8)',
+                    transition: 'color var(--transition-fast)',
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background = isScrolled ? 'var(--color-neutral-100)' : 'rgba(255,255,255,0.1)';
-                    (e.currentTarget as HTMLAnchorElement).style.color = isScrolled ? 'var(--color-primary-700)' : '#FFFFFF';
+                    (e.currentTarget as HTMLAnchorElement).style.color = solidHeader ? 'var(--color-primary-600)' : '#FFFFFF';
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                    (e.currentTarget as HTMLAnchorElement).style.color = isScrolled ? 'var(--color-neutral-700)' : 'rgba(255,255,255,0.9)';
+                    (e.currentTarget as HTMLAnchorElement).style.color = solidHeader ? 'var(--color-neutral-600)' : 'rgba(255,255,255,0.8)';
                   }}
                 >
                   {link.label}
@@ -113,56 +210,7 @@ export default function Header() {
               </li>
             ))}
           </ul>
-
-          {/* CTA + langue */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }} className="nav-desktop">
-            <Link href="/fr/compte" className="btn btn-sm btn-outline"
-              style={{
-                borderColor: isScrolled ? 'var(--color-primary-500)' : 'rgba(255,255,255,0.5)',
-                color: isScrolled ? 'var(--color-primary-500)' : '#FFFFFF',
-              }}
-            >
-              Connexion
-            </Link>
-            <Link href="/fr/garages" className="btn btn-sm btn-primary">
-              Trouver un garage
-            </Link>
-          </div>
-
-          {/* Hamburger mobile */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="nav-mobile-btn"
-            aria-label="Menu"
-            style={{
-              display: 'none',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.5rem',
-              minHeight: '44px',
-              minWidth: '44px',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              gap: '5px',
-            }}
-          >
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                style={{
-                  display: 'block',
-                  width: '22px',
-                  height: '2px',
-                  background: isScrolled ? 'var(--color-neutral-800)' : '#FFFFFF',
-                  borderRadius: '2px',
-                  transition: 'all var(--transition-fast)',
-                }}
-              />
-            ))}
-          </button>
-        </nav>
+        </div>
       </div>
 
       {/* Menu mobile */}
@@ -175,11 +223,41 @@ export default function Header() {
             boxShadow: 'var(--shadow-lg)',
           }}
         >
+          {/* Mobile Search */}
+          <div style={{ marginBottom: 'var(--space-md)' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: 'var(--color-neutral-100)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0.75rem 1rem',
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                placeholder="Que cherchez-vous ?"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: 'var(--color-neutral-800)',
+                  fontSize: '1rem',
+                  width: '100%',
+                }}
+              />
+            </div>
+          </div>
+
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={`/fr${link.href}`}
+                  href={`/${locale}${link.href}`}
                   onClick={() => setIsMenuOpen(false)}
                   style={{
                     display: 'block',
@@ -187,23 +265,21 @@ export default function Header() {
                     borderRadius: 'var(--radius-md)',
                     color: 'var(--color-neutral-700)',
                     fontWeight: 500,
-                    minHeight: '44px',
                   }}
                 >
                   {link.label}
                 </Link>
               </li>
             ))}
-            <li style={{ marginTop: 'var(--space-md)', display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
-              <Link href="/fr/compte" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center' }}>Connexion</Link>
-              <Link href="/fr/garages" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Trouver un garage</Link>
+            <li style={{ marginTop: 'var(--space-md)', borderTop: '1px solid var(--color-neutral-200)', paddingTop: 'var(--space-md)' }}>
+              <LanguageSwitcher isSolid={true} />
             </li>
           </ul>
         </div>
       )}
 
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
           .nav-desktop { display: none !important; }
           .nav-mobile-btn { display: flex !important; }
         }

@@ -1,26 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 
-const footerLinks = {
-  plateforme: [
-    { href: '/fr/garages', label: 'Trouver un garage' },
-    { href: '/fr/pieces', label: 'AUTOparts' },
-    { href: '/fr/maintenance', label: 'Maintenance' },
-    { href: '/fr/autobot', label: 'AutoBot IA' },
-  ],
-  entreprise: [
-    { href: '/fr/a-propos', label: 'À propos' },
-    { href: '/fr/blog', label: 'Blog' },
-    { href: '/fr/rejoindre', label: 'Rejoindre' },
-    { href: '/fr/contact', label: 'Contact' },
-  ],
-  professionnels: [
-    { href: '#', label: 'Dashboard Garage' },
-    { href: '#', label: 'Dashboard Fournisseur' },
-    { href: '#', label: 'API AUTONORME' },
-    { href: '#', label: 'Documentation' },
-  ],
-};
+import { useTranslations } from 'next-intl';
 
 const socialLinks = [
   { href: '#', label: 'WhatsApp', icon: '💬' },
@@ -30,6 +13,29 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const t = useTranslations('Footer');
+
+  const footerLinks = {
+    plateforme: [
+      { href: '/garages', label: t('find_garage') },
+      { href: '/pieces', label: t('parts') },
+      { href: '/maintenance', label: t('maintenance') },
+      { href: '/autobot', label: t('autobot') },
+    ],
+    entreprise: [
+      { href: '/a-propos', label: t('about') },
+      { href: '/blog', label: t('blog') },
+      { href: '/rejoindre', label: t('join') },
+      { href: '/contact', label: t('contact') },
+    ],
+    professionnels: [
+      { href: '#', label: t('dash_garage') },
+      { href: '#', label: t('dash_supplier') },
+      { href: '#', label: t('api') },
+      { href: '#', label: t('docs') },
+    ],
+  };
+
   return (
     <footer
       style={{
@@ -49,27 +55,17 @@ export default function Footer() {
         >
           {/* Brand */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: 'var(--space-lg)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--space-lg)' }}>
               <Image
-                src="/logo-auto.PNG"
+                src="/log.png"
                 alt="AUTONORME"
-                width={36}
-                height={36}
-                style={{ borderRadius: '0.5rem' }}
+                width={160}
+                height={40}
+                style={{ objectFit: 'contain' }}
               />
-              <span
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 800,
-                  fontSize: '1.25rem',
-                  color: '#FFFFFF',
-                }}
-              >
-                AUTONORME
-              </span>
             </div>
             <p style={{ fontSize: '0.9375rem', lineHeight: 1.7, marginBottom: 'var(--space-lg)', maxWidth: '260px' }}>
-              La première plateforme numérique du secteur automobile haïtien.
+              {t('desc')}
             </p>
             {/* Réseaux sociaux */}
             <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
@@ -108,9 +104,9 @@ export default function Footer() {
           </div>
 
           {/* Liens Plateforme */}
-          <FooterColumn title="Plateforme" links={footerLinks.plateforme} />
-          <FooterColumn title="Entreprise" links={footerLinks.entreprise} />
-          <FooterColumn title="Professionnels" links={footerLinks.professionnels} />
+          <FooterColumn title={t('platform')} links={footerLinks.plateforme} />
+          <FooterColumn title={t('company')} links={footerLinks.entreprise} />
+          <FooterColumn title={t('professionals')} links={footerLinks.professionnels} />
         </div>
       </div>
 
@@ -129,12 +125,12 @@ export default function Footer() {
           }}
         >
           <p style={{ fontSize: '0.875rem' }}>
-            © {new Date().getFullYear()} AUTONORME S.A. — Tous droits réservés.
+            {t('rights', { year: new Date().getFullYear() })}
           </p>
           <div style={{ display: 'flex', gap: 'var(--space-lg)', flexWrap: 'wrap' }}>
-            {['Confidentialité', 'Conditions', 'Cookies'].map((item) => (
+            {[{key: 'privacy', label: t('privacy')}, {key: 'terms', label: t('terms')}, {key: 'cookies', label: t('cookies')}].map((item) => (
               <Link
-                key={item}
+                key={item.key}
                 href="#"
                 style={{
                   fontSize: '0.875rem',
@@ -145,7 +141,7 @@ export default function Footer() {
                 onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#FFFFFF'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-neutral-500)'; }}
               >
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import '../globals.css';
+import QueryProvider from '../../lib/query-provider';
 
 // Polices AUTONORME (BLOC 1 — Identité)
 const poppins = Poppins({
@@ -69,7 +70,9 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
     <html lang={locale} className={`${poppins.variable} ${inter.variable}`}>
       <body className="font-inter antialiased bg-white text-neutral-900">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <QueryProvider>
+            {children}
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>
