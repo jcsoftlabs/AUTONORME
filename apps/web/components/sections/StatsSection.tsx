@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
-const stats = [
-  { value: 200, suffix: '+', label: 'Garages partenaires', icon: '🏪', description: 'À travers tout Haïti' },
-  { value: 5000, suffix: '+', label: 'Pièces disponibles', icon: '⚙️', description: 'En stock immédiat' },
-  { value: 15000, suffix: '+', label: 'Clients actifs', icon: '👥', description: 'Font confiance à AUTONORME' },
-  { value: 99, suffix: '%', label: 'Satisfaction client', icon: '⭐', description: 'Note moyenne des garages' },
-];
+type Stat = {
+  value: number;
+  suffix: string;
+  label: string;
+  icon: string;
+  description: string;
+};
 
 function useCountUp(end: number, duration = 2000, start = false) {
   const [count, setCount] = useState(0);
@@ -28,7 +30,7 @@ function useCountUp(end: number, duration = 2000, start = false) {
   return count;
 }
 
-function StatCard({ stat, visible }: { stat: typeof stats[0]; visible: boolean }) {
+function StatCard({ stat, visible, locale }: { stat: Stat; visible: boolean; locale: string }) {
   const count = useCountUp(stat.value, 2000, visible);
 
   return (
@@ -64,7 +66,7 @@ function StatCard({ stat, visible }: { stat: typeof stats[0]; visible: boolean }
           marginBottom: '0.375rem',
         }}
       >
-        {count.toLocaleString('fr-HT')}{stat.suffix}
+        {count.toLocaleString(locale)}{stat.suffix}
       </div>
       <div style={{ fontWeight: 700, fontSize: '1rem', color: 'rgba(255,255,255,0.9)', marginBottom: '0.25rem' }}>
         {stat.label}
@@ -77,8 +79,16 @@ function StatCard({ stat, visible }: { stat: typeof stats[0]; visible: boolean }
 }
 
 export default function StatsSection() {
+  const t = useTranslations('Stats');
+  const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const stats: Stat[] = [
+    { value: 200, suffix: '+', label: t('garages_label'), icon: '🏪', description: t('garages_description') },
+    { value: 5000, suffix: '+', label: t('parts_label'), icon: '⚙️', description: t('parts_description') },
+    { value: 15000, suffix: '+', label: t('clients_label'), icon: '👥', description: t('clients_description') },
+    { value: 99, suffix: '%', label: t('satisfaction_label'), icon: '⭐', description: t('satisfaction_description') },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -141,7 +151,7 @@ export default function StatsSection() {
             marginBottom: 'var(--space-md)',
             border: '1px solid rgba(255,255,255,0.2)',
           }}>
-            La plateforme en chiffres
+            {t('badge')}
           </span>
           <h2
             style={{
@@ -152,10 +162,10 @@ export default function StatsSection() {
               marginBottom: 'var(--space-md)',
             }}
           >
-            AUTONORME en pleine expansion
+            {t('title')}
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.125rem', maxWidth: '500px', margin: '0 auto' }}>
-            Une croissance portée par la confiance des automobilistes et des professionnels haïtiens.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -167,7 +177,7 @@ export default function StatsSection() {
           }}
         >
           {stats.map((stat) => (
-            <StatCard key={stat.label} stat={stat} visible={visible} />
+            <StatCard key={stat.label} stat={stat} visible={visible} locale={locale} />
           ))}
         </div>
       </div>

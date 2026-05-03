@@ -1,43 +1,43 @@
 'use client';
 
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
-
-const features = [
-  {
-    icon: '🏻',
-    color: 'var(--color-primary-700)',
-    colorLight: 'var(--color-primary-100)',
-    title: 'Réseau de Garages',
-    description: 'Accédez à 200+ garages certifiés à travers Haïti. Géolocalisation, spécialités, avis clients et prise de RDV en ligne.',
-    href: '/garages',
-    cta: 'Explorer les garages',
-    highlights: ['Géolocalisation', 'Avis vérifiés', 'RDV en ligne'],
-  },
-  {
-    icon: '⚙️',
-    color: 'var(--color-primary-500)',
-    colorLight: 'var(--color-primary-50)',
-    title: 'AUTOparts Catalogue',
-    description: 'Plus de 5 000 pièces disponibles. Vérification automatique de compatibilité avec votre véhicule, stock en temps réel.',
-    href: '/pieces',
-    cta: 'Parcourir le catalogue',
-    highlights: ['5 000+ pièces', 'Compatibilité auto', 'Stock en temps réel'],
-  },
-  {
-    icon: '🤖',
-    color: 'var(--color-accent-purple)',
-    colorLight: '#EDE9FE',
-    title: 'AutoBot IA',
-    description: 'Votre assistant automobile intelligent en Français, Créole haïtien et Anglais. Conseils, diagnostic, recommandations personnalisées.',
-    href: '/autobot',
-    cta: 'Essayer AutoBot',
-    highlights: ['Trilingue FR/HT/EN', 'Disponible 24/7', 'IA contextuelle'],
-  },
-];
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function FeaturesSection() {
   const locale = useLocale();
+  const t = useTranslations('Features');
+  const features = [
+    {
+      icon: '🛠️',
+      color: 'var(--color-primary-700)',
+      colorLight: 'var(--color-primary-100)',
+      title: t('garage_title'),
+      description: t('garage_description'),
+      href: '/garages',
+      cta: t('garage_cta'),
+      highlights: [t('garage_highlight_1'), t('garage_highlight_2'), t('garage_highlight_3')],
+    },
+    {
+      icon: '⚙️',
+      color: 'var(--color-primary-500)',
+      colorLight: 'var(--color-primary-50)',
+      title: t('parts_title'),
+      description: t('parts_description'),
+      href: '/pieces',
+      cta: t('parts_cta'),
+      highlights: [t('parts_highlight_1'), t('parts_highlight_2'), t('parts_highlight_3')],
+    },
+    {
+      icon: '🤖',
+      color: 'var(--color-accent-purple)',
+      colorLight: '#EDE9FE',
+      title: t('autobot_title'),
+      description: t('autobot_description'),
+      href: '/autobot',
+      cta: t('autobot_cta'),
+      highlights: [t('autobot_highlight_1'), t('autobot_highlight_2'), t('autobot_highlight_3')],
+    },
+  ];
 
   return (
     <section id="features" className="section" style={{ background: 'var(--color-neutral-50)' }}>
@@ -54,15 +54,12 @@ export default function FeaturesSection() {
             letterSpacing: '0.1em',
             textTransform: 'uppercase' as const,
             marginBottom: 'var(--space-md)',
-          }}>Ce que nous offrons</span>
+          }}>{t('badge')}</span>
           <h2 className="section-title">
-            Tout ce dont vous avez besoin,<br />
-            <span style={{ color: 'var(--color-primary-500)' }}>en un seul endroit</span>
+            {t('title_line_1')}<br />
+            <span style={{ color: 'var(--color-primary-500)' }}>{t('title_line_2')}</span>
           </h2>
-          <p className="section-subtitle">
-            AUTONORME réunit garages, pièces automobiles et intelligence artificielle pour transformer
-            votre expérience automobile en Haïti.
-          </p>
+          <p className="section-subtitle">{t('subtitle')}</p>
         </div>
 
         <style>{`

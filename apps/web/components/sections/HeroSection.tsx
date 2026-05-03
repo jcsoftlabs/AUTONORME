@@ -111,7 +111,7 @@ export default function HeroSection() {
                 {t('find_garage')}
               </Link>
               <Link href={`/${locale}/pieces`} className="btn btn-lg" style={{ background: 'transparent', color: '#FFFFFF', border: '2px solid rgba(255,255,255,0.3)', fontWeight: 700, borderRadius: 'var(--radius-sm)' }}>
-                Catalogue de pièces
+                {t('catalog_parts')}
               </Link>
             </div>
           </div>

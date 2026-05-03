@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, logout } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations('Account');
   const [isMounted, setIsMounted] = useState(false);
 
   const isLoginPage = pathname.includes('/login');
@@ -44,10 +45,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-neutral-50)', fontFamily: 'var(--font-body)' }}>
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '0.5rem' }}>Accès restreint</h2>
-        <p style={{ color: 'var(--color-neutral-500)', marginBottom: '1.5rem' }}>Redirection vers la page de connexion...</p>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '0.5rem' }}>{t('restricted_title')}</h2>
+        <p style={{ color: 'var(--color-neutral-500)', marginBottom: '1.5rem' }}>{t('redirecting')}</p>
         <Link href={`/${locale}/compte/login`} style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>
-          Cliquez ici si vous n&apos;êtes pas redirigé
+          {t('manual_redirect')}
         </Link>
       </div>
     );
@@ -59,10 +60,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const navItems = [
-    { label: 'Vue d\'ensemble', href: `/${locale}/compte`, icon: '📊' },
-    { label: 'Mes Rendez-vous', href: `/${locale}/compte/rdv`, icon: '📅' },
-    { label: 'Mes Commandes', href: `/${locale}/compte/commandes`, icon: '📦' },
-    { label: 'Mon Véhicule', href: `/${locale}/compte/vehicule`, icon: '🚗' },
+    { label: t('nav_overview'), href: `/${locale}/compte`, icon: '📊' },
+    { label: t('nav_appointments'), href: `/${locale}/compte/rdv`, icon: '📅' },
+    { label: t('nav_orders'), href: `/${locale}/compte/commandes`, icon: '📦' },
+    { label: t('nav_vehicle'), href: `/${locale}/compte/vehicule`, icon: '🚗' },
   ];
 
   return (
@@ -113,7 +114,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             onClick={handleLogout}
             style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', color: 'var(--color-primary-200)', cursor: 'pointer', fontSize: '0.9375rem', padding: 0 }}
           >
-            🚪 Déconnexion
+            🚪 {t('logout')}
           </button>
         </div>
       </aside>

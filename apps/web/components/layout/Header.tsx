@@ -63,7 +63,7 @@ export default function Header() {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="nav-mobile-btn"
-              aria-label="Menu"
+              aria-label={t('menu')}
               style={{
                 display: 'none',
                 background: 'none',
@@ -112,7 +112,7 @@ export default function Header() {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Que cherchez-vous ?"
+                  placeholder={t('search_placeholder')}
                   style={{
                     background: 'transparent',
                     border: 'none',
@@ -240,7 +240,7 @@ export default function Header() {
               </svg>
               <input
                 type="text"
-                placeholder="Que cherchez-vous ?"
+                placeholder={t('search_placeholder')}
                 style={{
                   background: 'transparent',
                   border: 'none',

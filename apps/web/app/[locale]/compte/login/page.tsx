@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../../../../lib/store/useAuthStore';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Mode = 'login' | 'register';
 type Step = 1 | 2 | 3; // 1: phone, 2: OTP, 3: profile (register only)
@@ -13,6 +13,7 @@ type Step = 1 | 2 | 3; // 1: phone, 2: OTP, 3: profile (register only)
 export default function LoginPage() {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations('Account');
   const login = useAuthStore((state) => state.login);
 
   const [mode, setMode] = useState<Mode>('login');
@@ -40,10 +41,10 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      if (phone.length < 8) throw new Error('Numéro de téléphone invalide.');
+      if (phone.length < 8) throw new Error(t('error_invalid_phone'));
       setStep(2);
     } catch (err: any) {
-      setError(err.message || 'Erreur lors de l\'envoi du code.');
+      setError(err.message || t('error_send_code'));
     } finally {
       setIsLoading(false);
     }
@@ -55,15 +56,15 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      if (otp !== '123456') throw new Error('Code incorrect. Indice : utilisez 123456 pour la démo.');
+      if (otp !== '123456') throw new Error(t('error_invalid_code'));
       if (mode === 'register') {
         setStep(3);
       } else {
-        login({ id: 'user-1', phone, role: 'CLIENT', firstName: 'Client' }, 'mock-jwt-token');
+        login({ id: 'user-1', phone, role: 'CLIENT', firstName: t('customer_fallback') }, 'mock-jwt-token');
         router.push(`/${locale}/compte`);
       }
     } catch (err: any) {
-      setError(err.message || 'Erreur lors de la vérification.');
+      setError(err.message || t('error_verify_code'));
     } finally {
       setIsLoading(false);
     }
@@ -75,11 +76,11 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      if (!firstName.trim()) throw new Error('Le prénom est requis.');
+      if (!firstName.trim()) throw new Error(t('error_first_name_required'));
       login({ id: 'user-new', phone, role: 'CLIENT', firstName, lastName }, 'mock-jwt-token');
       router.push(`/${locale}/compte`);
     } catch (err: any) {
-      setError(err.message || 'Erreur lors de la création du compte.');
+      setError(err.message || t('error_create_account'));
     } finally {
       setIsLoading(false);
     }
@@ -87,27 +88,27 @@ export default function LoginPage() {
 
   const stepTitles = {
     login: {
-      1: 'Connexion à votre compte',
-      2: 'Vérification du numéro',
+      1: t('login_step1_title'),
+      2: t('login_step2_title'),
       3: '',
     },
     register: {
-      1: 'Créer votre compte gratuit',
-      2: 'Vérification du numéro',
-      3: 'Finalisez votre profil',
+      1: t('register_step1_title'),
+      2: t('register_step2_title'),
+      3: t('register_step3_title'),
     },
   };
 
   const stepDescs = {
     login: {
-      1: 'Entrez votre numéro pour recevoir un code de vérification.',
-      2: `Code envoyé au +509 ${phone}.`,
+      1: t('login_step1_desc'),
+      2: t('code_sent_to', { phone: `+509 ${phone}` }),
       3: '',
     },
     register: {
-      1: 'Rejoignez AUTONORME — la plateforme automobile nationale.',
-      2: `Code de vérification envoyé au +509 ${phone}.`,
-      3: 'Dernière étape ! Dites-nous comment vous appeler.',
+      1: t('register_step1_desc'),
+      2: t('verification_sent_to', { phone: `+509 ${phone}` }),
+      3: t('register_step3_desc'),
     },
   };
 
@@ -123,17 +124,17 @@ export default function LoginPage() {
         <div style={{ position: 'relative', zIndex: 1, padding: 'var(--space-4xl)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', color: '#FFFFFF' }}>
           <Image src="/log.png" alt="AUTONORME" width={240} height={60} style={{ objectFit: 'contain', marginBottom: 'var(--space-2xl)' }} />
           <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2.5rem', marginBottom: 'var(--space-md)' }}>
-            {mode === 'login' ? 'Content de vous revoir !' : 'Bienvenue dans AUTONORME !'}
+            {mode === 'login' ? t('login_panel_title') : t('register_panel_title')}
           </h1>
           <p style={{ fontSize: '1.125rem', color: 'var(--color-primary-200)', maxWidth: '400px', lineHeight: 1.6 }}>
             {mode === 'login'
-              ? 'Accédez à votre tableau de bord, gérez vos rendez-vous et commandes de pièces.'
-              : 'Créez votre compte gratuitement et accédez à 200+ garages certifiés, 5 000+ pièces et AutoBot 24/7.'}
+              ? t('login_panel_desc')
+              : t('register_panel_desc')}
           </p>
 
           {mode === 'register' && (
             <div style={{ marginTop: 'var(--space-2xl)', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-              {['✅ 100% gratuit, sans engagement', '🔒 Données sécurisées', '🇭🇹 Service en Français, Créole et Anglais'].map(item => (
+              {[t('register_benefit_1'), t('register_benefit_2'), t('register_benefit_3')].map(item => (
                 <div key={item} style={{ color: 'var(--color-primary-100)', fontSize: '0.9375rem' }}>{item}</div>
               ))}
             </div>
@@ -173,7 +174,7 @@ export default function LoginPage() {
                     boxShadow: mode === m ? 'var(--shadow-card)' : 'none',
                   }}
                 >
-                  {m === 'login' ? 'Connexion' : 'Créer un compte'}
+                  {m === 'login' ? t('mode_login') : t('mode_register')}
                 </button>
               ))}
             </div>
@@ -212,7 +213,7 @@ export default function LoginPage() {
               <form onSubmit={handleSendOtp}>
                 <div style={{ marginBottom: 'var(--space-lg)' }}>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>
-                    Numéro de téléphone
+                    {t('phone_label')}
                   </label>
                   <div style={{ display: 'flex' }}>
                     <span style={{ background: 'var(--color-neutral-100)', padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRight: 'none', borderRadius: 'var(--radius-md) 0 0 var(--radius-md)', color: 'var(--color-neutral-600)', fontSize: '0.9375rem', whiteSpace: 'nowrap' }}>
@@ -222,14 +223,14 @@ export default function LoginPage() {
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="3456 7890"
+                      placeholder={t('phone_digits_placeholder')}
                       required
                       style={{ flex: 1, padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRadius: '0 var(--radius-md) var(--radius-md) 0', fontSize: '1rem', outline: 'none', minHeight: '48px' }}
                     />
                   </div>
                 </div>
                 <button type="submit" disabled={isLoading || !phone} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', minHeight: '48px' }}>
-                  {isLoading ? 'Envoi...' : mode === 'login' ? 'Recevoir le code' : 'Continuer →'}
+                  {isLoading ? t('sending') : mode === 'login' ? t('btn_receive_code') : t('continue')}
                 </button>
               </form>
             )}
@@ -239,7 +240,7 @@ export default function LoginPage() {
               <form onSubmit={handleVerifyOtp}>
                 <div style={{ marginBottom: 'var(--space-lg)' }}>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>
-                    Code de vérification <span style={{ color: 'var(--color-neutral-400)', fontWeight: 400 }}>(démo: 123456)</span>
+                    {t('verification_code_label')} <span style={{ color: 'var(--color-neutral-400)', fontWeight: 400 }}>({t('demo_code_hint')})</span>
                   </label>
                   <input
                     type="text"
@@ -253,11 +254,11 @@ export default function LoginPage() {
                   />
                 </div>
                 <button type="submit" disabled={isLoading || otp.length !== 6} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: 'var(--space-md)', minHeight: '48px' }}>
-                  {isLoading ? 'Vérification...' : 'Confirmer le code'}
+                  {isLoading ? t('verifying') : t('confirm_code')}
                 </button>
                 <div style={{ textAlign: 'center' }}>
                   <button type="button" onClick={() => { setStep(1); setOtp(''); setError(''); }} style={{ background: 'none', border: 'none', color: 'var(--color-primary-600)', fontSize: '0.875rem', cursor: 'pointer', textDecoration: 'underline', minHeight: '44px' }}>
-                    ← Modifier le numéro
+                    {t('edit_phone')}
                   </button>
                 </div>
               </form>
@@ -268,30 +269,30 @@ export default function LoginPage() {
               <form onSubmit={handleCompleteProfile}>
                 <div style={{ display: 'grid', gap: 'var(--space-md)', marginBottom: 'var(--space-lg)' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>Prénom *</label>
+                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>{t('first_name_label')}</label>
                     <input
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Ex: Jean"
+                      placeholder={t('first_name_placeholder')}
                       required
                       autoFocus
                       style={{ width: '100%', padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRadius: 'var(--radius-md)', fontSize: '1rem', outline: 'none', minHeight: '48px', boxSizing: 'border-box' }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>Nom <span style={{ color: 'var(--color-neutral-400)', fontWeight: 400 }}>(optionnel)</span></label>
+                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>{t('last_name_label')} <span style={{ color: 'var(--color-neutral-400)', fontWeight: 400 }}>({t('optional')})</span></label>
                     <input
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Ex: Pierre"
+                      placeholder={t('last_name_placeholder')}
                       style={{ width: '100%', padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRadius: 'var(--radius-md)', fontSize: '1rem', outline: 'none', minHeight: '48px', boxSizing: 'border-box' }}
                     />
                   </div>
                 </div>
                 <button type="submit" disabled={isLoading || !firstName.trim()} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', minHeight: '48px' }}>
-                  {isLoading ? 'Création...' : '🎉 Créer mon compte'}
+                  {isLoading ? t('creating') : t('create_account_cta')}
                 </button>
               </form>
             )}
