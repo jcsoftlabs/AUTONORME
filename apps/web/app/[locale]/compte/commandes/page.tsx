@@ -7,7 +7,7 @@ export default function CommandesPage() {
         Mes Commandes
       </h1>
       <p style={{ color: 'var(--color-neutral-500)', fontSize: '1rem', marginBottom: 'var(--space-2xl)' }}>
-        Suivez l'état de vos commandes de pièces automobiles.
+        Suivez l&apos;état de vos commandes de pièces automobiles.
       </p>
 
       <div className="card" style={{ padding: 'var(--space-xl)', background: '#FFFFFF', borderLeft: '4px solid var(--color-accent-gold)', marginBottom: 'var(--space-md)' }}>
