@@ -3,7 +3,7 @@ import { Poppins, Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import './globals.css';
+import '../globals.css';
 
 // Polices AUTONORME (BLOC 1 — Identité)
 const poppins = Poppins({
