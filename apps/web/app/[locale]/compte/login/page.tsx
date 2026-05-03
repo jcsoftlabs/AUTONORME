@@ -299,7 +299,7 @@ export default function LoginPage() {
 
           <div style={{ textAlign: 'center', marginTop: 'var(--space-xl)' }}>
             <Link href={`/${locale}`} style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem', textDecoration: 'none' }}>
-              ← Retour à l'accueil
+              ← Retour à l&apos;accueil
             </Link>
           </div>
         </div>
