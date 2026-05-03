@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const navLinks = [
   { href: '/garages', label: 'Garages' },
@@ -48,20 +49,16 @@ export default function Header() {
         >
           {/* Logo */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-            <div
+            <Image
+              src="/logo-auto.PNG"
+              alt="AUTONORME"
+              width={36}
+              height={36}
               style={{
-                width: '2.25rem',
-                height: '2.25rem',
-                background: 'linear-gradient(135deg, var(--color-primary-700), var(--color-primary-500))',
                 borderRadius: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 boxShadow: '0 2px 8px rgba(0, 59, 142, 0.3)',
               }}
-            >
-              <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.125rem', fontFamily: 'var(--font-heading)' }}>A</span>
-            </div>
+            />
             <span
               style={{
                 fontFamily: 'var(--font-heading)',

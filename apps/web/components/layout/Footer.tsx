@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const footerLinks = {
   plateforme: [
@@ -49,19 +50,13 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: 'var(--space-lg)' }}>
-              <div
-                style={{
-                  width: '2.25rem',
-                  height: '2.25rem',
-                  background: 'linear-gradient(135deg, var(--color-primary-700), var(--color-primary-500))',
-                  borderRadius: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.125rem', fontFamily: 'var(--font-heading)' }}>A</span>
-              </div>
+              <Image
+                src="/logo-auto.PNG"
+                alt="AUTONORME"
+                width={36}
+                height={36}
+                style={{ borderRadius: '0.5rem' }}
+              />
               <span
                 style={{
                   fontFamily: 'var(--font-heading)',
