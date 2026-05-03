@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '0.5rem' }}>Accès restreint</h2>
         <p style={{ color: 'var(--color-neutral-500)', marginBottom: '1.5rem' }}>Redirection vers la page de connexion...</p>
         <Link href={`/${locale}/compte/login`} style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>
-          Cliquez ici si vous n'êtes pas redirigé
+          Cliquez ici si vous n&apos;êtes pas redirigé
         </Link>
       </div>
     );
