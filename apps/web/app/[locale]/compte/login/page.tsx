@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../../../../lib/store/useAuthStore';
+import { fetchApi } from '../../../../lib/api-client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
@@ -24,6 +25,21 @@ export default function LoginPage() {
   const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const isLocalDevApi = (process.env.NEXT_PUBLIC_API_URL || '').includes('localhost') || (process.env.NEXT_PUBLIC_API_URL || '').includes('127.0.0.1');
+
+  const normalizedPhone = `+509${phone.replace(/\D/g, '')}`;
+
+  const buildStoredUser = (apiUser: { id: string; phone: string; name?: string; role: string }) => {
+    const parts = apiUser.name?.trim().split(/\s+/).filter(Boolean) || [];
+    return {
+      id: apiUser.id,
+      phone: apiUser.phone,
+      role: apiUser.role,
+      name: apiUser.name,
+      firstName: parts[0] || t('customer_fallback'),
+      lastName: parts.slice(1).join(' ') || undefined,
+    };
+  };
 
   const resetFlow = (newMode: Mode) => {
     setMode(newMode);
@@ -40,8 +56,12 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      if (phone.length < 8) throw new Error(t('error_invalid_phone'));
+      if (phone.replace(/\D/g, '').length !== 8) throw new Error(t('error_invalid_phone'));
+      await fetchApi('/auth/send-otp', {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ phone: normalizedPhone }),
+      });
       setStep(2);
     } catch (err: any) {
       setError(err.message || t('error_send_code'));
@@ -55,14 +75,14 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      if (otp !== '123456') throw new Error(t('error_invalid_code'));
-      if (mode === 'register') {
-        setStep(3);
-      } else {
-        login({ id: 'user-1', phone, role: 'CLIENT', firstName: t('customer_fallback') }, 'mock-jwt-token');
-        router.push(`/${locale}/compte`);
-      }
+      const result = await fetchApi<{ accessToken: string; user: { id: string; phone: string; name?: string; role: string } }>('/auth/verify-otp', {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ phone: normalizedPhone, code: otp }),
+      });
+
+      login(buildStoredUser(result.user), result.accessToken);
+      router.push(`/${locale}/compte`);
     } catch (err: any) {
       setError(err.message || t('error_verify_code'));
     } finally {
@@ -199,7 +219,7 @@ export default function LoginPage() {
               {stepTitles[mode][step]}
             </h2>
             <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.9375rem', marginBottom: 'var(--space-xl)', lineHeight: 1.5 }}>
-              {stepDescs[mode][step]}
+                      {stepDescs[mode][step]}
             </p>
 
             {error && (
@@ -240,7 +260,7 @@ export default function LoginPage() {
               <form onSubmit={handleVerifyOtp}>
                 <div style={{ marginBottom: 'var(--space-lg)' }}>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>
-                    {t('verification_code_label')} <span style={{ color: 'var(--color-neutral-400)', fontWeight: 400 }}>({t('demo_code_hint')})</span>
+                    {t('verification_code_label')} {isLocalDevApi && <span style={{ color: 'var(--color-neutral-400)', fontWeight: 400 }}>({t('demo_code_hint')})</span>}
                   </label>
                   <input
                     type="text"

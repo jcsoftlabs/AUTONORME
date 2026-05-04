@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 import { authenticator } from 'otplib';
@@ -18,10 +19,12 @@ export class AuthService {
     private readonly db: DatabaseService,
     private readonly jwt: JwtService,
     private readonly otpService: OtpService,
+    private readonly config: ConfigService,
   ) {}
 
   async sendOtp(phone: string): Promise<{ message: string }> {
-    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const isDevOtpMode = !this.config.get<string>('SENTDM_API_KEY') || this.config.get<string>('SENTDM_API_KEY') === 'CHANGE_ME';
+    const code = isDevOtpMode ? '123456' : String(Math.floor(100000 + Math.random() * 900000));
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
     await this.db.otpCode.updateMany({
@@ -32,7 +35,7 @@ export class AuthService {
     await this.db.otpCode.create({ data: { phone, code, expiresAt } });
     await this.otpService.send(phone, code);
 
-    return { message: 'Code envoyé avec succès' };
+    return { message: isDevOtpMode ? 'Code démo envoyé (123456)' : 'Code envoyé avec succès' };
   }
 
   async verifyOtp(phone: string, code: string): Promise<{

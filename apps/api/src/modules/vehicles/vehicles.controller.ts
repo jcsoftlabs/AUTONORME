@@ -5,6 +5,7 @@ import {
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 import type { User } from '@prisma/client';
@@ -39,7 +40,7 @@ export class VehiclesController {
   update(
     @Param('id') id: string,
     @CurrentUser() user: User,
-    @Body() dto: Partial<CreateVehicleDto>,
+    @Body() dto: UpdateVehicleDto,
   ) {
     return this.vehiclesService.update(id, user.id, dto);
   }
