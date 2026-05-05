@@ -7,7 +7,19 @@ export default function HeroSection() {
   const locale = useLocale();
 
   return (
-    <section id="hero" className={styles.hero}>
+    <section
+      id="hero"
+      className={styles.hero}
+      style={{
+        backgroundImage: `
+          linear-gradient(110deg, rgba(0,20,70,0.92) 0%, rgba(0,35,100,0.80) 45%, rgba(0,20,60,0.60) 100%),
+          url('/hero-bg.png')
+        `,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <div className="container">
         <div className={styles.heroContent}>
           <div>
