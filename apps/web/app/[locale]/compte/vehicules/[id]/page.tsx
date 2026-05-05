@@ -192,16 +192,23 @@ export default function VehicleDetailPage() {
           </h1>
           <p className={styles.subtitle}>{t('vehicle_detail_subtitle')}</p>
         </div>
-        <div className={styles.pillRow}>
-          {vehicle.isPrimaryVehicle ? <span className={styles.pill}>{t('vehicles_primary_badge')}</span> : null}
-          <span className={styles.pill}>
-            {vehicle.vehicleScore !== null ? t('vehicles_score_label', { score: vehicle.vehicleScore }) : t('vehicle_score_unavailable')}
-          </span>
-          <span className={styles.pill}>
-            {vehicle.openRemindersCount > 0
-              ? t('vehicle_detail_reminder_count', { count: vehicle.openRemindersCount })
-              : t('vehicle_reminder_none')}
-          </span>
+        <div className={styles.stack} style={{ justifyItems: 'end' }}>
+          <div className={styles.pillRow}>
+            {vehicle.isPrimaryVehicle ? <span className={styles.pill}>{t('vehicles_primary_badge')}</span> : null}
+            <span className={styles.pill}>
+              {vehicle.vehicleScore !== null ? t('vehicles_score_label', { score: vehicle.vehicleScore }) : t('vehicle_score_unavailable')}
+            </span>
+            <span className={styles.pill}>
+              {vehicle.openRemindersCount > 0
+                ? t('vehicle_detail_reminder_count', { count: vehicle.openRemindersCount })
+                : t('vehicle_reminder_none')}
+            </span>
+          </div>
+          <div className={styles.ctaRow} style={{ marginTop: 0 }}>
+            <Link href={`/${locale}/compte/vehicules/${vehicle.id}/modifier`} className="btn btn-primary">
+              {t('vehicle_edit')}
+            </Link>
+          </div>
         </div>
       </div>
 

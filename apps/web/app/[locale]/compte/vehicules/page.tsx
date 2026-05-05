@@ -31,26 +31,74 @@ export default function VehiculesPage() {
   const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [busyVehicleId, setBusyVehicleId] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadVehicles = () => {
     if (!token) {
       setIsLoading(false);
-      return;
+      return Promise.resolve();
     }
 
     setIsLoading(true);
     setError('');
 
-    fetchAuthenticatedApi<VehicleSummary[]>('/vehicles', token)
+    return fetchAuthenticatedApi<VehicleSummary[]>('/vehicles', token)
       .then((data) => setVehicles(data))
       .catch((err: Error) => setError(err.message || t('vehicles_error')))
       .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    void loadVehicles();
   }, [token, t]);
 
   const primaryVehicle = useMemo(
     () => vehicles.find((vehicle) => vehicle.isPrimaryVehicle) || vehicles[0],
     [vehicles],
   );
+
+  const handleSetPrimary = async (vehicle: VehicleSummary) => {
+    if (!token || vehicle.isPrimaryVehicle) return;
+
+    setBusyVehicleId(vehicle.id);
+    setError('');
+
+    try {
+      await fetchAuthenticatedApi(`/vehicles/${vehicle.id}`, token, {
+        method: 'PATCH',
+        body: JSON.stringify({ isPrimaryVehicle: true }),
+      });
+      await loadVehicles();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('vehicles_error'));
+    } finally {
+      setBusyVehicleId(null);
+    }
+  };
+
+  const handleDelete = async (vehicle: VehicleSummary) => {
+    if (!token) return;
+
+    const confirmed = window.confirm(
+      t('vehicle_delete_confirm', { vehicle: `${vehicle.make} ${vehicle.model} ${vehicle.year}` }),
+    );
+
+    if (!confirmed) return;
+
+    setBusyVehicleId(vehicle.id);
+    setError('');
+
+    try {
+      await fetchAuthenticatedApi(`/vehicles/${vehicle.id}`, token, {
+        method: 'DELETE',
+      });
+      await loadVehicles();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('vehicles_error'));
+    } finally {
+      setBusyVehicleId(null);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -59,15 +107,20 @@ export default function VehiculesPage() {
           <h1 className={styles.title}>{t('vehicles_title')}</h1>
           <p className={styles.subtitle}>{t('vehicles_subtitle')}</p>
         </div>
-        {primaryVehicle ? (
-          <Link href={`/${locale}/compte/vehicules/${primaryVehicle.id}`} className="btn btn-primary">
-            {t('vehicles_primary_cta')}
+        <div className={styles.ctaRow} style={{ marginTop: 0 }}>
+          <Link href={`/${locale}/compte/vehicules/nouveau`} className="btn btn-primary">
+            {t('vehicle_add')}
           </Link>
-        ) : (
-          <Link href={`/${locale}/autobot`} className="btn btn-primary">
-            {t('vehicles_primary_cta_empty')}
-          </Link>
-        )}
+          {primaryVehicle ? (
+            <Link href={`/${locale}/compte/vehicules/${primaryVehicle.id}`} className="btn btn-outline">
+              {t('vehicles_primary_cta')}
+            </Link>
+          ) : (
+            <Link href={`/${locale}/autobot`} className="btn btn-outline">
+              {t('vehicles_primary_cta_empty')}
+            </Link>
+          )}
+        </div>
       </div>
 
       {!token ? (
@@ -100,6 +153,9 @@ export default function VehiculesPage() {
           <h2 className={styles.cardTitle}>{t('vehicles_empty_title')}</h2>
           <p className={styles.cardText}>{t('vehicles_empty_body')}</p>
           <div className={styles.ctaRow}>
+            <Link href={`/${locale}/compte/vehicules/nouveau`} className="btn btn-primary">
+              {t('vehicle_add')}
+            </Link>
             <Link href={`/${locale}/autobot`} className="btn btn-outline">
               {t('quick_ask_autobot')}
             </Link>
@@ -159,6 +215,27 @@ export default function VehiculesPage() {
                     <Link href={`/${locale}/compte/vehicules/${vehicle.id}`} className="btn btn-outline">
                       {t('vehicles_view_cta')}
                     </Link>
+                    {!vehicle.isPrimaryVehicle ? (
+                      <button
+                        type="button"
+                        className="btn btn-outline"
+                        onClick={() => handleSetPrimary(vehicle)}
+                        disabled={busyVehicleId === vehicle.id}
+                      >
+                        {busyVehicleId === vehicle.id ? t('vehicle_action_loading') : t('vehicle_set_primary')}
+                      </button>
+                    ) : null}
+                    <Link href={`/${locale}/compte/vehicules/${vehicle.id}/modifier`} className="btn btn-outline">
+                      {t('vehicle_edit')}
+                    </Link>
+                    <button
+                      type="button"
+                      className={`btn btn-outline ${styles.dangerButton}`}
+                      onClick={() => handleDelete(vehicle)}
+                      disabled={busyVehicleId === vehicle.id}
+                    >
+                      {busyVehicleId === vehicle.id ? t('vehicle_action_loading') : t('vehicle_delete')}
+                    </button>
                   </div>
                 </div>
               </div>
