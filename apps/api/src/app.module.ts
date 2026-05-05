@@ -24,6 +24,7 @@ import { MaintenanceModule } from './modules/maintenance/maintenance.module';
 import { AutobotModule } from './modules/autobot/autobot.module';
 import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     AutobotModule,
     WhatsappModule,
     NotificationsModule,
+    UploadModule,
   ],
   providers: [
     // Guards globaux (appliqués sur toutes les routes)
