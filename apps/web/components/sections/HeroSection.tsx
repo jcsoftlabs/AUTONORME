@@ -16,7 +16,7 @@ export default function HeroSection() {
           url('/hero-bg.png')
         `,
         backgroundSize: 'cover',
-        backgroundPosition: 'center center',
+        backgroundPosition: '70% center',
         backgroundRepeat: 'no-repeat',
       }}
     >
