@@ -142,7 +142,19 @@
       rgba(0, 35, 100, 0.80) 45%,
       rgba(0, 20, 60, 0.60) 100%
     ),
-    url('/hero-bg.png') center center / cover no-repeat;
+    url('/hero-bg.png') 70% center / cover no-repeat;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    background:
+      linear-gradient(170deg,
+        rgba(0, 20, 70, 0.88) 0%,
+        rgba(0, 35, 100, 0.75) 50%,
+        rgba(0, 20, 60, 0.55) 100%
+      ),
+      url('/hero-mob.png') center center / cover no-repeat;
+  }
 }
 
 .hero::before {
