@@ -60,14 +60,45 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const navItems = [
-    { label: t('nav_overview'), href: `/${locale}/compte`, icon: '📊' },
-    { label: t('nav_appointments'), href: `/${locale}/compte/rendez-vous`, icon: '📅' },
-    { label: t('nav_orders'), href: `/${locale}/compte/commandes`, icon: '📦' },
-    { label: t('nav_vehicle'), href: `/${locale}/compte/vehicules`, icon: '🚗' },
-    { label: t('nav_maintenance'), href: `/${locale}/compte/maintenance`, icon: '🛎️' },
-    { label: t('nav_notifications'), href: `/${locale}/compte/notifications`, icon: '🔔' },
-    { label: t('nav_profile'), href: `/${locale}/compte/profil`, icon: '👤' },
+    {
+      label: t('nav_overview'), href: `/${locale}/compte`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>),
+      emoji: '📊',
+    },
+    {
+      label: t('nav_appointments'), href: `/${locale}/compte/rendez-vous`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>),
+      emoji: '📅',
+    },
+    {
+      label: t('nav_vehicle'), href: `/${locale}/compte/vehicules`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-3"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>),
+      emoji: '🚗',
+    },
+    {
+      label: t('nav_orders'), href: `/${locale}/compte/commandes`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>),
+      emoji: '📦',
+    },
+    {
+      label: t('nav_profile'), href: `/${locale}/compte/profil`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>),
+      emoji: '👤',
+    },
+    {
+      label: t('nav_maintenance'), href: `/${locale}/compte/maintenance`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>),
+      emoji: '🛎️',
+    },
+    {
+      label: t('nav_notifications'), href: `/${locale}/compte/notifications`,
+      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>),
+      emoji: '🔔',
+    },
   ];
+
+  // 5 items affichés dans la bottom bar mobile
+  const bottomNavItems = navItems.slice(0, 5);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--color-neutral-50)', fontFamily: 'var(--font-body)' }}>
@@ -103,7 +134,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       borderLeft: isActive ? '4px solid var(--color-accent-gold)' : '4px solid transparent',
                     }}
                   >
-                    <span>{item.icon}</span>
+                    <span style={{ opacity: isActive ? 1 : 0.7 }}>{item.emoji}</span>
                     {item.label}
                   </Link>
                 </li>
@@ -129,9 +160,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
            <style>{`
             @media (min-width: 1024px) {
               .mobile-header { display: none !important; }
+              .mobile-bottom-nav { display: none !important; }
             }
             @media (max-width: 640px) {
-              .account-content { padding: 1.25rem !important; }
+              .account-content { padding: 1.25rem !important; padding-bottom: calc(1.25rem + 72px) !important; }
             }
           `}</style>
           <Image src="/log.png" alt="AUTONORME" width={120} height={30} style={{ objectFit: 'contain' }} />
@@ -158,10 +190,58 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
         </div>
 
-        {/* Dynamic Content */}
-        <div className="account-content" style={{ padding: 'var(--space-2xl)', flex: 1, overflowY: 'auto' }}>
+        {/* Dynamic Content — extra padding-bottom on mobile for bottom nav */}
+        <div className="account-content" style={{ padding: 'var(--space-2xl)', flex: 1, overflowY: 'auto', paddingBottom: 'calc(var(--space-2xl) + 72px)' }}>
           {children}
         </div>
+
+        {/* ── Bottom Tab Bar (Mobile) ─────────────────────────────── */}
+        <nav
+          className="mobile-bottom-nav"
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '64px',
+            background: '#ffffff',
+            borderTop: '1px solid var(--color-neutral-200)',
+            display: 'flex',
+            alignItems: 'stretch',
+            justifyContent: 'space-around',
+            boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
+            zIndex: 100,
+          }}
+        >
+          {bottomNavItems.map(item => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '3px',
+                  textDecoration: 'none',
+                  color: isActive ? 'var(--color-primary-600)' : 'var(--color-neutral-400)',
+                  fontSize: '0.65rem',
+                  fontWeight: isActive ? 700 : 500,
+                  transition: 'color 0.15s',
+                  paddingBottom: 'env(safe-area-inset-bottom)',
+                }}
+              >
+                <span style={{ color: isActive ? 'var(--color-primary-600)' : 'var(--color-neutral-400)' }}>
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
       </main>
     </div>
   );
