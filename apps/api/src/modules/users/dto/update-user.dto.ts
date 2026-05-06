@@ -11,4 +11,9 @@ export class UpdateUserDto {
   @IsEnum(['fr', 'ht', 'en'])
   @IsOptional()
   locale?: string;
+
+  @ApiPropertyOptional({ example: 'https://cloudinary.com/path/to/avatar.jpg' })
+  @IsString()
+  @IsOptional()
+  avatarUrl?: string;
 }

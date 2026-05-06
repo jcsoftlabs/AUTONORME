@@ -240,7 +240,8 @@ model User {
   role          Role      @default(CLIENT)
   /// Langue préférée : fr | ht | en
   locale        String    @default("fr")
-  isActive           Boolean   @default(true)
+   isActive           Boolean   @default(true)
+  avatarUrl          String?
   /// Secret TOTP Google Authenticator
   twoFactorSecret    String?
   /// Indicateur d'activation du 2FA

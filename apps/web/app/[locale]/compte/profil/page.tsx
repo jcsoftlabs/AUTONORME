@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import { useAuthStore } from '../../../../lib/store/useAuthStore';
 import { fetchAuthenticatedApi } from '../../../../lib/authenticated-api';
 import styles from '../../../../components/account.module.css';
@@ -13,17 +14,19 @@ type UserProfile = {
   phone?: string;
   email?: string;
   locale?: string;
+  avatarUrl?: string;
   createdAt?: string;
 };
 
 export default function ProfilPage() {
-  const { token } = useAuthStore();
+  const { token, updateUser } = useAuthStore();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: '', locale: 'fr' });
   const [success, setSuccess] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -48,8 +51,50 @@ export default function ProfilPage() {
         headers: { 'Content-Type': 'application/json' },
       });
       setProfile(updated);
+      updateUser({ name: updated.name });
       setEditing(false);
       setSuccess('Profil mis à jour avec succès !');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setSaving(true);
+    setSuccess('');
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/v1/upload?folder=profiles`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        const avatarUrl = result.data.url;
+        const updated = await fetchAuthenticatedApi<UserProfile>('/users/me', token, {
+          method: 'PATCH',
+          body: JSON.stringify({ avatarUrl }),
+          headers: { 'Content-Type': 'application/json' },
+        });
+        setProfile(updated);
+        updateUser({ avatarUrl: updated.avatarUrl });
+        setSuccess('Photo de profil mise à jour !');
+      } else {
+        throw new Error(result.error?.message || 'Erreur lors de l\'upload');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Une erreur est survenue lors de l\'upload.');
     } finally {
       setSaving(false);
     }
@@ -84,6 +129,39 @@ export default function ProfilPage() {
         <div className={styles.twoCol}>
           {/* Identité */}
           <article className={styles.card}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ position: 'relative', width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', backgroundColor: 'var(--color-neutral-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                {profile.avatarUrl ? (
+                  <Image src={profile.avatarUrl} alt={displayName} fill style={{ objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '2.5rem' }}>👤</span>
+                )}
+                {saving && (
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div className="spinner-small"></div>
+                  </div>
+                )}
+              </div>
+              <div>
+                <h2 className={styles.cardTitle} style={{ marginBottom: '0.25rem' }}>Photo de profil</h2>
+                <p className={styles.cardText} style={{ fontSize: '0.85rem', marginBottom: '1rem' }}>Soutient JPG, PNG ou WebP. Max 10MB.</p>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePhotoUpload}
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={saving}
+                  className="btn btn-outline btn-sm"
+                >
+                  {profile.avatarUrl ? 'Changer la photo' : 'Ajouter une photo'}
+                </button>
+              </div>
+            </div>
+
             <h2 className={styles.cardTitle}>Informations personnelles</h2>
 
             {editing ? (
