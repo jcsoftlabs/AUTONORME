@@ -315,13 +315,44 @@ export default function VehicleForm({ mode, vehicleId }: VehicleFormProps) {
             style={{ display: 'none' }} 
             onChange={async (e) => {
               const file = e.target.files?.[0];
-              if (!file) return;
-              // Logique de scan à venir...
-              alert('Analyse de la carte en cours...');
-              // Simulation de remplissage après 2s
-              setTimeout(() => {
-                setForm(f => ({ ...f, make: 'Toyota', model: 'Hilux', year: '2019', vin: 'AHT1234567890' }));
-              }, 2000);
+              if (!file || !token) return;
+
+              setError('');
+              const formData = new FormData();
+              formData.append('file', file);
+
+              try {
+                // Appel réel à l'API de scan
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vehicles/scan`, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  },
+                  body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                  const data = result.data;
+                  setForm(f => ({ 
+                    ...f, 
+                    make: data.make || f.make, 
+                    model: data.model || f.model, 
+                    year: data.year ? String(data.year) : f.year, 
+                    vin: data.vin || f.vin,
+                    plate: data.plate || f.plate,
+                    fuelType: data.fuelType || f.fuelType,
+                    color: data.color || f.color
+                  }));
+                  alert('Carte scannée avec succès ! Les informations ont été remplies.');
+                } else {
+                  throw new Error(result.message || 'Erreur lors de l\'analyse');
+                }
+              } catch (err: any) {
+                console.error('Scan error:', err);
+                setError('Impossible d\'analyser la carte. Veuillez remplir manuellement.');
+              }
             }}
           />
         </div>
