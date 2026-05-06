@@ -15,7 +15,7 @@ const data = [
   { name: 'Dim', users: 150, orders: 43, garages: 30 },
 ];
 
-const COLORS = ['#FF6B00', '#1A1A1A', '#6B7280'];
+const COLORS = ['#1565C0', '#F59E0B', '#6B7280'];
 
 export default function AnalyticsCharts() {
   return (
@@ -34,8 +34,8 @@ export default function AnalyticsCharts() {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF6B00" stopOpacity={0.1}/>
-                  <stop offset="95%" stopColor="#FF6B00" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#1565C0" stopOpacity={0.15}/>
+                  <stop offset="95%" stopColor="#1565C0" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
@@ -57,7 +57,7 @@ export default function AnalyticsCharts() {
               <Area 
                 type="monotone" 
                 dataKey="users" 
-                stroke="#FF6B00" 
+                stroke="#1565C0" 
                 strokeWidth={3}
                 fillOpacity={1} 
                 fill="url(#colorUsers)" 
@@ -73,11 +73,11 @@ export default function AnalyticsCharts() {
           <h2 className="text-xl font-bold text-gray-900">Commandes vs Garages</h2>
           <div className="flex items-center gap-4">
              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-[#FF6B00]"></div>
+                <div className="w-3 h-3 rounded-full" style={{background:'#1565C0'}}></div>
                 <span className="text-[10px] font-bold text-gray-500">Commandes</span>
              </div>
              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-[#1A1A1A]"></div>
+                <div className="w-3 h-3 rounded-full" style={{background:'#F59E0B'}}></div>
                 <span className="text-[10px] font-bold text-gray-500">Garages</span>
              </div>
           </div>
@@ -101,8 +101,8 @@ export default function AnalyticsCharts() {
               <Tooltip 
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
               />
-              <Bar dataKey="orders" fill="#FF6B00" radius={[4, 4, 0, 0]} barSize={20} />
-              <Bar dataKey="garages" fill="#1A1A1A" radius={[4, 4, 0, 0]} barSize={20} />
+              <Bar dataKey="orders" fill="#1565C0" radius={[4, 4, 0, 0]} barSize={20} />
+              <Bar dataKey="garages" fill="#F59E0B" radius={[4, 4, 0, 0]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </div>
