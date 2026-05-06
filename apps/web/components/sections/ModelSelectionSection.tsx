@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import styles from '../homepage.module.css';
 
 const POPULAR_MODELS = [
@@ -33,13 +33,14 @@ const POPULAR_MODELS = [
 ];
 
 export default function ModelSelectionSection() {
+  const t = useTranslations('HomePage');
   const locale = useLocale();
 
   return (
     <section className={styles.modelSection}>
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>SHOP BY MODEL</h2>
+          <h2 className={styles.sectionTitle}>{t('shop_by_model_title')}</h2>
           <div className={styles.titleUnderline}></div>
         </div>
 
