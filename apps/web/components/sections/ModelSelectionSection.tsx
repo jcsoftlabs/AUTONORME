@@ -88,7 +88,9 @@ export default function ModelSelectionSection() {
                 )}
               </div>
               <div className={styles.modelInfo}>
-                <h3 className={styles.modelName}>{model.title}</h3>
+                <h3 className={styles.modelName}>
+                  {model.title || `${model.filterMake} ${model.filterModel}`}
+                </h3>
                 <span className={styles.modelYears}>{model.years}</span>
               </div>
             </Link>

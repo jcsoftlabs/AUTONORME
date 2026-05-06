@@ -11,4 +11,23 @@ export class ContentService {
       orderBy: { order: 'asc' },
     });
   }
+
+  async createFeaturedModel(data: any) {
+    return this.prisma.featuredModel.create({
+      data,
+    });
+  }
+
+  async updateFeaturedModel(id: string, data: any) {
+    return this.prisma.featuredModel.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async deleteFeaturedModel(id: string) {
+    return this.prisma.featuredModel.delete({
+      where: { id },
+    });
+  }
 }
