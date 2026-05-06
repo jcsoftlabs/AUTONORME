@@ -56,6 +56,11 @@ export default function FeaturedModelsPage() {
 
     try {
       const token = localStorage.getItem('admin_token');
+      console.log('--- DEBUG UPLOAD ---');
+      console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+      console.log('Token exists:', !!token);
+      if (token) console.log('Token prefix:', token.substring(0, 10) + '...');
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload?folder=misc`, {
         method: 'POST',
         headers: {

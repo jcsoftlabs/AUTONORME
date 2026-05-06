@@ -42,7 +42,8 @@ export default function AdminLoginPage() {
       });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('admin_token', data.accessToken);
+        const token = data.data?.accessToken || data.accessToken;
+        localStorage.setItem('admin_token', token);
         router.push('/');
       } else {
         alert('Code incorrect');
