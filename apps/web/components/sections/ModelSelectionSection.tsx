@@ -89,7 +89,7 @@ export default function ModelSelectionSection() {
               {models.map((model) => (
                 <Link
                   key={model.id}
-                  href={`/pieces?make=${model.filterMake || ''}&model=${model.filterModel || ''}`}
+                  href={`/${locale}/pieces?make=${model.filterMake || ''}&model=${model.filterModel || ''}`}
                   className={styles.modelCard}
                 >
                   <div className={styles.imageWrapper}>
