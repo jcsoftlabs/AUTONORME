@@ -804,8 +804,36 @@
 
 /* --- Model Selection Section --- */
 .modelSection {
-  padding: 5rem 0;
+  padding: 6rem 0;
   background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.scrollContainer {
+  position: relative;
+  margin: 0 -1rem;
+}
+
+.scrollContainer::before,
+.scrollContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scrollContainer::before {
+  left: 0;
+  background: linear-gradient(to right, white, transparent);
+}
+
+.scrollContainer::after {
+  right: 0;
+  background: linear-gradient(to left, white, transparent);
 }
 
 .sectionHeader {
@@ -830,12 +858,23 @@
 }
 
 .modelGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: flex;
+  overflow-x: auto;
   gap: 2rem;
+  padding: 1rem 1rem 3rem;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.modelGrid::-webkit-scrollbar {
+  display: none;
 }
 
 .modelCard {
+  flex: 0 0 340px;
+  scroll-snap-align: center;
   display: block;
   background: #ffffff;
   border-radius: 1.5rem;
@@ -889,13 +928,17 @@
 }
 
 @media (max-width: 768px) {
-  .modelGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+  .modelCard {
+    flex: 0 0 280px;
   }
   
   .sectionTitle {
     font-size: 1.75rem;
+  }
+
+  .scrollContainer::before,
+  .scrollContainer::after {
+    width: 40px;
   }
 }
 

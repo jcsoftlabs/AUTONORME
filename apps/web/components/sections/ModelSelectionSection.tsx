@@ -69,32 +69,34 @@ export default function ModelSelectionSection() {
           <div className={styles.titleUnderline}></div>
         </div>
 
-        <div className={styles.modelGrid}>
-          {models.map((model) => (
-            <Link 
-              key={model.id} 
-              href={`/${locale}/pieces?make=${model.filterMake}&model=${model.filterModel}`}
-              className={styles.modelCard}
-            >
-              <div className={styles.imageWrapper}>
-                {model.imageUrl && (
-                  <Image 
-                    src={model.imageUrl} 
-                    alt={model.title}
-                    width={400}
-                    height={225}
-                    className={styles.modelImage}
-                  />
-                )}
-              </div>
-              <div className={styles.modelInfo}>
-                <h3 className={styles.modelName}>
-                  {model.title || `${model.filterMake} ${model.filterModel}`}
-                </h3>
-                <span className={styles.modelYears}>{model.years}</span>
-              </div>
-            </Link>
-          ))}
+        <div className={styles.scrollContainer}>
+          <div className={styles.modelGrid}>
+            {models.map((model) => (
+              <Link 
+                key={model.id} 
+                href={`/${locale}/pieces?make=${model.filterMake}&model=${model.filterModel}`}
+                className={styles.modelCard}
+              >
+                <div className={styles.imageWrapper}>
+                  {model.imageUrl && (
+                    <Image 
+                      src={model.imageUrl} 
+                      alt={model.title || `${model.filterMake} ${model.filterModel}`}
+                      width={400}
+                      height={225}
+                      className={styles.modelImage}
+                    />
+                  )}
+                </div>
+                <div className={styles.modelInfo}>
+                  <h3 className={styles.modelName}>
+                    {model.title || `${model.filterMake} ${model.filterModel}`}
+                  </h3>
+                  <span className={styles.modelYears}>{model.years}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>
