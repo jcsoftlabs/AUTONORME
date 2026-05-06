@@ -7,6 +7,7 @@ export * from './enums';
 
 // Codes erreur + format réponse API
 export * from './errors';
+export * from './vehicles';
 
 // Utilitaires de formatage
 export * from './utils/format';

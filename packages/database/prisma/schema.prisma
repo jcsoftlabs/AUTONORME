@@ -33,6 +33,12 @@ enum ReminderStatus {
   DONE
 }
 
+enum PartCondition {
+  NEW
+  USED
+  REFURBISHED
+}
+
 enum AppointmentStatus {
   PENDING
   CONFIRMED
@@ -487,7 +493,12 @@ model Supplier {
 model Part {
   id                 String      @id @default(uuid())
   name               String
+  brand              String?
+  description        String?     @db.Text
   category           PartCategory
+  condition          PartCondition @default(NEW)
+  sku                String?
+  warrantyInfo       String?
   supplierId         String
   supplier           Supplier    @relation(fields: [supplierId], references: [id])
   /// JSON: [{ make: "Toyota", model: "RAV4", years: [2015, 2016, 2017, 2018] }]

@@ -1,0 +1,20 @@
+{
+  "Supplier": {
+    "title": "Pòtal Fournisseur AUTOparts",
+    "dashboard": "Tablo bò",
+    "inventory": "Envantè",
+    "orders": "Kòmand",
+    "profile": "Pwofil",
+    "logout": "Dekonekte"
+  },
+  "Common": {
+    "save": "Anrejistre",
+    "cancel": "Anile",
+    "delete": "Siprime",
+    "edit": "Modifye",
+    "add": "Ajoute",
+    "search": "Chache",
+    "loading": "Chajman...",
+    "error": "Yon erè rive"
+  }
+}

@@ -1,7 +1,9 @@
 import {
   Controller, Get, Post, Patch, Delete,
   Body, Param, UseGuards, HttpCode, HttpStatus,
+  UseInterceptors, UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
@@ -43,6 +45,14 @@ export class VehiclesController {
     @Body() dto: UpdateVehicleDto,
   ) {
     return this.vehiclesService.update(id, user.id, dto);
+  }
+
+  @Post('scan')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Scanner une carte d\'assurance pour extraire les infos' })
+  async scan(@UploadedFile() file: Express.Multer.File) {
+    // Appel au futur service d'IA (Gemini/Google Vision)
+    return this.vehiclesService.scanInsuranceCard(file);
   }
 
   @Delete(':id')

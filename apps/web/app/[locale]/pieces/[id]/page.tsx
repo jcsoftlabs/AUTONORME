@@ -22,7 +22,12 @@ type Supplier = {
 type Part = {
   id: string;
   name: string;
+  brand?: string | null;
+  description?: string | null;
   category: string;
+  condition: 'NEW' | 'USED' | 'REFURBISHED';
+  sku?: string | null;
+  warrantyInfo?: string | null;
   supplierId: string;
   supplier: Supplier;
   compatibleVehicles: CompatibleVehicle[];
@@ -100,7 +105,7 @@ export default async function PartDetailsPage({
 
             <section className={styles.productSection}>
               <h2 className={styles.detailSectionTitle}>{t('desc_title')}</h2>
-              <p className={styles.detailText}>{t('detail_description')}</p>
+              <p className={styles.detailText}>{part.description || t('detail_description')}</p>
             </section>
 
             <section className={styles.productSection}>
@@ -148,11 +153,17 @@ export default async function PartDetailsPage({
           </div>
 
           <aside className={styles.productSidebar}>
-            <div className={styles.partBadge}>{t(`category_${part.category.toLowerCase()}`)}</div>
-            <div style={{ marginTop: '0.9rem' }} className={styles.partBrand}>
-              {part.supplier?.shopName || t('supplier_fallback')}
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <div className={styles.partBadge}>{t(`category_${part.category.toLowerCase()}`)}</div>
+              <div className={styles.partBadge} style={{ background: 'var(--color-neutral-100)', color: 'var(--color-neutral-700)' }}>
+                {t(`condition_${part.condition.toLowerCase()}`)}
+              </div>
             </div>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2rem', margin: '0.45rem 0 0.6rem', lineHeight: 1.2 }}>
+            
+            <div style={{ marginTop: '1.2rem', color: 'var(--color-primary-600)', fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {part.brand || part.supplier?.shopName || t('supplier_fallback')}
+            </div>
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2.2rem', margin: '0.2rem 0 0.6rem', lineHeight: 1.1, color: 'var(--color-neutral-900)' }}>
               {part.name}
             </h1>
             <div className={styles.partMeta}>
@@ -165,6 +176,19 @@ export default async function PartDetailsPage({
 
             <div className={part.stockQty > 0 ? styles.stockOk : part.importAvailable ? styles.stockWarn : styles.stockOut}>
               {stockLabel}
+            </div>
+
+            <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', borderTop: '1px solid var(--color-neutral-200)', paddingTop: '1.2rem' }}>
+              {part.sku && (
+                <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-600)' }}>
+                  <span style={{ fontWeight: 600 }}>{t('sku_label')}</span> {part.sku}
+                </div>
+              )}
+              {part.warrantyInfo && (
+                <div style={{ fontSize: '0.85rem', color: 'var(--color-success-700)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span style={{ fontWeight: 600 }}>{t('warranty_label')}</span> {part.warrantyInfo}
+                </div>
+              )}
             </div>
 
             <div className={styles.ctaButtons}>

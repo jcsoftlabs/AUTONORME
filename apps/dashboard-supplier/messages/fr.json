@@ -1,0 +1,20 @@
+{
+  "Supplier": {
+    "title": "Portail Fournisseur AUTOparts",
+    "dashboard": "Tableau de bord",
+    "inventory": "Inventaire",
+    "orders": "Commandes",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "Common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue"
+  }
+}

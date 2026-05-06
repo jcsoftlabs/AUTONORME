@@ -16,7 +16,9 @@ type SupplierSummary = {
 type Part = {
   id: string;
   name: string;
+  brand?: string | null;
   category: string;
+  condition: 'NEW' | 'USED' | 'REFURBISHED';
   supplier: SupplierSummary;
   oemReference?: string | null;
   priceHtg: string | number;
@@ -164,8 +166,13 @@ export default function PartsCatalog() {
                 <article className={styles.partCard}>
                   <div className={styles.partVisual}>{part.category.slice(0, 2)}</div>
                   <div className={styles.partCardBody}>
-                    <span className={styles.partBadge}>{t(`category_${part.category.toLowerCase()}`)}</span>
-                    <div className={styles.partBrand}>{part.supplier?.shopName || t('supplier_fallback')}</div>
+                    <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.4rem' }}>
+                      <span className={styles.partBadge}>{t(`category_${part.category.toLowerCase()}`)}</span>
+                      <span className={styles.partBadge} style={{ background: 'var(--color-neutral-100)', color: 'var(--color-neutral-600)', fontSize: '0.65rem' }}>
+                        {t(`condition_${part.condition.toLowerCase()}`)}
+                      </span>
+                    </div>
+                    <div className={styles.partBrand}>{part.brand || part.supplier?.shopName || t('supplier_fallback')}</div>
                     <h4 className={styles.partName}>{part.name}</h4>
                     <div className={styles.partMeta}>
                       {t('reference_short')} {part.oemReference || t('reference_missing')}

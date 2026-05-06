@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import {
   Prisma,
   type DrivetrainType,
@@ -333,5 +334,66 @@ export class VehiclesService {
     }
 
     throw error;
+  }
+
+  async scanInsuranceCard(file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('Aucun fichier fourni');
+    }
+
+    const apiKey = process.env.GOOGLE_AI_API_KEY;
+    if (!apiKey || apiKey === 'CHANGE_ME') {
+      // Fallback simulation si pas de clé
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      return {
+        success: true,
+        data: { make: 'TOYOTA', model: 'HILUX', year: 2019, vin: 'AHTFR12G900SIMUL', plate: 'AA-12345' },
+        message: 'Simulation (Clé API manquante)',
+      };
+    }
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+      const prompt = `
+        Analyse cette photo de carte d'assurance automobile (OAVCT ou autre).
+        Extraits les informations suivantes sous forme d'un objet JSON pur, sans markdown :
+        {
+          "make": "LA MARQUE",
+          "model": "LE MODELE",
+          "year": 2024,
+          "vin": "NUMERO DE CHASSIS",
+          "plate": "PLAQUE",
+          "fuelType": "essence ou diesel",
+          "color": "couleur"
+        }
+        Si une info est illisible, mets null.
+      `;
+
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: file.buffer.toString('base64'),
+            mimeType: file.mimetype,
+          },
+        },
+      ]);
+
+      const responseText = result.response.text();
+      // Nettoyage de la réponse pour ne garder que le JSON
+      const jsonStr = responseText.replace(/```json|```/g, '').trim();
+      const extractedData = JSON.parse(jsonStr);
+
+      return {
+        success: true,
+        data: extractedData,
+        message: 'Carte analysée avec succès par Gemini AI',
+      };
+    } catch (error) {
+      console.error('Gemini Scan Error:', error);
+      throw new BadRequestException('Erreur lors de l\'analyse de l\'image par l\'IA');
+    }
   }
 }

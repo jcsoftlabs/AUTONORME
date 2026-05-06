@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useAuthStore } from '../../lib/store/useAuthStore';
 import { fetchAuthenticatedApi } from '../../lib/authenticated-api';
+import { VEHICLE_DATA, YEARS, VehicleMake } from '@autonorme/types';
 import styles from '../account.module.css';
 
 type VehiclePayload = {
@@ -289,19 +290,102 @@ export default function VehicleForm({ mode, vehicleId }: VehicleFormProps) {
         </div>
       </div>
 
+      {/* SECTION SCAN IA */}
+      <div className={styles.card} style={{ marginBottom: '1.5rem', background: '#f0f7ff', border: '1px dashed #0070f3' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ fontSize: '2rem' }}>📱</div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ margin: 0, color: '#0070f3' }}>Gagnez du temps avec l&apos;IA</h3>
+            <p style={{ margin: '0.3rem 0', fontSize: '0.9rem', color: '#666' }}>
+              Scannez votre carte d&apos;assurance pour remplir automatiquement les infos.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            className="btn btn-primary"
+            onClick={() => document.getElementById('scan-input')?.click()}
+            style={{ background: '#0070f3' }}
+          >
+            Scanner la carte
+          </button>
+          <input 
+            id="scan-input" 
+            type="file" 
+            accept="image/*" 
+            style={{ display: 'none' }} 
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              // Logique de scan à venir...
+              alert('Analyse de la carte en cours...');
+              // Simulation de remplissage après 2s
+              setTimeout(() => {
+                setForm(f => ({ ...f, make: 'Toyota', model: 'Hilux', year: '2019', vin: 'AHT1234567890' }));
+              }, 2000);
+            }}
+          />
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className={styles.card}>
         <div className={styles.formGrid}>
           <div className={styles.field}>
             <label className={styles.fieldLabel} htmlFor="make">{t('vehicle_form_make')}</label>
-            <input id="make" className={styles.input} value={String(form.make)} onChange={(e) => handleChange('make', e.target.value)} />
+            <select 
+              id="make" 
+              className={styles.select} 
+              value={String(form.make)} 
+              onChange={(e) => {
+                const make = e.target.value;
+                setForm(f => ({ ...f, make, model: '' }));
+              }}
+            >
+              <option value="">{t('vehicle_form_optional_select')}</option>
+              {Object.keys(VEHICLE_DATA).map(make => (
+                <option key={make} value={make}>{make}</option>
+              ))}
+              <option value="AUTRE">Autre marque</option>
+            </select>
           </div>
           <div className={styles.field}>
             <label className={styles.fieldLabel} htmlFor="model">{t('vehicle_form_model')}</label>
-            <input id="model" className={styles.input} value={String(form.model)} onChange={(e) => handleChange('model', e.target.value)} />
+            {form.make && form.make !== 'AUTRE' ? (
+              <select 
+                id="model" 
+                className={styles.select} 
+                value={String(form.model)} 
+                onChange={(e) => handleChange('model', e.target.value)}
+              >
+                <option value="">{t('vehicle_form_optional_select')}</option>
+                {(VEHICLE_DATA[form.make as VehicleMake] || []).map(model => (
+                  <option key={model} value={model}>{model}</option>
+                ))}
+                <option value="AUTRE">Autre modèle</option>
+              </select>
+            ) : (
+              <input 
+                id="model" 
+                className={styles.input} 
+                value={String(form.model)} 
+                onChange={(e) => handleChange('model', e.target.value)}
+                placeholder={form.make === 'AUTRE' ? "Saisir le modèle" : "Sélectionnez d'abord une marque"}
+                disabled={!form.make}
+              />
+            )}
           </div>
           <div className={styles.field}>
             <label className={styles.fieldLabel} htmlFor="year">{t('vehicle_form_year')}</label>
-            <input id="year" type="number" min="1990" max="2100" className={styles.input} value={String(form.year)} onChange={(e) => handleChange('year', e.target.value)} />
+            <select 
+              id="year" 
+              className={styles.select} 
+              value={String(form.year)} 
+              onChange={(e) => handleChange('year', e.target.value)}
+            >
+              <option value="">{t('vehicle_form_optional_select')}</option>
+              {YEARS.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
           </div>
           <div className={styles.field}>
             <label className={styles.fieldLabel} htmlFor="fuelType">{t('vehicle_form_fuel')}</label>

@@ -19,6 +19,12 @@ export enum ReminderStatus {
   DONE = 'DONE',
 }
 
+export enum PartCondition {
+  NEW = 'NEW',
+  USED = 'USED',
+  REFURBISHED = 'REFURBISHED',
+}
+
 export enum AppointmentStatus {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
