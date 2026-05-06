@@ -818,6 +818,13 @@
   position: relative;
 }
 
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 .title {
   font-size: 2.2rem;
   font-weight: 900;
@@ -826,6 +833,13 @@
   text-align: center;
   text-transform: uppercase;
   letter-spacing: -0.02em;
+}
+
+.titleUnderline {
+  width: 60px;
+  height: 4px;
+  background: #003B8E;
+  border-radius: 4px;
 }
 
 .scrollActions {
