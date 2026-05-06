@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import HeroSection from '../../components/sections/HeroSection';
+import ModelSelectionSection from '../../components/sections/ModelSelectionSection';
 import FeaturesSection from '../../components/sections/FeaturesSection';
 import StatsSection from '../../components/sections/StatsSection';
 import AutoBotPreviewSection from '../../components/sections/AutoBotPreviewSection';
@@ -20,6 +21,7 @@ export default function HomePage() {
     <main className={styles.homePage} style={{ fontFamily: 'var(--font-body)' }}>
       <Header />
       <HeroSection />
+      <ModelSelectionSection />
       <FeaturesSection />
       <StatsSection />
       <AutoBotPreviewSection />

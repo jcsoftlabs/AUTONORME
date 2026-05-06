@@ -12,6 +12,10 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/autonorme/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
     ],
   },
 
