@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -12,6 +12,13 @@ export default function Sidebar() {
     const segments = pathname.split('/').filter(Boolean);
     const currentPath = '/' + segments.slice(1).join('/');
     return currentPath === path || (path !== '/' && currentPath.startsWith(path));
+  };
+
+  const locale = useLocale();
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    window.location.href = `/${locale}/login`;
   };
 
   const navGroups = [
@@ -80,6 +87,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div style={{ padding: '1rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <button
+          onClick={handleLogout}
           style={{
             display: 'flex', alignItems: 'center', gap: '0.75rem',
             padding: '0.6rem 0.75rem', borderRadius: '8px',
