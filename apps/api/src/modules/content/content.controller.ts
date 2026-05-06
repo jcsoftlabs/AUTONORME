@@ -9,10 +9,6 @@ export class ContentController {
   @Public()
   @Get('featured-models')
   async getFeaturedModels() {
-    const models = await this.contentService.getFeaturedModels();
-    return {
-      success: true,
-      data: models,
-    };
+    return this.contentService.getFeaturedModels();
   }
 }
