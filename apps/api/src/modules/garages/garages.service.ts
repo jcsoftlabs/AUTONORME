@@ -43,9 +43,30 @@ export class GaragesService {
 
   async findById(id: string): Promise<Garage> {
     const garage = await this.db.garage.findUnique({ where: { id } });
-    if (!garage || !garage.isActive) {
+    if (!garage) {
       throw new NotFoundException({ code: ErrorCodes.GARAGE_NOT_FOUND, message: 'Garage introuvable' });
     }
     return garage;
+  }
+
+  // Admin Methods
+  async findAllAdmin(): Promise<Garage[]> {
+    return this.db.garage.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async verify(id: string, isVerified: boolean): Promise<Garage> {
+    return this.db.garage.update({
+      where: { id },
+      data: { isVerified },
+    });
+  }
+
+  async toggleActive(id: string, isActive: boolean): Promise<Garage> {
+    return this.db.garage.update({
+      where: { id },
+      data: { isActive },
+    });
   }
 }

@@ -1,0 +1,26 @@
+{
+  "Common": {
+    "title": "AUTONORME | Admin",
+    "dashboard": "Tablo bò",
+    "partners": "Patnè yo",
+    "garages": "Garaj yo",
+    "suppliers": "Founisè yo",
+    "content": "Kontni CMS",
+    "featuredModels": "Modèl Vedèt",
+    "users": "Itilizatè yo",
+    "settings": "Paramèt",
+    "logout": "Dekonekte",
+    "search": "Chèche...",
+    "loading": "Chaje...",
+    "error": "Yon erè rive"
+  },
+  "Dashboard": {
+    "welcome": "Byenveni, Administratè",
+    "stats": {
+      "totalUsers": "Total Itilizatè",
+      "activeGarages": "Garaj Aktif",
+      "pendingValidations": "Validasyon k ap tann",
+      "totalOrders": "Total Komand"
+    }
+  }
+}

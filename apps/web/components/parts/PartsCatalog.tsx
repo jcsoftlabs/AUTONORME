@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
 import { fetchApi } from '../../lib/api-client';
@@ -40,14 +41,22 @@ const categoryOptions = [
 export default function PartsCatalog() {
   const t = useTranslations('Parts');
   const locale = useLocale();
+  const searchParams = useSearchParams();
+  const makeParam = searchParams.get('make');
+  const modelParam = searchParams.get('model');
+  
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string>('ALL');
 
   const { data: parts, isLoading, error } = useQuery<Part[]>({
-    queryKey: ['parts', category],
+    queryKey: ['parts', category, makeParam, modelParam],
     queryFn: () =>
       fetchApi('/parts', {
-        params: category === 'ALL' ? undefined : { category },
+        params: {
+          ...(category !== 'ALL' ? { category } : {}),
+          ...(makeParam ? { make: makeParam } : {}),
+          ...(modelParam ? { model: modelParam } : {}),
+        },
       }),
   });
 

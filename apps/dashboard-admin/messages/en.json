@@ -1,0 +1,26 @@
+{
+  "Common": {
+    "title": "AUTONORME | Admin",
+    "dashboard": "Dashboard",
+    "partners": "Partners",
+    "garages": "Garages",
+    "suppliers": "Suppliers",
+    "content": "CMS Content",
+    "featuredModels": "Featured Models",
+    "users": "Users",
+    "settings": "Settings",
+    "logout": "Logout",
+    "search": "Search...",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
+  "Dashboard": {
+    "welcome": "Welcome, Administrator",
+    "stats": {
+      "totalUsers": "Total Users",
+      "activeGarages": "Active Garages",
+      "pendingValidations": "Pending Validations",
+      "totalOrders": "Total Orders"
+    }
+  }
+}

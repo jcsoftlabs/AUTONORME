@@ -23,9 +23,29 @@ export class PartsService {
   constructor(private readonly db: DatabaseService) {}
 
   async findAll(params: PartSearchParams): Promise<Part[]> {
-    const { category, page = 1, limit = 20 } = params;
+    const { make, model, category, page = 1, limit = 20 } = params;
+
+    const where: any = { isActive: true };
+
+    if (category) {
+      where.category = category;
+    }
+
+    // Filtrage dynamique par compatibilité véhicule (JSONB PostgreSQL)
+    if (make || model) {
+      where.compatibleVehicles = {
+        path: '$',
+        array_contains: [
+          {
+            ...(make ? { make } : {}),
+            ...(model ? { model } : {}),
+          },
+        ],
+      };
+    }
+
     return this.db.part.findMany({
-      where: { isActive: true, ...(category ? { category } : {}) },
+      where,
       include: { supplier: { select: { shopName: true, city: true } } },
       orderBy: { stockQty: 'desc' },
       skip: (page - 1) * limit,
