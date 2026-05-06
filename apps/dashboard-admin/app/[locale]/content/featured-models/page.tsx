@@ -63,12 +63,20 @@ export default function FeaturedModelsPage() {
         },
         body: formData
       });
-      const data = await response.json();
-      if (data.url) {
-        setEditingModel(prev => ({ ...prev, imageUrl: data.url }));
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Erreur serveur: ${response.status}`);
       }
-    } catch (error) {
-      alert('Erreur lors de l\'upload');
+
+      const data = await response.json();
+      if (data.data?.url || data.url) {
+        const imageUrl = data.data?.url || data.url;
+        setEditingModel(prev => ({ ...prev, imageUrl }));
+      }
+    } catch (error: any) {
+      console.error('Upload Error Details:', error);
+      alert(`Erreur lors de l'upload : ${error.message}`);
     } finally {
       setIsUploading(false);
     }

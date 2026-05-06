@@ -12,8 +12,8 @@ async function bootstrap(): Promise<void> {
 
   app.enableCors({
     origin: (origin: string | undefined, cb: (err: Error | null, allow: boolean) => void) => {
-      const allowed = (process.env['CORS_ORIGINS'] ?? 'http://localhost:3000').split(',');
-      if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      const allowed = (process.env['CORS_ORIGINS'] ?? 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,http://localhost:3004,http://localhost:3005').split(',');
+      if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin) || /localhost:\d+$/.test(origin)) {
         cb(null, true);
       } else {
         cb(new Error('Not allowed by CORS'), false);
