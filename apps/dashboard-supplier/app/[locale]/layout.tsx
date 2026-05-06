@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
 import SupplierGuard from '../../components/auth/SupplierGuard';
+import '../../styles/globals.css';
 
 export default async function LocaleLayout({
   children,

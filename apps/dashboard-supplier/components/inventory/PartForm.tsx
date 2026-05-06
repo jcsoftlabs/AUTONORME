@@ -62,7 +62,6 @@ export default function PartForm({ initialValues, onSubmit, onCancel }: PartForm
     name: 'compatibleVehicles',
   });
 
-  // État local pour l'ajout d'une nouvelle compatibilité
   const [newCompat, setNewCompat] = useState({ make: '' as VehicleMake | '', model: '', selectedYears: [] as number[] });
 
   const availableModels = useMemo(() => {
@@ -92,108 +91,123 @@ export default function PartForm({ initialValues, onSubmit, onCancel }: PartForm
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ background: 'white', padding: '2rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Nom de la pièce *</label>
-          <input {...register('name')} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-          {errors.name && <span style={{ color: 'red', fontSize: '0.8rem' }}>{errors.name.message}</span>}
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Marque (Fabricant)</label>
-          <input {...register('brand')} placeholder="ex: Bosch, Toyota" style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Catégorie *</label>
-          <select {...register('category')} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }}>
-            {Object.values(PartCategory).map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>État *</label>
-          <select {...register('condition')} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }}>
-            {Object.values(PartCondition).map((cond) => (
-              <option key={cond} value={cond}>{cond}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>SKU / Ref Interne</label>
-          <input {...register('sku')} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Prix (HTG) *</label>
-          <input type="number" {...register('priceHtg', { valueAsNumber: true })} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Quantité en Stock *</label>
-          <input type="number" {...register('stockQty', { valueAsNumber: true })} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-        </div>
-      </div>
-
-      <div>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Description détaillée</label>
-        <textarea {...register('description')} rows={4} style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-      </div>
-
-      <div>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Localisation (Entrepôt/Rayon) *</label>
-        <input {...register('location')} placeholder="ex: Entrepôt Delmas 33, Section A2" style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }} />
-      </div>
-
-      {/* SECTION IMAGES */}
-      <div style={{ border: '1px solid #eee', padding: '1.5rem', borderRadius: '8px', background: '#fcfcfc' }}>
-        <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#b45309' }}>Photos de la pièce</h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ width: '120px', height: '120px', border: '2px dashed #ccc', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'white' }}>
-            <span style={{ fontSize: '1.5rem' }}>+</span>
-            <span style={{ fontSize: '0.7rem' }}>Ajouter photo</span>
-          </div>
-          {/* Simulation d'une image ajoutée */}
-          <div style={{ position: 'relative', width: '120px', height: '120px', borderRadius: '8px', background: '#eee', overflow: 'hidden' }}>
-            <div style={{ width: '100%', height: '100%', background: 'url(https://res.cloudinary.com/autonorme/image/upload/v1/placeholder-part) center/cover' }} />
-            <button type="button" style={{ position: 'absolute', top: '5px', right: '5px', background: 'rgba(255,0,0,0.7)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '10px' }}>X</button>
-          </div>
-        </div>
-        <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '1rem' }}>Maximum 5 photos. Format JPG/PNG uniquement.</p>
-      </div>
-
-      {/* SECTION COMPATIBILITÉ EXPLICITE */}
-      <div style={{ border: '1px solid #eee', padding: '1.5rem', borderRadius: '8px', background: '#fcfcfc' }}>
-        <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#b45309' }}>Gestion de la Compatibilité Véhicule</h3>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="card-premium space-y-6">
+        <h2 className="text-xl font-bold text-gray-900 border-b border-gray-50 pb-4">Informations Générales</h2>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem', padding: '1rem', background: 'white', border: '1px solid #eee', borderRadius: '8px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Marque</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Nom de la pièce *</label>
+            <input 
+              {...register('name')} 
+              placeholder="Ex: Filtre à Huile Haute Performance"
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+            />
+            {errors.name && <span className="text-red-500 text-[10px] font-bold uppercase">{errors.name.message}</span>}
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Marque (Fabricant)</label>
+            <input 
+              {...register('brand')} 
+              placeholder="Ex: Bosch, Toyota, Denso" 
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Catégorie *</label>
+            <select 
+              {...register('category')} 
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none"
+            >
+              {Object.values(PartCategory).map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">État *</label>
+            <select 
+              {...register('condition')} 
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none"
+            >
+              {Object.values(PartCondition).map((cond) => (
+                <option key={cond} value={cond}>{cond}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">SKU / Ref Interne</label>
+            <input 
+              {...register('sku')} 
+              placeholder="Ex: OIL-FIL-001"
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Prix (HTG) *</label>
+            <div className="relative">
+              <input 
+                type="number" 
+                {...register('priceHtg', { valueAsNumber: true })} 
+                className="w-full p-3 pl-14 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all font-black" 
+              />
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">HTG</span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Quantité en Stock *</label>
+            <input 
+              type="number" 
+              {...register('stockQty', { valueAsNumber: true })} 
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all font-bold text-primary-600" 
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Localisation (Entrepôt/Rayon) *</label>
+          <input 
+            {...register('location')} 
+            placeholder="Ex: Entrepôt Delmas 33, Section A2" 
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" 
+          />
+        </div>
+      </div>
+
+      {/* COMPATIBILITÉ */}
+      <div className="card-premium space-y-6">
+        <h2 className="text-xl font-bold text-gray-900 border-b border-gray-50 pb-4">Compatibilité Véhicule</h2>
+        
+        <div className="p-6 bg-primary-50/50 rounded-2xl border border-primary-100 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-primary-900/40 uppercase tracking-widest">Marque</label>
               <select 
                 value={newCompat.make} 
                 onChange={(e) => setNewCompat({...newCompat, make: e.target.value as VehicleMake, model: ''})}
-                style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px' }}
+                className="w-full p-3 bg-white border border-primary-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none appearance-none font-bold text-primary-900"
               >
-                <option value="">Sélectionner une marque</option>
+                <option value="">Choisir...</option>
                 {Object.keys(VEHICLE_DATA).map(make => (
                   <option key={make} value={make}>{make}</option>
                 ))}
               </select>
             </div>
-            <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Modèle</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-primary-900/40 uppercase tracking-widest">Modèle</label>
               <select 
                 value={newCompat.model} 
                 onChange={(e) => setNewCompat({...newCompat, model: e.target.value})}
                 disabled={!newCompat.make}
-                style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '6px', background: !newCompat.make ? '#f9f9f9' : 'white' }}
+                className="w-full p-3 bg-white border border-primary-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none appearance-none font-bold text-primary-900 disabled:opacity-50"
               >
-                <option value="">Sélectionner un modèle</option>
+                <option value="">Choisir...</option>
                 {availableModels.map(model => (
                   <option key={model} value={model}>{model}</option>
                 ))}
@@ -201,23 +215,19 @@ export default function PartForm({ initialValues, onSubmit, onCancel }: PartForm
             </div>
           </div>
           
-          <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>Années compatibles</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', maxHeight: '100px', overflowY: 'auto', padding: '0.5rem', border: '1px solid #eee', borderRadius: '6px' }}>
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-primary-900/40 uppercase tracking-widest">Années compatibles</label>
+            <div className="flex flex-wrap gap-2 p-3 bg-white border border-primary-200 rounded-xl min-h-[60px]">
               {YEARS.map(year => (
                 <button
                   key={year}
                   type="button"
                   onClick={() => toggleYear(year)}
-                  style={{ 
-                    padding: '0.2rem 0.5rem', 
-                    fontSize: '0.75rem', 
-                    borderRadius: '4px', 
-                    border: '1px solid #ccc',
-                    background: newCompat.selectedYears.includes(year) ? '#1a1a1a' : 'white',
-                    color: newCompat.selectedYears.includes(year) ? 'white' : 'black',
-                    cursor: 'pointer'
-                  }}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                    newCompat.selectedYears.includes(year) 
+                      ? 'bg-primary-600 text-white shadow-md shadow-primary-200' 
+                      : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                  }`}
                 >
                   {year}
                 </button>
@@ -229,45 +239,49 @@ export default function PartForm({ initialValues, onSubmit, onCancel }: PartForm
             type="button" 
             onClick={addCompatibility}
             disabled={!newCompat.make || !newCompat.model || newCompat.selectedYears.length === 0}
-            style={{ 
-              padding: '0.8rem', 
-              background: '#28a745', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '6px', 
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              opacity: (!newCompat.make || !newCompat.model || newCompat.selectedYears.length === 0) ? 0.5 : 1
-            }}
+            className="w-full py-3 bg-primary-900 text-white rounded-xl font-bold hover:bg-black transition-all disabled:opacity-30 flex items-center justify-center gap-2"
           >
-            + Ajouter cette compatibilité
+            <span>➕</span> Ajouter cette compatibilité
           </button>
         </div>
 
-        {errors.compatibleVehicles && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.compatibleVehicles.message}</p>}
+        {errors.compatibleVehicles && <p className="text-red-500 text-[10px] font-bold uppercase">{errors.compatibleVehicles.message}</p>}
 
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {fields.map((field, index) => (
-            <li key={field.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.8rem', background: 'white', border: '1px solid #eee', borderRadius: '8px', marginBottom: '0.5rem' }}>
+            <div key={field.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl group hover:border-primary-200 transition-all">
               <div>
-                <span style={{ fontSize: '1rem', fontWeight: 700 }}>{field.make} {field.model}</span>
-                <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
+                <span className="text-sm font-black text-gray-900 uppercase">{field.make} {field.model}</span>
+                <div className="flex flex-wrap gap-1 mt-2">
                   {field.years.map(y => (
-                    <span key={y} style={{ fontSize: '0.7rem', background: '#f0f0f0', padding: '0.1rem 0.4rem', borderRadius: '3px' }}>{y}</span>
+                    <span key={y} className="text-[9px] font-bold bg-gray-50 text-gray-500 px-1.5 py-0.5 rounded uppercase">{y}</span>
                   ))}
                 </div>
               </div>
-              <button type="button" onClick={() => remove(index)} style={{ color: '#dc3545', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600 }}>Supprimer</button>
-            </li>
+              <button 
+                type="button" 
+                onClick={() => remove(index)} 
+                className="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+              >
+                ✕
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-        <button type="button" onClick={onCancel} style={{ padding: '0.8rem 2rem', background: '#eee', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+      <div className="flex flex-col md:flex-row gap-4 justify-end pt-6">
+        <button 
+          type="button" 
+          onClick={onCancel} 
+          className="px-8 py-4 text-gray-500 font-bold hover:bg-gray-100 rounded-2xl transition-colors order-2 md:order-1"
+        >
           {common('cancel')}
         </button>
-        <button type="submit" style={{ padding: '0.8rem 3rem', background: '#1a1a1a', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+        <button 
+          type="submit" 
+          className="px-12 py-4 bg-gold text-primary-900 font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-gold/20 hover:scale-105 active:scale-95 transition-all order-1 md:order-2"
+        >
           {common('save')}
         </button>
       </div>
