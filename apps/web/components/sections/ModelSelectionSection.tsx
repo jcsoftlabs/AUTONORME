@@ -76,7 +76,7 @@ export default function ModelSelectionSection() {
     <section className={styles.modelSelection}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Shop By Model</h2>
+          <h2 className={styles.title}>{t('shop_by_model_title')}</h2>
           <div className={styles.scrollActions}>
              <button onClick={() => scroll('left')} className={styles.scrollBtn}>←</button>
              <button onClick={() => scroll('right')} className={styles.scrollBtn}>→</button>
