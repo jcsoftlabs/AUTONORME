@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import Header from '../../../../components/layout/Header';
 import Footer from '../../../../components/layout/Footer';
+import BookingButton from '../../../../components/garages/BookingButton';
 import styles from '../../../../components/marketplace.module.css';
 
 type Garage = {
@@ -144,9 +145,11 @@ export default async function GarageDetailsPage({
               <p className={styles.panelText}>{t('book_desc')}</p>
 
               <div className={styles.ctaButtons}>
-                <Link href={`/${params.locale}/compte/login`} className="btn btn-primary" style={{ width: '100%' }}>
-                  {t('book_btn')}
-                </Link>
+                <BookingButton
+                  garageId={garage.id}
+                  garageName={garage.name}
+                  bookBtnLabel={t('book_btn')}
+                />
                 {telLink && (
                   <Link href={telLink} className={styles.secondaryLinkBtn}>
                     {t('call_cta')}
@@ -160,10 +163,6 @@ export default async function GarageDetailsPage({
                 <Link href={mapsLink} className={styles.secondaryLinkBtn} target="_blank" rel="noreferrer">
                   {t('directions_cta')}
                 </Link>
-              </div>
-
-              <div style={{ marginTop: '1rem' }} className={styles.panelText}>
-                {t('login_required')}
               </div>
             </div>
           </aside>
