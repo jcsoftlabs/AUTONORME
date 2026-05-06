@@ -803,73 +803,86 @@
 }
 
 /* --- Model Selection Section --- */
-.modelSection {
-  padding: 6rem 0;
-  background: #ffffff;
-  position: relative;
+.modelSelection {
+  padding: 80px 0;
+  background: white;
   overflow: hidden;
 }
 
-.scrollContainer {
-  position: relative;
-  margin: 0 -1rem;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 0 20px;
 }
 
-.scrollContainer::before,
-.scrollContainer::after {
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.scrollActions {
+  display: flex;
+  gap: 12px;
+}
+
+.scrollBtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  background: white;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.scrollBtn:hover {
+  background: #1a1a1a;
+  color: #f59e0b;
+  border-color: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.scrollWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.scrollWrapper::after {
   content: '';
   position: absolute;
   top: 0;
-  bottom: 0;
-  width: 100px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.scrollContainer::before {
-  left: 0;
-  background: linear-gradient(to right, white, transparent);
-}
-
-.scrollContainer::after {
   right: 0;
   background: linear-gradient(to left, white, transparent);
 }
 
-.sectionHeader {
-  text-align: center;
-  margin-bottom: 3.5rem;
+.scrollContainer {
+  overflow-x: auto;
+  padding: 20px 0;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
 }
 
-.sectionTitle {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--color-neutral-900);
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
-
-.titleUnderline {
-  width: 80px;
-  height: 4px;
-  background: var(--color-accent-gold);
-  margin: 1rem auto 0;
-  border-radius: var(--radius-full);
+.scrollContainer::-webkit-scrollbar {
+  display: none;
 }
 
 .modelGrid {
   display: flex;
-  overflow-x: auto;
-  gap: 2rem;
-  padding: 1rem 1rem 3rem;
-  scroll-snap-type: x mandatory;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-}
-
-.modelGrid::-webkit-scrollbar {
-  display: none;
+  gap: 30px;
+  padding: 0 40px 0 20px;
 }
 
 .modelCard {

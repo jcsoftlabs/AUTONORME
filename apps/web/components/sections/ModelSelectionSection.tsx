@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
@@ -20,6 +20,17 @@ export default function ModelSelectionSection() {
   const locale = useLocale();
   const [models, setModels] = useState<FeaturedModel[]>([]);
   const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 400;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     async function fetchModels() {
@@ -62,40 +73,46 @@ export default function ModelSelectionSection() {
   if (models.length === 0) return null;
 
   return (
-    <section className={styles.modelSection}>
-      <div className="container">
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>{t('shop_by_model_title')}</h2>
-          <div className={styles.titleUnderline}></div>
+    <section className={styles.modelSelection}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Shop By Model</h2>
+          <div className={styles.scrollActions}>
+             <button onClick={() => scroll('left')} className={styles.scrollBtn}>←</button>
+             <button onClick={() => scroll('right')} className={styles.scrollBtn}>→</button>
+          </div>
         </div>
 
-        <div className={styles.scrollContainer}>
-          <div className={styles.modelGrid}>
-            {models.map((model) => (
-              <Link 
-                key={model.id} 
-                href={`/${locale}/pieces?make=${model.filterMake}&model=${model.filterModel}`}
-                className={styles.modelCard}
-              >
-                <div className={styles.imageWrapper}>
-                  {model.imageUrl && (
-                    <Image 
-                      src={model.imageUrl} 
-                      alt={model.title || `${model.filterMake} ${model.filterModel}`}
-                      width={400}
-                      height={225}
-                      className={styles.modelImage}
-                    />
-                  )}
-                </div>
-                <div className={styles.modelInfo}>
-                  <h3 className={styles.modelName}>
-                    {model.title || `${model.filterMake} ${model.filterModel}`}
-                  </h3>
-                  <span className={styles.modelYears}>{model.years}</span>
-                </div>
-              </Link>
-            ))}
+        <div className={styles.scrollWrapper}>
+          <div className={styles.scrollContainer} ref={scrollContainerRef}>
+            <div className={styles.modelGrid}>
+              {models.map((model) => (
+                <Link
+                  key={model.id}
+                  href={`/pieces?make=${model.filterMake || ''}&model=${model.filterModel || ''}`}
+                  className={styles.modelCard}
+                >
+                  <div className={styles.imageWrapper}>
+                    {model.imageUrl ? (
+                      <Image
+                        src={model.imageUrl}
+                        alt={model.title || 'Modèle'}
+                        fill
+                        className={styles.modelImage}
+                      />
+                    ) : (
+                      <div className={styles.placeholderImage}>🚗</div>
+                    )}
+                  </div>
+                  <div className={styles.modelInfo}>
+                    <h3 className={styles.modelName}>
+                      {model.title || `${model.filterMake || ''} ${model.filterModel || ''}`.trim() || 'Modèle Auto'}
+                    </h3>
+                    <p className={styles.modelYear}>{model.years || 'Tous modèles'}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
