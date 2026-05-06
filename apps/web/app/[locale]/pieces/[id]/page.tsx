@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import Header from '../../../../components/layout/Header';
 import Footer from '../../../../components/layout/Footer';
+import AddToCartButton from '../../../../components/cart/AddToCartButton';
 import styles from '../../../../components/marketplace.module.css';
 
 type CompatibleVehicle = {
@@ -22,6 +23,7 @@ type Part = {
   id: string;
   name: string;
   category: string;
+  supplierId: string;
   supplier: Supplier;
   compatibleVehicles: CompatibleVehicle[];
   oemReference?: string | null;
@@ -166,9 +168,18 @@ export default async function PartDetailsPage({
             </div>
 
             <div className={styles.ctaButtons}>
-              <button className="btn btn-primary" style={{ width: '100%' }} disabled={part.stockQty === 0 && !part.importAvailable}>
-                {t('add_cart')}
-              </button>
+              <AddToCartButton 
+                item={{
+                  id: part.id,
+                  name: part.name,
+                  price: Number(part.priceHtg),
+                  quantity: 1,
+                  supplierId: part.supplierId,
+                  supplierName: part.supplier?.shopName
+                }}
+                disabled={part.stockQty === 0 && !part.importAvailable}
+                label={t('add_cart')}
+              />
               <Link href={`/${params.locale}/autobot`} className={styles.secondaryLinkBtn}>
                 {t('autobot_cta')}
               </Link>

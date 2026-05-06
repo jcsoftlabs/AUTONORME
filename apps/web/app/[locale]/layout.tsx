@@ -5,6 +5,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 import QueryProvider from '../../lib/query-provider';
+import CartFloatingButton from '../../components/cart/CartFloatingButton';
 
 // Polices AUTONORME (BLOC 1 — Identité)
 const poppins = Poppins({
@@ -72,6 +73,7 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
             {children}
+            <CartFloatingButton />
           </QueryProvider>
         </NextIntlClientProvider>
       </body>

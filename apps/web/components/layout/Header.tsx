@@ -6,6 +6,7 @@ import Image from 'next/image';
 import LanguageSwitcher from '../shared/LanguageSwitcher';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname } from 'next/navigation';
+import { useCartStore } from '../../lib/store/useCartStore';
 
 export default function Header() {
   const t = useTranslations('Header');
@@ -13,6 +14,12 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const itemCount = useCartStore((state) => state.getItemCount());
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isHomePage = pathname === '/fr' || pathname === '/ht' || pathname === '/en' || pathname === '/';
   const solidHeader = !isHomePage || isScrolled;
@@ -148,6 +155,43 @@ export default function Header() {
               <LanguageSwitcher isSolid={solidHeader} />
             </div>
             <Link
+              href={`/${locale}/panier`}
+              style={{
+                color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.5rem',
+                textDecoration: 'none',
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              {mounted && itemCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '0',
+                  right: '0',
+                  background: 'var(--color-accent-gold)',
+                  color: 'var(--color-primary-900)',
+                  fontSize: '0.65rem',
+                  fontWeight: 800,
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #FFFFFF'
+                }}>
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
               href={`/${locale}/compte/login`}
               style={{
                 color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
@@ -160,7 +204,7 @@ export default function Header() {
                 padding: '0.5rem',
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
