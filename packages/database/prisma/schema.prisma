@@ -712,3 +712,30 @@ model VehicleRiskFlag {
   @@index([vehicleId, isResolved])
   @@map("vehicle_risk_flags")
 }
+
+// ─────────────────────────────────────────────────────────
+// CONFIGURATION ET CONTENU DYNAMIQUE
+// ─────────────────────────────────────────────────────────
+
+/// Modèles de véhicules mis en avant sur la page d'accueil (Shop by Model)
+model FeaturedModel {
+  id          String   @id @default(uuid())
+  /// Nom affiché (ex: "4RUNNER 2010-2024")
+  title       String?  @unique
+  /// Plage d'années affichée (ex: "2010-2024")
+  years       String?
+  /// URL de l'image (Cloudinary ou externe)
+  imageUrl    String?
+  /// --- Champs techniques pour le filtrage ---
+  /// Marque à filtrer (ex: "TOYOTA")
+  filterMake  String?
+  /// Modèle à filtrer (ex: "4RUNNER")
+  filterModel String?
+  /// --- Fin champs techniques ---
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("featured_models")
+}
