@@ -57,11 +57,11 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       if (phone.replace(/\D/g, '').length !== 8) throw new Error(t('error_invalid_phone'));
-      await fetchApi('/auth/send-otp', {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({ phone: normalizedPhone }),
-      });
+      
+      // MODE FACTICE : On simule l'envoi au lieu d'appeler l'API
+      console.log('MODE FACTICE: Envoi OTP vers', normalizedPhone);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
       setStep(2);
     } catch (err: any) {
       setError(err.message || t('error_send_code'));
@@ -75,13 +75,22 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
     try {
-      const result = await fetchApi<{ accessToken: string; user: { id: string; phone: string; name?: string; role: string } }>('/auth/verify-otp', {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({ phone: normalizedPhone, code: otp }),
-      });
+      // MODE FACTICE : On accepte 123456 ou n'importe quoi si on veut bypasser
+      if (otp !== '123456') {
+        throw new Error("Code incorrect (Utilisez 123456 pour le test)");
+      }
 
-      login(buildStoredUser(result.user), result.accessToken);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // On crée un utilisateur factice pour la session
+      const mockUser = {
+        id: 'user-demo-' + Math.random().toString(36).substr(2, 9),
+        phone: normalizedPhone,
+        role: 'CLIENT',
+        name: 'Client Test',
+      };
+
+      login(buildStoredUser(mockUser), 'mock-jwt-token-for-demo');
       router.push(`/${locale}/compte`);
     } catch (err: any) {
       setError(err.message || t('error_verify_code'));

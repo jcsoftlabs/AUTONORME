@@ -7,7 +7,9 @@ interface FetchOptions extends RequestInit {
 export async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const { params, headers, ...customConfig } = options;
 
-  let url = `${API_URL}/api/v1${endpoint}`;
+  // Ensure we don't double /api/v1 if it's already in API_URL
+  const baseUrl = API_URL.endsWith('/api/v1') ? API_URL : `${API_URL}/api/v1`;
+  let url = `${baseUrl}${endpoint}`;
 
   if (params) {
     const searchParams = new URLSearchParams();
