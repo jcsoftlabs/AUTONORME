@@ -4,10 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useAuthStore } from '../../lib/store/useAuthStore';
 
 export default function SupplierLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations('Common');
+  const { user } = useAuthStore();
 
   const isActive = (path: string) => {
     const segments = pathname.split('/').filter(Boolean);
@@ -41,7 +43,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
               priority
             />
             <div className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black pl-1">
-              Supplier Portal
+              {user?.shopName || 'Supplier Portal'}
             </div>
           </Link>
         </div>

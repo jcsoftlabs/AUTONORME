@@ -39,36 +39,5 @@ export default function SupplierGuard({ children, locale }: SupplierGuardProps) 
     );
   }
 
-  return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      {/* Sidebar */}
-      <aside style={{ width: '280px', background: '#1a1a1a', color: 'white', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '2rem', borderBottom: '1px solid #333' }}>
-          <h2 style={{ fontSize: '1.2rem', color: '#d4af37', margin: 0 }}>AUTONORME Pro</h2>
-          <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem' }}>{user?.shopName}</p>
-        </div>
-        
-        <nav style={{ flex: 1, padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <a href={`/${locale}`} style={{ color: pathname === `/${locale}` ? 'white' : '#888', textDecoration: 'none', fontWeight: 600 }}>📊 Tableau de bord</a>
-          <a href={`/${locale}/inventory`} style={{ color: pathname.includes('/inventory') ? 'white' : '#888', textDecoration: 'none', fontWeight: 600 }}>📦 Inventaire</a>
-          <a href={`/${locale}/orders`} style={{ color: pathname.includes('/orders') ? 'white' : '#888', textDecoration: 'none', fontWeight: 600 }}>📝 Commandes</a>
-          <a href={`/${locale}/profile`} style={{ color: pathname.includes('/profile') ? 'white' : '#888', textDecoration: 'none', fontWeight: 600 }}>👤 Profil</a>
-        </nav>
-
-        <div style={{ padding: '2rem', borderTop: '1px solid #333' }}>
-          <button 
-            onClick={() => { logout(); router.push(`/${locale}/login`); }}
-            style={{ background: 'none', border: 'none', color: '#ff4d4d', cursor: 'pointer', padding: 0, fontSize: '0.9rem' }}
-          >
-            🚪 Déconnexion
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main style={{ flex: 1, background: '#f8f9fa', overflowY: 'auto' }}>
-        {children}
-      </main>
-    </div>
-  );
+  return <>{children}</>;
 }
