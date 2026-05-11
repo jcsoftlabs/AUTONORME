@@ -64,7 +64,6 @@ body {
 
 .supplier-main {
   flex: 1;
-  margin-left: 260px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
