@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useAuthStore } from '../../../../lib/store/useAuthStore';
@@ -33,7 +33,7 @@ export default function VehiculesPage() {
   const [error, setError] = useState('');
   const [busyVehicleId, setBusyVehicleId] = useState<string | null>(null);
 
-  const loadVehicles = () => {
+  const loadVehicles = useCallback(() => {
     if (!token) {
       setIsLoading(false);
       return Promise.resolve();
@@ -71,11 +71,11 @@ export default function VehiculesPage() {
       .then((data) => setVehicles(data))
       .catch((err: Error) => setError(err.message || t('vehicles_error')))
       .finally(() => setIsLoading(false));
-  };
+  }, [token, t]);
 
   useEffect(() => {
     void loadVehicles();
-  }, [token, t]);
+  }, [loadVehicles]);
 
   const primaryVehicle = useMemo(
     () => vehicles.find((vehicle) => vehicle.isPrimaryVehicle) || vehicles[0],
