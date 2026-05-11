@@ -1,0 +1,26 @@
+{
+  "Common": {
+    "title": "AUTONORME | Admin",
+    "dashboard": "Tableau de Bord",
+    "partners": "Partenaires",
+    "garages": "Garages",
+    "suppliers": "Fournisseurs",
+    "content": "Contenu CMS",
+    "featuredModels": "Modèles Vedettes",
+    "users": "Utilisateurs",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "search": "Rechercher...",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue"
+  },
+  "Dashboard": {
+    "welcome": "Bienvenue, Administrateur",
+    "stats": {
+      "totalUsers": "Utilisateurs Totaux",
+      "activeGarages": "Garages Actifs",
+      "pendingValidations": "Validations en attente",
+      "totalOrders": "Commandes Globales"
+    }
+  }
+}
