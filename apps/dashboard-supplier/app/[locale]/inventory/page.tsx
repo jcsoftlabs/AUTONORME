@@ -31,7 +31,15 @@ function InventoryContent() {
   const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
-  const [isAdding, setIsAdding] = useState(searchParams.get('add') === 'true');
+  const [isAdding, setIsAdding] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    if (searchParams.get('add') === 'true') {
+      setIsAdding(true);
+    }
+  }, [searchParams]);
 
   async function loadParts() {
     setLoading(true);
