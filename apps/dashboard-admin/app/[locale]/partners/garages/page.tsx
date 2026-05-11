@@ -12,6 +12,7 @@ interface Garage {
   specialties: string[];
   isVerified: boolean;
   isActive: boolean;
+  imageUrl: string | null;
   createdAt: string;
 }
 
@@ -95,7 +96,20 @@ export default function GaragesManagementPage() {
               <tbody className="divide-y divide-gray-50">
                 {Array.isArray(garages) && garages.map((garage) => (
                   <tr key={garage.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">{garage.name}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
+                          {garage.imageUrl ? (
+                            <img src={garage.imageUrl} alt={garage.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs">
+                              {garage.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <span className="font-medium text-gray-900">{garage.name}</span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-gray-500 text-sm">{garage.city || 'N/A'}</td>
                     <td className="px-6 py-4 text-gray-500 text-sm">
                       <div className="flex flex-wrap gap-1">

@@ -18,6 +18,7 @@ export default function AddGarageModal({ onClose, onSuccess }: AddGarageModalPro
     lng: -72.335,
     description: '',
     specialties: '',
+    imageUrl: '',
   });
   const [loading, setLoading] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -155,6 +156,25 @@ export default function AddGarageModal({ onClose, onSuccess }: AddGarageModalPro
                 placeholder="Toyota, Diesel, Électricité..."
                 className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition-all font-bold"
               />
+            </div>
+
+             {/* Photo */}
+             <div className="space-y-2 md:col-span-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Photo du Garage (URL optionnelle)</label>
+              <div className="flex gap-4 items-center">
+                <input
+                  type="text"
+                  value={formData.imageUrl}
+                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  placeholder="https://images.unsplash.com/photo-..."
+                  className="flex-1 p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition-all font-bold"
+                />
+                {formData.imageUrl && (
+                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
+                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Description */}
