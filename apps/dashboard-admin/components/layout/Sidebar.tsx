@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 
-export default function Sidebar() {
+export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const t = useTranslations('Common');
 
@@ -52,10 +52,12 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
+      isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+    }`}>
       {/* Logo */}
-      <div className="sidebar-logo">
-        <Link href="/" style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none' }}>
+      <div className="sidebar-logo flex justify-between items-center">
+        <Link href="/" onClick={onClose} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none' }}>
           <Image
             src="/log.png"
             alt="AUTONORME"
@@ -78,6 +80,7 @@ export default function Sidebar() {
             Admin Panel
           </div>
         </Link>
+        <button onClick={onClose} className="lg:hidden text-white/50 hover:text-white p-2">✕</button>
       </div>
 
       {/* Navigation */}

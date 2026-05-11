@@ -10,6 +10,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const t = useTranslations('Common');
   const { user } = useAuthStore();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isActive = (path: string) => {
     const segments = pathname.split('/').filter(Boolean);
@@ -26,9 +27,19 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
 
   return (
     <div className="supplier-layout">
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm transition-all"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="supplier-sidebar">
-        <div className="p-8">
+      <aside className={`supplier-sidebar fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="p-8 flex justify-between items-center">
           <Link href="/" className="flex flex-col gap-2 group decoration-transparent no-underline">
             <Image
               src="/log.png"
@@ -36,15 +47,14 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
               width={160}
               height={40}
               unoptimized
-              style={{ 
-                objectFit: 'contain'
-              }}
+              style={{ objectFit: 'contain' }}
               priority
             />
             <div className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black pl-1">
               {user?.shopName || 'Supplier Portal'}
             </div>
           </Link>
+          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-white/50 hover:text-white">✕</button>
         </div>
 
         <nav className="flex-1 mt-4">
@@ -52,6 +62,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
             <Link
               key={item.path}
               href={item.path}
+              onClick={() => setIsSidebarOpen(false)}
               className={`sidebar-link ${isActive(item.path) ? 'active' : ''}`}
             >
               <span className="text-xl">{item.icon}</span>
@@ -69,15 +80,25 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
       </aside>
 
       {/* Main Content */}
-      <main className="supplier-main">
-        <header className="supplier-header">
+      <main className="supplier-main flex-1">
+        <header className="supplier-header px-4 md:px-8">
           <div className="flex items-center gap-4">
+             <button 
+               onClick={() => setIsSidebarOpen(true)}
+               className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+             >
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                 <line x1="3" y1="12" x2="21" y2="12"></line>
+                 <line x1="3" y1="6" x2="21" y2="6"></line>
+                 <line x1="3" y1="18" x2="21" y2="18"></line>
+               </svg>
+             </button>
              <div className="h-8 w-[1px] bg-gray-200 hidden md:block"></div>
-             <span className="text-sm font-semibold text-gray-600">Bienvenue sur votre portail fournisseur</span>
+             <span className="text-sm font-semibold text-gray-600 hidden sm:inline">Bienvenue sur votre portail fournisseur</span>
           </div>
           
-          <div className="flex items-center gap-6">
-             <div className="flex flex-col items-end">
+          <div className="flex items-center gap-3 md:gap-6">
+             <div className="flex flex-col items-end hidden xs:flex">
                 <span className="text-xs font-bold text-gray-900">Espace Fournisseur</span>
                 <span className="text-[10px] text-green-600 font-bold uppercase tracking-widest">● Connecté</span>
              </div>
@@ -87,7 +108,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
           </div>
         </header>
 
-        <div className="p-8">
+        <div className="p-4 md:p-8">
           {children}
         </div>
       </main>
