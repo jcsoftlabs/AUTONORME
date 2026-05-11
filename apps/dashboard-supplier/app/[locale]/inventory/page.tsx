@@ -1,7 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { fetchApi } from '../../../lib/api-client';
 import PartForm from '../../../components/inventory/PartForm';
 import SupplierLayout from '@/components/layout/SupplierLayout';
@@ -17,11 +18,20 @@ type Part = {
 };
 
 export default function InventoryPage() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <InventoryContent />
+    </Suspense>
+  );
+}
+
+function InventoryContent() {
   const t = useTranslations('Supplier');
   const common = useTranslations('Common');
   const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
+  const searchParams = useSearchParams();
+  const [isAdding, setIsAdding] = useState(searchParams.get('add') === 'true');
 
   async function loadParts() {
     setLoading(true);

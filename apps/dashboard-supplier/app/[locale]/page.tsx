@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import SupplierLayout from '@/components/layout/SupplierLayout';
 
 export default function SupplierDashboardHome() {
@@ -25,9 +26,9 @@ export default function SupplierDashboardHome() {
              <button className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
                Exporter (.csv)
              </button>
-             <button className="btn-supplier flex items-center gap-2">
+             <Link href="/inventory?add=true" className="btn-supplier flex items-center gap-2 decoration-transparent">
                <span>➕</span> Ajouter une pièce
-             </button>
+             </Link>
           </div>
         </div>
         
