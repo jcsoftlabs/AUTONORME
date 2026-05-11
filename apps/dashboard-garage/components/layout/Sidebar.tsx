@@ -50,7 +50,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <aside className="admin-sidebar">
+    <aside className="admin-sidebar h-full">
       {/* Logo */}
       <div className="sidebar-logo">
         <Link href="/" onClick={handleLinkClick} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none', flex: 1 }}>
