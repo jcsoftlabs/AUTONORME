@@ -1,6 +1,6 @@
 'use client';
 
-import GarageLayout from '../../components/layout/GarageLayout';
+import GarageLayout from '@/components/layout/GarageLayout';
 
 export default function GarageDashboardHome() {
   const stats = [
