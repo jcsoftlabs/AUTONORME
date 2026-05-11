@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <Sidebar isSidebarOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Zone de contenu principale */}
-      <div className="flex-1 flex flex-col lg:pl-72 transition-all duration-300">
+      <div className="flex-1 flex flex-col transition-all duration-300">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
         <main className="p-4 md:p-8 mt-16">
           {children}

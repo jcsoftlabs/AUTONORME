@@ -6,7 +6,7 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const t = useTranslations('Common');
 
   return (
-    <header className="fixed top-0 right-0 left-0 lg:left-72 h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 z-40 px-4 md:px-8 flex items-center justify-between">
+    <header className="fixed top-0 right-0 left-0 lg:left-[260px] h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 z-40 px-4 md:px-8 flex items-center justify-between transition-all duration-300">
       <div className="flex items-center gap-4">
         <button 
           onClick={onMenuClick}
