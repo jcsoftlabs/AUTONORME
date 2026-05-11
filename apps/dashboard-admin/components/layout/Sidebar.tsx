@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 
@@ -54,15 +55,29 @@ export default function Sidebar() {
     <aside className="admin-sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="sidebar-logo-icon">A</div>
-        <div>
-          <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1rem', color: 'white', letterSpacing: '-0.01em' }}>
-            AUTO<span style={{ color: 'var(--color-gold)' }}>NORME</span>
-          </div>
-          <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: '1px' }}>
+        <Link href="/" style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none' }}>
+          <Image
+            src="/log.png"
+            alt="AUTONORME"
+            width={160}
+            height={40}
+            style={{ 
+              objectFit: 'contain',
+              filter: 'brightness(0) invert(1)' // Make it white for dark sidebar
+            }}
+            priority
+          />
+          <div style={{ 
+            fontSize: '0.6rem', 
+            textTransform: 'uppercase', 
+            letterSpacing: '0.2em', 
+            color: 'rgba(255,255,255,0.4)', 
+            fontWeight: 800,
+            paddingLeft: '4px'
+          }}>
             Admin Panel
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation */}

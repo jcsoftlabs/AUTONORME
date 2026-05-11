@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -26,15 +27,22 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
       {/* Sidebar */}
       <aside className="supplier-sidebar">
         <div className="p-8">
-          <div className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-primary-900 text-xl font-black">
-              S
+          <Link href="/" className="flex flex-col gap-2 group decoration-transparent no-underline">
+            <Image
+              src="/log.png"
+              alt="AUTONORME"
+              width={160}
+              height={40}
+              style={{ 
+                objectFit: 'contain',
+                filter: 'brightness(0) invert(1)' 
+              }}
+              priority
+            />
+            <div className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black pl-1">
+              Supplier Portal
             </div>
-            <div className="font-bold text-white tracking-tight">
-              AUTO<span className="text-gold">parts</span>
-              <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Supplier Portal</div>
-            </div>
-          </div>
+          </Link>
         </div>
 
         <nav className="flex-1 mt-4">
