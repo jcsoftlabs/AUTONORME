@@ -171,7 +171,10 @@ function InventoryContent() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <p className="font-black text-gray-900">{Number(part.priceHtg).toLocaleString()} <span className="text-[10px] text-gray-400">HTG</span></p>
+                            <p className="font-black text-gray-900">
+                              {mounted ? Number(part.priceHtg).toLocaleString() : ''} 
+                              <span className="text-[10px] text-gray-400 ml-1">HTG</span>
+                            </p>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button className="text-primary-600 font-bold hover:text-primary-800 transition-colors text-sm">Modifier</button>

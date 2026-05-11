@@ -37,8 +37,10 @@ export default function RendezVousPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (!token) return;
     setLoading(true);
 
@@ -124,9 +126,9 @@ export default function RendezVousPage() {
                   {appt.garage?.name ?? 'Garage non précisé'}
                 </div>
                 <div className={styles.itemMeta}>
-                  {new Date(appt.scheduledAt).toLocaleDateString('fr-FR', {
+                  {mounted ? new Date(appt.scheduledAt).toLocaleDateString('fr-FR', {
                     weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
-                  })}
+                  }) : '...'}
                 </div>
                 {appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED' && (
                   <button

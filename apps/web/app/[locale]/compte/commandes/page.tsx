@@ -43,8 +43,10 @@ export default function CommandesPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (!token) return;
     setLoading(true);
 
@@ -127,12 +129,12 @@ export default function CommandesPage() {
                 {order.items?.map(i => i.partName ?? 'Pièce').join(', ') || 'Commande de pièces'}
               </h3>
               <div style={{ fontSize: '0.8rem', color: 'var(--color-neutral-500)', marginTop: '0.25rem' }}>
-                {new Date(order.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {mounted ? new Date(order.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '...'}
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-neutral-900)' }}>
-                {order.totalPrice.toLocaleString('fr-FR')} HTG
+                {mounted ? order.totalPrice.toLocaleString('fr-FR') : '...'} HTG
               </div>
               <span className={`${styles.badge} ${STATUS_STYLE[order.status] ?? styles.badge}`}>
                 {STATUS_LABEL[order.status] ?? order.status}
@@ -142,7 +144,7 @@ export default function CommandesPage() {
           <div style={{ fontSize: '0.9375rem', color: 'var(--color-neutral-600)' }}>
             {order.items?.map((item, i) => (
               <p key={i} style={{ margin: '0.25rem 0' }}>
-                {item.quantity}× {item.partName ?? 'Pièce'} — {item.unitPrice.toLocaleString('fr-FR')} HTG/u
+                {item.quantity}× {item.partName ?? 'Pièce'} — {mounted ? item.unitPrice.toLocaleString('fr-FR') : '...'} HTG/u
               </p>
             ))}
           </div>

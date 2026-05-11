@@ -5,6 +5,8 @@ import {
   AreaChart, Area, BarChart, Bar, Cell, PieChart, Pie
 } from 'recharts';
 
+import { useState, useEffect } from 'react';
+
 const data = [
   { name: 'Lun', users: 40, orders: 24, garages: 10 },
   { name: 'Mar', users: 30, orders: 13, garages: 12 },
@@ -18,6 +20,14 @@ const data = [
 const COLORS = ['#1565C0', '#F59E0B', '#6B7280'];
 
 export default function AnalyticsCharts() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[400px]" />;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Platform Growth Chart */}
