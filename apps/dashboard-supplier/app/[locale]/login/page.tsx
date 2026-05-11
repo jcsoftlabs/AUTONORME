@@ -47,7 +47,7 @@ export default function SupplierLoginPage() {
         <div className="bg-white rounded-[2.5rem] p-10 shadow-2xl border border-white/20">
           <div className="flex flex-col items-center mb-10">
             <div className="mb-6">
-              <Image src="/log.png" alt="AUTONORME" width={220} height={60} style={{ objectFit: 'contain' }} />
+              <Image src="/log.png" alt="AUTONORME" width={220} height={60} unoptimized style={{ objectFit: 'contain' }} />
             </div>
             <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Portail Fournisseur</h1>
             <p className="text-gray-400 text-sm font-medium mt-1 uppercase tracking-widest text-[10px]">Autonorme Business</p>

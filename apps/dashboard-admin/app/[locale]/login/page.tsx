@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-            <Image src="/log.png" alt="AUTONORME" width={220} height={60} style={{ objectFit: 'contain' }} />
+            <Image src="/log.png" alt="AUTONORME" width={220} height={60} unoptimized style={{ objectFit: 'contain' }} />
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111827', fontFamily: 'Poppins, sans-serif', margin: 0 }}>
             Administration

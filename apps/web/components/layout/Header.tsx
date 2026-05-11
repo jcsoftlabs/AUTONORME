@@ -144,6 +144,7 @@ export default function Header() {
                 alt="AUTONORME"
                 width={200}
                 height={50}
+                unoptimized
                 style={{ objectFit: 'contain' }}
                 priority
               />

@@ -37,7 +37,7 @@ export default function GarageLoginPage() {
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div className="flex justify-center mb-6">
-          <Image src="/log.png" alt="AUTONORME" width={220} height={60} style={{ objectFit: 'contain' }} />
+          <Image src="/log.png" alt="AUTONORME" width={220} height={60} unoptimized style={{ objectFit: 'contain' }} />
         </div>
         <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Portail Garage</h2>
         <p className="mt-2 text-sm text-gray-500">Connectez-vous pour gérer vos interventions</p>
