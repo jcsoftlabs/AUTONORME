@@ -33,6 +33,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
               alt="AUTONORME"
               width={160}
               height={40}
+              unoptimized
               style={{ 
                 objectFit: 'contain',
                 filter: 'brightness(0) invert(1)' 
