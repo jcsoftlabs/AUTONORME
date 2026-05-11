@@ -63,8 +63,7 @@ export default function Sidebar() {
             height={40}
             unoptimized
             style={{ 
-              objectFit: 'contain',
-              filter: 'brightness(0) invert(1)' // Make it white for dark sidebar
+              objectFit: 'contain'
             }}
             priority
           />
