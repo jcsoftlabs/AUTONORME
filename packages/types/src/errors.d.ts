@@ -1,0 +1,53 @@
+export declare const ErrorCodes: {
+    readonly AUTH_OTP_INVALID: "AUTONORME_AUTH_OTP_INVALID";
+    readonly AUTH_OTP_EXPIRED: "AUTONORME_AUTH_OTP_EXPIRED";
+    readonly AUTH_TOKEN_EXPIRED: "AUTONORME_AUTH_TOKEN_EXPIRED";
+    readonly AUTH_TOKEN_INVALID: "AUTONORME_AUTH_TOKEN_INVALID";
+    readonly AUTH_UNAUTHORIZED: "AUTONORME_AUTH_UNAUTHORIZED";
+    readonly AUTH_FORBIDDEN: "AUTONORME_AUTH_FORBIDDEN";
+    readonly VEHICLE_NOT_FOUND: "AUTONORME_VEHICLE_NOT_FOUND";
+    readonly VEHICLE_VIN_INVALID: "AUTONORME_VEHICLE_VIN_INVALID";
+    readonly VEHICLE_ALREADY_EXISTS: "AUTONORME_VEHICLE_ALREADY_EXISTS";
+    readonly GARAGE_NOT_FOUND: "AUTONORME_GARAGE_NOT_FOUND";
+    readonly GARAGE_UNAVAILABLE: "AUTONORME_GARAGE_UNAVAILABLE";
+    readonly GARAGE_SLOT_TAKEN: "AUTONORME_GARAGE_SLOT_TAKEN";
+    readonly APPOINTMENT_NOT_FOUND: "AUTONORME_APPOINTMENT_NOT_FOUND";
+    readonly APPOINTMENT_CANNOT_CANCEL: "AUTONORME_APPOINTMENT_CANNOT_CANCEL";
+    readonly PART_NOT_FOUND: "AUTONORME_PART_NOT_FOUND";
+    readonly PART_INCOMPATIBLE: "AUTONORME_PART_INCOMPATIBLE";
+    readonly PART_OUT_OF_STOCK: "AUTONORME_PART_OUT_OF_STOCK";
+    readonly PART_IMPORT_ONLY: "AUTONORME_PART_IMPORT_ONLY";
+    readonly ORDER_NOT_FOUND: "AUTONORME_ORDER_NOT_FOUND";
+    readonly ORDER_PAYMENT_FAILED: "AUTONORME_ORDER_PAYMENT_FAILED";
+    readonly ORDER_CANNOT_CANCEL: "AUTONORME_ORDER_CANNOT_CANCEL";
+    readonly AUTOBOT_CONTEXT_MISSING: "AUTONORME_AUTOBOT_CONTEXT_MISSING";
+    readonly AUTOBOT_RATE_LIMIT: "AUTONORME_AUTOBOT_RATE_LIMIT";
+    readonly AUTOBOT_ESCALATION_REQUIRED: "AUTONORME_AUTOBOT_ESCALATION_REQUIRED";
+    readonly WHATSAPP_SEND_FAILED: "AUTONORME_WHATSAPP_SEND_FAILED";
+    readonly WHATSAPP_SIGNATURE_INVALID: "AUTONORME_WHATSAPP_SIGNATURE_INVALID";
+    readonly VALIDATION_ERROR: "AUTONORME_VALIDATION_ERROR";
+    readonly NOT_FOUND: "AUTONORME_NOT_FOUND";
+    readonly INTERNAL_ERROR: "AUTONORME_INTERNAL_ERROR";
+    readonly RATE_LIMIT_EXCEEDED: "AUTONORME_RATE_LIMIT_EXCEEDED";
+};
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
+export interface ApiError {
+    success: false;
+    error: {
+        code: ErrorCode;
+        message: string;
+        details?: Record<string, unknown>;
+        timestamp: string;
+    };
+}
+export interface ApiSuccess<T> {
+    success: true;
+    data: T;
+    meta?: {
+        page?: number;
+        limit?: number;
+        total?: number;
+    };
+}
+export type ApiResponse<T> = ApiSuccess<T> | ApiError;
+//# sourceMappingURL=errors.d.ts.map
