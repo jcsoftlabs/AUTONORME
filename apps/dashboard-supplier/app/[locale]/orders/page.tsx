@@ -23,7 +23,10 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     async function loadOrders() {
       setLoading(true);
       try {
@@ -54,6 +57,15 @@ export default function OrdersPage() {
     }
     loadOrders();
   }, []);
+
+  const formatDate = (dateStr: string) => {
+    if (!mounted) return '';
+    return new Date(dateStr).toLocaleDateString('fr-FR', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  };
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
@@ -94,7 +106,7 @@ export default function OrdersPage() {
                     <div>
                       <h3 className="text-lg font-black text-gray-900 uppercase tracking-tight">{order.orderNumber}</h3>
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                        Reçue le {new Date(order.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        Reçue le {formatDate(order.createdAt)}
                       </p>
                     </div>
                   </div>
