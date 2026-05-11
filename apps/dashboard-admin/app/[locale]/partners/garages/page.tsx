@@ -23,9 +23,15 @@ export default function GaragesManagementPage() {
   const loadGarages = async () => {
     try {
       const data = await fetchApi('/garages/admin/all');
-      setGarages(data);
+      if (Array.isArray(data)) {
+        setGarages(data);
+      } else {
+        console.error('API did not return an array:', data);
+        setGarages([]);
+      }
     } catch (error) {
       console.error('Failed to load garages:', error);
+      setGarages([]);
     } finally {
       setLoading(false);
     }
@@ -87,7 +93,7 @@ export default function GaragesManagementPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {garages.map((garage) => (
+                {Array.isArray(garages) && garages.map((garage) => (
                   <tr key={garage.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-gray-900">{garage.name}</td>
                     <td className="px-6 py-4 text-gray-500 text-sm">{garage.city || 'N/A'}</td>
