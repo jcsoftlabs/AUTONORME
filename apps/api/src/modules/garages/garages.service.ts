@@ -70,6 +70,8 @@ export class GaragesService {
       where: { id },
       data: { isActive },
     });
+  }
+
   async create(dto: CreateGarageDto): Promise<Garage> {
     const slug = slugify(dto.name, { lower: true, strict: true }) + '-' + Math.random().toString(36).substr(2, 5);
     

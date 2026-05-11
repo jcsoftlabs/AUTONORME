@@ -5,12 +5,12 @@ export class CreateGarageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  address: string;
+  address!: string;
 
   @ApiProperty()
   @IsString()
@@ -19,11 +19,11 @@ export class CreateGarageDto {
 
   @ApiProperty()
   @IsNumber()
-  lat: number;
+  lat!: number;
 
   @ApiProperty()
   @IsNumber()
-  lng: number;
+  lng!: number;
 
   @ApiProperty()
   @IsString()
