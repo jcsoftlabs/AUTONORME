@@ -69,6 +69,40 @@ export default function DashboardOverview() {
     if (!token) return;
 
     setLoading(true);
+
+    // MODE FACTICE : Si on utilise le jeton de démo, on renvoie des données de test
+    if (token === 'mock-jwt-token-for-demo') {
+      setTimeout(() => {
+        setVehicles([{
+          id: 'v-demo',
+          make: 'Toyota',
+          model: 'Corolla',
+          year: 2020,
+          isPrimaryVehicle: true,
+          openRemindersCount: 1,
+          maintenanceRecordsCount: 3
+        }]);
+        setAppointments([{
+          id: 'demo-1',
+          scheduledAt: new Date().toISOString(),
+          status: 'CONFIRMED',
+          garage: { name: 'Garage Moderne' },
+          vehicle: { make: 'Toyota', model: 'Corolla', year: 2020 }
+        }]);
+        setOrders([]);
+        setNotifications([{
+          id: 'n-demo',
+          title: 'Bienvenue sur AUTONORME',
+          body: 'Profitez de nos services pour entretenir votre véhicule.',
+          type: 'INFO',
+          isRead: false,
+          createdAt: new Date().toISOString()
+        }]);
+        setLoading(false);
+      }, 600);
+      return;
+    }
+
     Promise.all([
       fetchAuthenticatedApi<VehicleSummary[]>('/vehicles', token).catch(() => []),
       fetchAuthenticatedApi<Appointment[]>('/appointments', token).catch(() => []),

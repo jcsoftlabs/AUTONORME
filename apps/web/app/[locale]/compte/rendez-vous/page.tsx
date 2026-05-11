@@ -41,6 +41,31 @@ export default function RendezVousPage() {
   useEffect(() => {
     if (!token) return;
     setLoading(true);
+
+    // MODE FACTICE : Si on utilise le jeton de démo, on renvoie des données de test
+    if (token === 'mock-jwt-token-for-demo') {
+      setTimeout(() => {
+        setAppointments([
+          {
+            id: 'demo-1',
+            scheduledAt: new Date().toISOString(),
+            status: 'CONFIRMED',
+            garage: { name: 'Garage Moderne', address: 'Delmas 15' },
+            vehicle: { make: 'Toyota', model: 'Corolla', year: 2020 }
+          },
+          {
+            id: 'demo-2',
+            scheduledAt: new Date(Date.now() + 86400000 * 2).toISOString(),
+            status: 'PENDING',
+            garage: { name: 'Expert Auto', address: 'Pétion-Ville' },
+            vehicle: { make: 'Toyota', model: 'Corolla', year: 2020 }
+          }
+        ]);
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
     fetchAuthenticatedApi<Appointment[]>('/appointments', token)
       .then(setAppointments)
       .catch(() => setError('Impossible de charger les rendez-vous.'))
