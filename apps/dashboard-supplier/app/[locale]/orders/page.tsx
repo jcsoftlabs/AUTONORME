@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
-import SupplierLayout from '@/components/layout/SupplierLayout';
 
 type Order = {
   id: string;
@@ -82,7 +81,6 @@ export default function OrdersPage() {
   };
 
   return (
-    <SupplierLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Commandes Reçues</h1>
@@ -175,6 +173,5 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
-    </SupplierLayout>
   );
 }

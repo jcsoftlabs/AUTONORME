@@ -5,7 +5,6 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { fetchApi } from '../../../lib/api-client';
 import PartForm from '../../../components/inventory/PartForm';
-import SupplierLayout from '@/components/layout/SupplierLayout';
 
 type Part = {
   id: string;
@@ -69,7 +68,6 @@ function InventoryContent() {
   };
 
   return (
-    <SupplierLayout>
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -189,6 +187,5 @@ function InventoryContent() {
           </div>
         )}
       </div>
-    </SupplierLayout>
   );
 }

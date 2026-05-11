@@ -26,6 +26,7 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
           placeholder={t('search')}
           className="w-full bg-gray-50 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-orange-500 transition-all outline-none"
         />
+        </div>
       </div>
 
       {/* User Actions */}

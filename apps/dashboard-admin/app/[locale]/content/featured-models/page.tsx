@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import AdminLayout from '@/components/layout/AdminLayout';
 
 interface FeaturedModel {
   id: string;
@@ -134,7 +133,7 @@ export default function FeaturedModelsPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -325,6 +324,6 @@ export default function FeaturedModelsPage() {
           </div>
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 }

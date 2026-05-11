@@ -51,13 +51,15 @@ export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boo
     },
   ];
 
+  const withLocale = (path: string) => (path === '/' ? `/${locale}` : `/${locale}${path}`);
+
   return (
     <aside className={`admin-sidebar fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:sticky lg:top-0 h-screen ${
       isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
     }`}>
       {/* Logo */}
       <div className="sidebar-logo flex justify-between items-center">
-        <Link href="/" onClick={onClose} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none' }}>
+        <Link href={`/${locale}`} onClick={onClose} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none' }}>
           <Image
             src="/log.png"
             alt="AUTONORME"
@@ -91,7 +93,7 @@ export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boo
             {group.items.map((item) => (
               <Link
                 key={item.path}
-                href={item.path}
+                href={withLocale(item.path)}
                 className={`sidebar-link ${isActive(item.path) ? 'active' : ''}`}
               >
                 <span className="sidebar-link-icon">{item.icon}</span>

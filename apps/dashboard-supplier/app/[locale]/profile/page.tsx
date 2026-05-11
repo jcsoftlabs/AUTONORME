@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { useAuthStore } from '../../../lib/store/useAuthStore';
 import { useState } from 'react';
-import SupplierLayout from '@/components/layout/SupplierLayout';
 
 export default function SupplierProfilePage() {
   const t = useTranslations('Supplier');
@@ -27,7 +26,6 @@ export default function SupplierProfilePage() {
   };
 
   return (
-    <SupplierLayout>
       <div className="space-y-8 max-w-3xl">
         {/* Header */}
         <div>
@@ -161,6 +159,5 @@ export default function SupplierProfilePage() {
           </button>
         </div>
       </div>
-    </SupplierLayout>
   );
 }

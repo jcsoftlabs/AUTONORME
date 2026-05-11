@@ -44,6 +44,8 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
     },
   ];
 
+  const withLocale = (path: string) => (path === '/' ? `/${locale}` : `/${locale}${path}`);
+
   const handleLogout = () => {
     localStorage.removeItem('garage_token');
     window.location.href = `/${locale}/login`;
@@ -53,7 +55,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
     <aside className="admin-sidebar h-full">
       {/* Logo */}
       <div className="sidebar-logo">
-        <Link href="/" onClick={handleLinkClick} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none', flex: 1 }}>
+        <Link href={`/${locale}`} onClick={handleLinkClick} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none', flex: 1 }}>
           <Image
             src="/log.png"
             alt="AUTONORME"
@@ -95,7 +97,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
             {group.items.map((item) => (
               <Link
                 key={item.path}
-                href={item.path}
+                href={withLocale(item.path)}
                 onClick={handleLinkClick}
                 className={`sidebar-link ${isActive(item.path) ? 'active' : ''}`}
               >

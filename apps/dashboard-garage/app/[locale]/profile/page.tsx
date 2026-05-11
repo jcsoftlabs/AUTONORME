@@ -1,10 +1,7 @@
 'use client';
 
-import GarageLayout from '../../components/layout/GarageLayout';
-
 export default function GarageProfilePage() {
   return (
-    <GarageLayout>
       <div className="max-w-4xl space-y-8">
         <div className="flex items-end justify-between">
           <div className="flex items-center gap-6">
@@ -77,6 +74,5 @@ export default function GarageProfilePage() {
           </div>
         </div>
       </div>
-    </GarageLayout>
   );
 }

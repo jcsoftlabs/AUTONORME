@@ -4,14 +4,16 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useAuthStore } from '../../lib/store/useAuthStore';
 
 export default function SupplierLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations('Common');
+  const locale = useLocale();
   const { user } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isLoginPage = pathname.includes('/login');
 
   const isActive = (path: string) => {
     const segments = pathname.split('/').filter(Boolean);
@@ -25,6 +27,10 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
     { label: 'Commandes reçues', path: '/orders', icon: '🛒' },
     { label: 'Mon Profil', path: '/profile', icon: '👤' },
   ];
+
+  if (isLoginPage) return <>{children}</>;
+
+  const withLocale = (path: string) => (path === '/' ? `/${locale}` : `/${locale}${path}`);
 
   return (
     <div className="supplier-layout">
@@ -41,7 +47,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-8 flex justify-between items-center">
-          <Link href="/" className="flex flex-col gap-2 group decoration-transparent no-underline">
+          <Link href={`/${locale}`} className="flex flex-col gap-2 group decoration-transparent no-underline">
             <Image
               src="/log.png"
               alt="AUTONORME"
@@ -60,9 +66,9 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
 
         <nav className="flex-1 mt-4">
           {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              href={item.path}
+              <Link
+                key={item.path}
+              href={withLocale(item.path)}
               onClick={() => setIsSidebarOpen(false)}
               className={`sidebar-link ${isActive(item.path) ? 'active' : ''}`}
             >

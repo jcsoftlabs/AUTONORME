@@ -1,5 +1,3 @@
-import AdminLayout from '@/components/layout/AdminLayout';
-
 export default function SuppliersManagementPage() {
   const suppliers = [
     { id: '1', name: 'Parts Haiti', city: 'Port-au-Prince', category: 'Pièces Neuves', status: 'Approved', activeItems: 124 },
@@ -8,7 +6,6 @@ export default function SuppliersManagementPage() {
   ];
 
   return (
-    <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -53,7 +50,6 @@ export default function SuppliersManagementPage() {
           </table>
         </div>
       </div>
-    </AdminLayout>
   );
 }
 

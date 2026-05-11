@@ -1,12 +1,10 @@
 import { useTranslations } from 'next-intl';
-import AdminLayout from '@/components/layout/AdminLayout';
 import AnalyticsCharts from '@/components/dashboard/AnalyticsCharts';
 
 export default function AdminDashboardPage() {
   const t = useTranslations('Dashboard');
 
   return (
-    <AdminLayout>
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{t('welcome')}</h1>
@@ -30,11 +28,12 @@ export default function AdminDashboardPage() {
             <h2 className="text-xl font-semibold mb-6">Dernières demandes d&apos;inscription</h2>
             <p className="text-gray-400 italic">Aucune demande en attente.</p>
           </div>
+          <div className="admin-card min-h-[300px]">
             <h2 className="text-xl font-semibold mb-6">Activité récente</h2>
-<p className="text-gray-400 italic">Journal d&apos;activité vide.</p>
+            <p className="text-gray-400 italic">Journal d&apos;activité vide.</p>
+          </div>
         </div>
       </div>
-    </AdminLayout>
   );
 }
 

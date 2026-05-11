@@ -1,7 +1,5 @@
 'use client';
 
-import GarageLayout from '@/components/layout/GarageLayout';
-
 export default function GarageDashboardHome() {
   const stats = [
     { label: 'Rendez-vous du jour', value: '5', trend: '+2', color: 'bg-primary-50', icon: '📅' },
@@ -11,7 +9,6 @@ export default function GarageDashboardHome() {
   ];
 
   return (
-    <GarageLayout>
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Bienvenue, Garage Moderne !</h1>
@@ -88,6 +85,5 @@ export default function GarageDashboardHome() {
           </div>
         </div>
       </div>
-    </GarageLayout>
   );
 }

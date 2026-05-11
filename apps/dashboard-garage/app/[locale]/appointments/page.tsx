@@ -1,25 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import GarageLayout from '@/components/layout/GarageLayout';
-
 export default function AppointmentsPage() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const appointments = [
     { id: 'RDV-001', customer: 'Jean Destine', vehicle: 'Toyota Corolla 2020', service: 'Vidange + Filtres', date: '11 Mai 2026', time: '14:30', status: 'Confirmé' },
     { id: 'RDV-002', customer: 'Marie Laurent', vehicle: 'Toyota RAV4 2019', service: 'Diagnostic Freins', date: '12 Mai 2026', time: '09:00', status: 'En attente' },
     { id: 'RDV-003', customer: 'Pierre Louis', vehicle: 'Honda CR-V 2022', service: 'Révision Générale', date: '10 Mai 2026', time: '11:00', status: 'Terminé' },
   ];
 
-  if (!mounted) return <div className="h-screen bg-gray-50 animate-pulse" />;
-
   return (
-    <GarageLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -73,6 +61,5 @@ export default function AppointmentsPage() {
           </table>
         </div>
       </div>
-    </GarageLayout>
   );
 }

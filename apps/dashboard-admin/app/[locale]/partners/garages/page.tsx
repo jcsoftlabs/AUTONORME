@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import AdminLayout from '@/components/layout/AdminLayout';
 import { fetchApi } from '@/lib/api';
 import AddGarageModal from '@/components/partners/AddGarageModal';
 
@@ -56,7 +55,6 @@ export default function GaragesManagementPage() {
   };
 
   return (
-    <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -138,7 +136,6 @@ export default function GaragesManagementPage() {
           )}
         </div>
       </div>
-    </AdminLayout>
   );
 }
 

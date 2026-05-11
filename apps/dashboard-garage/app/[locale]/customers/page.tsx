@@ -1,7 +1,5 @@
 'use client';
 
-import GarageLayout from '@/components/layout/GarageLayout';
-
 export default function CustomersPage() {
   const customers = [
     { id: 'C-001', name: 'Jean Destine', phone: '+509 3456 7890', visits: 4, lastVisit: '10 Mai 2026', vehicle: 'Toyota Corolla' },
@@ -10,7 +8,6 @@ export default function CustomersPage() {
   ];
 
   return (
-    <GarageLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -54,6 +51,5 @@ export default function CustomersPage() {
           ))}
         </div>
       </div>
-    </GarageLayout>
   );
 }

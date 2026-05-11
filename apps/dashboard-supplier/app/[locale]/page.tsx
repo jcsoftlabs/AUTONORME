@@ -2,10 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import SupplierLayout from '@/components/layout/SupplierLayout';
+import { useLocale } from 'next-intl';
 
 export default function SupplierDashboardHome() {
   const t = useTranslations('Supplier');
+  const locale = useLocale();
 
   const stats = [
     { label: 'Ventes du mois', value: '142,500', unit: 'HTG', trend: '+12%', color: 'border-gold', icon: '💰' },
@@ -15,7 +16,6 @@ export default function SupplierDashboardHome() {
   ];
 
   return (
-    <SupplierLayout>
       <div className="space-y-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -26,7 +26,7 @@ export default function SupplierDashboardHome() {
              <button className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
                Exporter (.csv)
              </button>
-             <Link href="/inventory?add=true" className="btn-supplier flex items-center gap-2 decoration-transparent">
+             <Link href={`/${locale}/inventory?add=true`} className="btn-supplier flex items-center gap-2 decoration-transparent">
                <span>➕</span> Ajouter une pièce
              </Link>
           </div>
@@ -100,6 +100,5 @@ export default function SupplierDashboardHome() {
           </div>
         </div>
       </div>
-    </SupplierLayout>
   );
 }
