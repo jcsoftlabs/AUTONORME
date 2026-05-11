@@ -31,6 +31,27 @@ export default function ProfilPage() {
   useEffect(() => {
     if (!token) return;
     setLoading(true);
+
+    // MODE FACTICE : Si on utilise le jeton de démo, on renvoie des données de test
+    if (token === 'mock-jwt-token-for-demo') {
+      setTimeout(() => {
+        const mockData: UserProfile = {
+          id: 'u-demo',
+          firstName: 'Client',
+          lastName: 'Test',
+          name: 'Client Test',
+          phone: '+509 0000 0000',
+          email: 'client.test@autonorme.com',
+          locale: 'fr',
+          createdAt: new Date(Date.now() - 86400000 * 30).toISOString()
+        };
+        setProfile(mockData);
+        setForm({ name: mockData.name ?? '', locale: mockData.locale ?? 'fr' });
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
     fetchAuthenticatedApi<UserProfile>('/users/me', token)
       .then(data => {
         setProfile(data);

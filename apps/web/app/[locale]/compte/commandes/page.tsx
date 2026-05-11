@@ -47,6 +47,35 @@ export default function CommandesPage() {
   useEffect(() => {
     if (!token) return;
     setLoading(true);
+
+    // MODE FACTICE : Si on utilise le jeton de démo, on renvoie des données de test
+    if (token === 'mock-jwt-token-for-demo') {
+      setTimeout(() => {
+        setOrders([
+          {
+            id: 'ord-demo-1',
+            status: 'SHIPPED',
+            totalPrice: 12500,
+            createdAt: new Date().toISOString(),
+            items: [
+              { partName: 'Plaquettes de frein (Brembo)', quantity: 1, unitPrice: 12500 }
+            ]
+          },
+          {
+            id: 'ord-demo-2',
+            status: 'DELIVERED',
+            totalPrice: 4500,
+            createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+            items: [
+              { partName: 'Filtre à huile (Genuine)', quantity: 2, unitPrice: 2250 }
+            ]
+          }
+        ]);
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
     fetchAuthenticatedApi<Order[]>('/orders', token)
       .then(setOrders)
       .catch(() => setError('Impossible de charger les commandes.'))

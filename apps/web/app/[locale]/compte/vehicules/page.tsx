@@ -42,6 +42,31 @@ export default function VehiculesPage() {
     setIsLoading(true);
     setError('');
 
+    // MODE FACTICE : Si on utilise le jeton de démo, on renvoie des données de test
+    if (token === 'mock-jwt-token-for-demo') {
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          setVehicles([{
+            id: 'v-demo',
+            make: 'Toyota',
+            model: 'Corolla',
+            year: 2020,
+            vin: '1NXBR32E...DEMO',
+            fuelType: 'essence',
+            mileage: 45000,
+            primaryCity: 'Port-au-Prince',
+            primaryZone: 'Delmas',
+            vehicleScore: 85,
+            isPrimaryVehicle: true,
+            openRemindersCount: 1,
+            maintenanceRecordsCount: 3
+          }]);
+          setIsLoading(false);
+          resolve();
+        }, 500);
+      });
+    }
+
     return fetchAuthenticatedApi<VehicleSummary[]>('/vehicles', token)
       .then((data) => setVehicles(data))
       .catch((err: Error) => setError(err.message || t('vehicles_error')))
