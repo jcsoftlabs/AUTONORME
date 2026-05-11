@@ -5,10 +5,14 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const t = useTranslations('Common');
   const locale = useLocale();
+
+  const handleLinkClick = () => {
+    if (onClose) onClose();
+  };
 
   const isActive = (path: string) => {
     const segments = pathname.split('/').filter(Boolean);
@@ -49,7 +53,7 @@ export default function Sidebar() {
     <aside className="admin-sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <Link href="/" style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none' }}>
+        <Link href="/" onClick={handleLinkClick} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textDecoration: 'none', flex: 1 }}>
           <Image
             src="/log.png"
             alt="AUTONORME"
@@ -72,6 +76,15 @@ export default function Sidebar() {
             Garage Portal
           </div>
         </Link>
+        <button 
+          onClick={onClose}
+          className="lg:hidden p-2 text-white/50 hover:text-white transition-colors"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
 
       {/* Navigation */}
@@ -83,6 +96,7 @@ export default function Sidebar() {
               <Link
                 key={item.path}
                 href={item.path}
+                onClick={handleLinkClick}
                 className={`sidebar-link ${isActive(item.path) ? 'active' : ''}`}
               >
                 <span className="sidebar-link-icon">{item.icon}</span>

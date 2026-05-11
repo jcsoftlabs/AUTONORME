@@ -274,8 +274,28 @@ body {
   background: linear-gradient(135deg, var(--color-primary-900) 0%, var(--color-primary-600) 100%);
 }
 
-/* ── Scrollbar ───────────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-primary-200); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-primary-400); }
+/* ── Responsive Adjustments ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    width: 280px;
+  }
+  .admin-main {
+    margin-left: 0;
+  }
+  .admin-header {
+    padding: 0 1rem;
+  }
+  .admin-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-card {
+    padding: 1rem;
+  }
+  .admin-card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+}
