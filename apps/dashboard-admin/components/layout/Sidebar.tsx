@@ -52,7 +52,7 @@ export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boo
   ];
 
   return (
-    <aside className={`admin-sidebar fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
+    <aside className={`admin-sidebar fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:sticky lg:top-0 h-screen ${
       isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
     }`}>
       {/* Logo */}
