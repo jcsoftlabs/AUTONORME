@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
@@ -91,15 +92,8 @@ export default function AdminLoginPage() {
       }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            width: '64px', height: '64px',
-            background: 'linear-gradient(135deg, #1565C0, #003B8E)',
-            borderRadius: '18px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 1rem',
-            boxShadow: '0 8px 24px rgba(21,101,192,0.3)',
-          }}>
-            <span style={{ color: '#F59E0B', fontSize: '1.8rem', fontWeight: 900, fontFamily: 'Poppins, sans-serif' }}>A</span>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+            <Image src="/log.png" alt="AUTONORME" width={220} height={60} style={{ objectFit: 'contain' }} />
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111827', fontFamily: 'Poppins, sans-serif', margin: 0 }}>
             Administration

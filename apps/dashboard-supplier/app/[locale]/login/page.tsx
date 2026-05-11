@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../../../lib/store/useAuthStore';
 import { useLocale } from 'next-intl';
@@ -45,8 +46,8 @@ export default function SupplierLoginPage() {
       <div className="w-full max-w-[440px] px-6 relative z-10 animate-in fade-in zoom-in duration-500">
         <div className="bg-white rounded-[2.5rem] p-10 shadow-2xl border border-white/20">
           <div className="flex flex-col items-center mb-10">
-            <div className="w-16 h-16 bg-gold rounded-2xl flex items-center justify-center text-primary-900 text-3xl font-black shadow-xl shadow-gold/20 mb-6">
-              S
+            <div className="mb-6">
+              <Image src="/log.png" alt="AUTONORME" width={220} height={60} style={{ objectFit: 'contain' }} />
             </div>
             <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Portail Fournisseur</h1>
             <p className="text-gray-400 text-sm font-medium mt-1 uppercase tracking-widest text-[10px]">Autonorme Business</p>
