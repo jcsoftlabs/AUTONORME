@@ -412,6 +412,7 @@ model Garage {
   isActive     Boolean  @default(true)
   rating       Float?
   totalReviews Int      @default(0)
+  imageUrl     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

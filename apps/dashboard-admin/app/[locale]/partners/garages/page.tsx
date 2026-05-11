@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import { fetchApi } from '@/lib/api';
+import AddGarageModal from '@/components/partners/AddGarageModal';
 
 interface Garage {
   id: string;
@@ -17,6 +18,7 @@ interface Garage {
 export default function GaragesManagementPage() {
   const [garages, setGarages] = useState<Garage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadGarages = async () => {
     try {
@@ -54,7 +56,20 @@ export default function GaragesManagementPage() {
             <h1 className="text-2xl font-bold text-gray-900">Gestion des Garages</h1>
             <p className="text-gray-500 text-sm">Validez et gérez le réseau de garages partenaires.</p>
           </div>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <span>➕</span> Nouveau Garage
+          </button>
         </div>
+
+        {isModalOpen && (
+          <AddGarageModal 
+            onClose={() => setIsModalOpen(false)} 
+            onSuccess={loadGarages} 
+          />
+        )}
 
         {/* Table */}
         <div className="admin-card !p-0 overflow-hidden">

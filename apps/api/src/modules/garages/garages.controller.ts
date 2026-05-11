@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards, Patch, Body } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Patch, Body, Post } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { GaragesService } from './garages.service';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
@@ -6,6 +6,7 @@ import { Role } from '@autonorme/types';
 import { Public } from '../../shared/decorators/public.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../shared/guards/roles.guard';
+import { CreateGarageDto } from './dto/create-garage.dto';
 
 @ApiTags('garages')
 @ApiBearerAuth()
@@ -48,6 +49,13 @@ export class GaragesController {
   @ApiOperation({ summary: 'Vérifier/Dé-vérifier un garage (Admin)' })
   verify(@Param('id') id: string, @Body('isVerified') isVerified: boolean) {
     return this.garagesService.verify(id, isVerified);
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Post()
+  @ApiOperation({ summary: 'Créer un nouveau garage (Admin)' })
+  create(@Body() dto: CreateGarageDto) {
+    return this.garagesService.create(dto);
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)

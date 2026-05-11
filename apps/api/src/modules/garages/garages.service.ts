@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import type { Garage } from '@prisma/client';
 import { ErrorCodes } from '@autonorme/types';
+import { CreateGarageDto } from './dto/create-garage.dto';
+import slugify from 'slugify';
 
 export interface GarageSearchParams {
   lat?: number;
@@ -67,6 +69,17 @@ export class GaragesService {
     return this.db.garage.update({
       where: { id },
       data: { isActive },
+    });
+  async create(dto: CreateGarageDto): Promise<Garage> {
+    const slug = slugify(dto.name, { lower: true, strict: true }) + '-' + Math.random().toString(36).substr(2, 5);
+    
+    return this.db.garage.create({
+      data: {
+        ...dto,
+        slug,
+        isActive: true,
+        isVerified: true, // Admin-created garages are verified by default
+      },
     });
   }
 }
