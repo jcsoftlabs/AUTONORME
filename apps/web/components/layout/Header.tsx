@@ -191,33 +191,154 @@ export default function Header() {
               <LanguageSwitcher isSolid={solidHeader} />
             </div>
 
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen((value) => !value)}
-              className="nav-desktop"
-              aria-label={t('menu')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.55rem',
-                minHeight: '44px',
-                padding: '0.58rem 0.95rem',
-                borderRadius: '999px',
-                background: solidHeader ? 'rgba(15, 23, 42, 0.05)' : 'rgba(255,255,255,0.12)',
-                border: solidHeader ? '1px solid rgba(15, 23, 42, 0.08)' : '1px solid rgba(255,255,255,0.2)',
-                color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
-                cursor: 'pointer',
-                fontWeight: 800,
-                fontSize: '0.9rem',
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-              <span>{t('menu')}</span>
-            </button>
+            <div style={{ position: 'relative' }} className="nav-desktop">
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen((value) => !value)}
+                aria-label={t('menu')}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.55rem',
+                  minHeight: '44px',
+                  padding: '0.58rem 0.95rem',
+                  borderRadius: '999px',
+                  background: solidHeader ? 'rgba(15, 23, 42, 0.05)' : 'rgba(255,255,255,0.12)',
+                  border: solidHeader ? '1px solid rgba(15, 23, 42, 0.08)' : '1px solid rgba(255,255,255,0.2)',
+                  color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  fontSize: '0.9rem',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+                <span>{t('menu')}</span>
+              </button>
+
+              {/* ── Dropdown Minimaliste (Sous le bouton Menu) ── */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 0.75rem)',
+                  left: '0',
+                  zIndex: 1000,
+                  width: '320px',
+                  background: '#FFFFFF',
+                  borderRadius: '1.25rem',
+                  border: '1px solid rgba(15, 23, 42, 0.1)',
+                  boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)',
+                  opacity: isMenuOpen ? 1 : 0,
+                  visibility: isMenuOpen ? 'visible' : 'hidden',
+                  transform: isMenuOpen ? 'translateY(0)' : 'translateY(-10px)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  overflow: 'hidden',
+                }}
+              >
+                <ul style={{ listStyle: 'none', margin: 0, padding: '0.75rem' }}>
+                  {utilityLinks.map((link) => (
+                    <li key={link.href}>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.85rem',
+                            padding: '0.85rem 1rem',
+                            color: 'var(--color-neutral-800)',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            borderRadius: '0.75rem',
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <span style={{ display: 'flex', color: 'var(--color-primary-900)' }}>
+                            {link.icon === 'phone' && (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z" />
+                              </svg>
+                            )}
+                          </span>
+                          <span>{link.label}</span>
+                        </a>
+                      ) : (
+                        <Link
+                          href={`/${locale}${link.href}`}
+                          onClick={() => setIsMenuOpen(false)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.85rem',
+                            padding: '0.85rem 1rem',
+                            color: 'var(--color-neutral-800)',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            borderRadius: '0.75rem',
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <span style={{ display: 'flex', color: 'var(--color-primary-900)' }}>
+                            {link.icon === 'support' && (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                              </svg>
+                            )}
+                            {link.icon === 'blog' && (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                              </svg>
+                            )}
+                          </span>
+                          <span>{link.label}</span>
+                          <span style={{ marginLeft: 'auto', color: 'var(--color-neutral-400)', fontSize: '0.8rem' }}>›</span>
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+
+                  <li style={{ height: '1px', background: 'rgba(15, 23, 42, 0.06)', margin: '0.5rem 1rem' }} />
+
+                  {navLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={`/${locale}${link.href}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '0.85rem 1rem',
+                          color: 'var(--color-neutral-800)',
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                          fontSize: '0.9rem',
+                          borderRadius: '0.75rem',
+                          transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <span>{link.label}</span>
+                        <span style={{ color: 'var(--color-neutral-400)', fontSize: '0.8rem' }}>›</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
 
             <Link
               href={`/${locale}/compte/login`}
@@ -291,125 +412,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ── Dropdown Minimaliste (Sous le bouton Menu) ─────────────────── */}
-      <div
-        style={{
-          position: 'fixed',
-          top: isScrolled ? '5.25rem' : '7.25rem', // S'adapte si le header est réduit ou non
-          right: '2rem',
-          zIndex: 1000,
-          width: '320px',
-          background: '#FFFFFF',
-          borderRadius: '1.25rem',
-          border: '1px solid rgba(15, 23, 42, 0.1)',
-          boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)',
-          opacity: isMenuOpen ? 1 : 0,
-          visibility: isMenuOpen ? 'visible' : 'hidden',
-          transform: isMenuOpen ? 'translateY(0)' : 'translateY(-10px)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          overflow: 'hidden',
-        }}
-      >
-        <ul style={{ listStyle: 'none', margin: 0, padding: '0.75rem' }}>
-          {utilityLinks.map((link) => (
-            <li key={link.href}>
-              {link.external ? (
-                <a
-                  href={link.href}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.85rem',
-                    padding: '0.85rem 1rem',
-                    color: 'var(--color-neutral-800)',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    borderRadius: '0.75rem',
-                    transition: 'background 0.2s',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <span style={{ display: 'flex', color: 'var(--color-primary-900)' }}>
-                    {link.icon === 'phone' && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z" />
-                      </svg>
-                    )}
-                  </span>
-                  <span>{link.label}</span>
-                </a>
-              ) : (
-                <Link
-                  href={`/${locale}${link.href}`}
-                  onClick={() => setIsMenuOpen(false)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.85rem',
-                    padding: '0.85rem 1rem',
-                    color: 'var(--color-neutral-800)',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    borderRadius: '0.75rem',
-                    transition: 'background 0.2s',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <span style={{ display: 'flex', color: 'var(--color-primary-900)' }}>
-                    {link.icon === 'support' && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                      </svg>
-                    )}
-                    {link.icon === 'blog' && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                      </svg>
-                    )}
-                  </span>
-                  <span>{link.label}</span>
-                  <span style={{ marginLeft: 'auto', color: 'var(--color-neutral-400)', fontSize: '0.8rem' }}>›</span>
-                </Link>
-              )}
-            </li>
-          ))}
-
-          <li style={{ height: '1px', background: 'rgba(15, 23, 42, 0.06)', margin: '0.5rem 1rem' }} />
-
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={`/${locale}${link.href}`}
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0.85rem 1rem',
-                  color: 'var(--color-neutral-800)',
-                  textDecoration: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  borderRadius: '0.75rem',
-                  transition: 'background 0.2s',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-              >
-                <span>{link.label}</span>
-                <span style={{ color: 'var(--color-neutral-400)', fontSize: '0.8rem' }}>›</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
 
       <style>{`
         @media (max-width: 1024px) {
