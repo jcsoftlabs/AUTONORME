@@ -211,6 +211,8 @@
   line-height: 1;
   letter-spacing: -0.04em;
   text-shadow: 0 6px 18px rgba(0, 0, 0, 0.34);
+  text-align: center;
+  width: 100%;
 }
 
 .heroIntro {
@@ -1565,7 +1567,8 @@
   }
 
   .heroSimpleTitle {
-    max-width: 9ch;
+    max-width: 100%;
+    text-align: center;
   }
 
   .heroSelectorCardSimple {
