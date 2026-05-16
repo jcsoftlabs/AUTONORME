@@ -291,177 +291,53 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ── Overlay sombre derrière le drawer ───────────────────── */}
+      {/* ── Dropdown Minimaliste (Sous le bouton Menu) ─────────────────── */}
       <div
-        onClick={() => setIsMenuOpen(false)}
         style={{
           position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.45)',
-          zIndex: 998,
+          top: isScrolled ? '5.25rem' : '7.25rem', // S'adapte si le header est réduit ou non
+          right: '2rem',
+          zIndex: 1000,
+          width: '320px',
+          background: '#FFFFFF',
+          borderRadius: '1.25rem',
+          border: '1px solid rgba(15, 23, 42, 0.1)',
+          boxShadow: '0 20px 40px rgba(15, 23, 42, 0.12)',
           opacity: isMenuOpen ? 1 : 0,
           visibility: isMenuOpen ? 'visible' : 'hidden',
-          transition: 'opacity 0.25s ease, visibility 0.25s ease',
-          backdropFilter: 'blur(2px)',
-        }}
-      />
-
-      {/* ── Drawer plein écran (style référence) ─────────────────── */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 999,
-          background: '#FFFFFF',
-          display: 'flex',
-          flexDirection: 'column',
-          transform: isMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          overflowY: 'auto',
+          transform: isMenuOpen ? 'translateY(0)' : 'translateY(-10px)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflow: 'hidden',
         }}
       >
-        {/* ── Top bar : ✕ Menu / Account / Cart ── */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '2px solid var(--color-primary-900)',
-            padding: '0 1.25rem',
-            minHeight: '3.5rem',
-            flexShrink: 0,
-            background: '#FFFFFF',
-          }}
-        >
-          {/* Bouton fermer */}
-          <button
-            onClick={() => setIsMenuOpen(false)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--color-primary-900)',
-              fontWeight: 800,
-              fontSize: '0.82rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              padding: '0.5rem',
-            }}
-          >
-            {/* Croix ✕ */}
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-            {t('menu')}
-          </button>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            {/* Account */}
-            <Link
-              href={`/${locale}/compte/login`}
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                textDecoration: 'none',
-                color: 'var(--color-primary-900)',
-                fontWeight: 800,
-                fontSize: '0.82rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                padding: '0.5rem',
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              {t('login')}
-            </Link>
-
-            {/* Cart */}
-            <Link
-              href={`/${locale}/panier`}
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                textDecoration: 'none',
-                color: 'var(--color-primary-900)',
-                fontWeight: 800,
-                fontSize: '0.82rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                padding: '0.5rem',
-                position: 'relative',
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="9" cy="21" r="1" />
-                <circle cx="20" cy="21" r="1" />
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-              </svg>
-              {mounted && itemCount > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '2px',
-                    right: '2px',
-                    background: 'var(--color-accent-gold)',
-                    color: 'var(--color-primary-900)',
-                    fontSize: '0.6rem',
-                    fontWeight: 800,
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {itemCount}
-                </span>
-              )}
-              <span style={{ background: 'var(--color-primary-900)', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800 }}>
-                {mounted ? itemCount : 0}
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        {/* ── Liste des liens ── */}
-        <ul style={{ listStyle: 'none', margin: 0, padding: 0, flex: 1 }}>
+        <ul style={{ listStyle: 'none', margin: 0, padding: '0.75rem' }}>
           {utilityLinks.map((link) => (
-            <li key={link.href} style={{ borderBottom: '1px solid #e5e7eb' }}>
+            <li key={link.href}>
               {link.external ? (
                 <a
                   href={link.href}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '1.1rem',
-                    minHeight: '4rem',
-                    padding: '0 1.5rem',
-                    color: '#111827',
+                    gap: '0.85rem',
+                    padding: '0.85rem 1rem',
+                    color: 'var(--color-neutral-800)',
                     textDecoration: 'none',
                     fontWeight: 600,
-                    fontSize: '1rem',
+                    fontSize: '0.9rem',
+                    borderRadius: '0.75rem',
+                    transition: 'background 0.2s',
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                 >
-                  {link.icon === 'phone' && (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-900)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                  )}
+                  <span style={{ display: 'flex', color: 'var(--color-primary-900)' }}>
+                    {link.icon === 'phone' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    )}
+                  </span>
                   <span>{link.label}</span>
                 </a>
               ) : (
@@ -471,39 +347,44 @@ export default function Header() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '1.1rem',
-                    minHeight: '4rem',
-                    padding: '0 1.5rem',
-                    color: '#111827',
+                    gap: '0.85rem',
+                    padding: '0.85rem 1rem',
+                    color: 'var(--color-neutral-800)',
                     textDecoration: 'none',
                     fontWeight: 600,
-                    fontSize: '1rem',
+                    fontSize: '0.9rem',
+                    borderRadius: '0.75rem',
+                    transition: 'background 0.2s',
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                 >
-                  {link.icon === 'support' && (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-900)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3" />
-                      <line x1="12" y1="17" x2="12.01" y2="17" />
-                    </svg>
-                  )}
-                  {link.icon === 'blog' && (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-900)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                      <line x1="8" y1="7" x2="16" y2="7" />
-                      <line x1="8" y1="11" x2="16" y2="11" />
-                    </svg>
-                  )}
+                  <span style={{ display: 'flex', color: 'var(--color-primary-900)' }}>
+                    {link.icon === 'support' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    )}
+                    {link.icon === 'blog' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      </svg>
+                    )}
+                  </span>
                   <span>{link.label}</span>
-                  <span style={{ marginLeft: 'auto', color: 'var(--color-primary-900)', fontSize: '1.1rem' }}>›</span>
+                  <span style={{ marginLeft: 'auto', color: 'var(--color-neutral-400)', fontSize: '0.8rem' }}>›</span>
                 </Link>
               )}
             </li>
           ))}
 
+          <li style={{ height: '1px', background: 'rgba(15, 23, 42, 0.06)', margin: '0.5rem 1rem' }} />
+
           {navLinks.map((link) => (
-            <li key={link.href} style={{ borderBottom: '1px solid #e5e7eb' }}>
+            <li key={link.href}>
               <Link
                 href={`/${locale}${link.href}`}
                 onClick={() => setIsMenuOpen(false)}
@@ -511,16 +392,19 @@ export default function Header() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  minHeight: '4rem',
-                  padding: '0 1.5rem',
-                  color: '#111827',
+                  padding: '0.85rem 1rem',
+                  color: 'var(--color-neutral-800)',
                   textDecoration: 'none',
                   fontWeight: 600,
-                  fontSize: '1rem',
+                  fontSize: '0.9rem',
+                  borderRadius: '0.75rem',
+                  transition: 'background 0.2s',
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(15, 23, 42, 0.04)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
                 <span>{link.label}</span>
-                <span style={{ color: 'var(--color-primary-900)', fontSize: '1.1rem' }}>›</span>
+                <span style={{ color: 'var(--color-neutral-400)', fontSize: '0.8rem' }}>›</span>
               </Link>
             </li>
           ))}
