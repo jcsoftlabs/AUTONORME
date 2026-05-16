@@ -40,16 +40,16 @@ export default function Header() {
   const solidHeader = !isHomePage || isScrolled;
 
   const navLinks = [
-    { href: '/garages', label: t('garages') },
-    { href: '/pieces', label: t('parts') },
-    { href: '/maintenance', label: t('maintenance') },
-    { href: '/autobot', label: t('autobot') },
+    { href: '/garages', labelKey: 'garages' },
+    { href: '/pieces', labelKey: 'parts' },
+    { href: '/maintenance', labelKey: 'maintenance' },
+    { href: '/autobot', labelKey: 'autobot' },
   ];
 
   const utilityLinks = [
-    { href: '/a-propos', label: t('support_center'), icon: 'support' },
-    { href: 'tel:+50900000000', label: t('call_us'), icon: 'phone', external: true },
-    { href: '/blog', label: t('blog'), icon: 'blog' },
+    { href: '/a-propos', labelKey: 'support_center', icon: 'support' },
+    { href: 'tel:+50900000000', labelKey: 'call_us', icon: 'phone', external: true },
+    { href: '/blog', labelKey: 'blog', icon: 'blog' },
   ];
 
   return (
@@ -247,7 +247,7 @@ export default function Header() {
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z" />
                           </svg>
                         )}
-                        <span>{link.label}</span>
+                        <span>{t(link.labelKey)}</span>
                       </a>
                     ) : (
                       <Link
@@ -305,7 +305,7 @@ export default function Header() {
                               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                             </svg>
                           )}
-                          {link.label}
+                          {t(link.labelKey)}
                         </span>
                         <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
                           &rsaquo;
@@ -348,7 +348,7 @@ export default function Header() {
                         (e.currentTarget.style.background = 'transparent')
                       }
                     >
-                      <span>{link.label}</span>
+                      <span>{t(link.labelKey)}</span>
                       <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
                         &rsaquo;
                       </span>
