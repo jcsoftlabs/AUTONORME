@@ -44,18 +44,20 @@ export default function PartsCatalog() {
   const searchParams = useSearchParams();
   const makeParam = searchParams.get('make');
   const modelParam = searchParams.get('model');
+  const yearParam = searchParams.get('year');
   
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string>('ALL');
 
   const { data: parts, isLoading, error } = useQuery<Part[]>({
-    queryKey: ['parts', category, makeParam, modelParam],
+    queryKey: ['parts', category, makeParam, modelParam, yearParam],
     queryFn: () =>
       fetchApi('/parts', {
         params: {
           ...(category !== 'ALL' ? { category } : {}),
           ...(makeParam ? { make: makeParam } : {}),
           ...(modelParam ? { model: modelParam } : {}),
+          ...(yearParam ? { year: yearParam } : {}),
         },
       }),
   });

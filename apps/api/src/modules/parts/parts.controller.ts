@@ -18,14 +18,22 @@ export class PartsController {
   @ApiQuery({ name: 'category', enum: PartCategory, required: false })
   @ApiQuery({ name: 'make', required: false, type: String })
   @ApiQuery({ name: 'model', required: false, type: String })
+  @ApiQuery({ name: 'year', required: false, type: Number })
   @ApiQuery({ name: 'page', required: false, type: Number })
   findAll(
     @Query('category') category?: PartCategory,
     @Query('make') make?: string,
     @Query('model') model?: string,
+    @Query('year') year?: number,
     @Query('page') page?: number,
   ) {
-    return this.partsService.findAll({ category, make, model, page: page ? Number(page) : 1 });
+    return this.partsService.findAll({
+      category,
+      make,
+      model,
+      year: year ? Number(year) : undefined,
+      page: page ? Number(page) : 1,
+    });
   }
 
   @Public()

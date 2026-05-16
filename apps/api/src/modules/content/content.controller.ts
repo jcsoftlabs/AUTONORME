@@ -16,6 +16,12 @@ export class ContentController {
     return this.contentService.getFeaturedModels();
   }
 
+  @Public()
+  @Get('vehicle-catalog')
+  async getVehicleCatalog() {
+    return this.contentService.getVehicleCatalog();
+  }
+
   @Post('featured-models')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)

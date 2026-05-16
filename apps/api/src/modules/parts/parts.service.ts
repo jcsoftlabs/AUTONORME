@@ -23,7 +23,7 @@ export class PartsService {
   constructor(private readonly db: DatabaseService) {}
 
   async findAll(params: PartSearchParams): Promise<Part[]> {
-    const { make, model, category, page = 1, limit = 20 } = params;
+    const { make, model, year, category, page = 1, limit = 20 } = params;
 
     const where: any = { isActive: true };
 
@@ -32,16 +32,31 @@ export class PartsService {
     }
 
     // Filtrage dynamique par compatibilité véhicule (JSONB PostgreSQL)
-    if (make || model) {
-      where.compatibleVehicles = {
-        path: '$',
-        array_contains: [
-          {
-            ...(make ? { make } : {}),
-            ...(model ? { model } : {}),
-          },
-        ],
-      };
+    if (make || model || year) {
+      const allActiveParts = await this.db.part.findMany({
+        where: {
+          isActive: true,
+          ...(category ? { category } : {}),
+        },
+        select: { id: true, compatibleVehicles: true },
+      });
+
+      const compatiblePartIds = allActiveParts
+        .filter((part) =>
+          this.matchesCompatibleVehicle(
+            part.compatibleVehicles as unknown as CompatibleVehicle[] | null,
+            make,
+            model,
+            year,
+          ),
+        )
+        .map((part) => part.id);
+
+      if (compatiblePartIds.length === 0) {
+        return [];
+      }
+
+      where.id = { in: compatiblePartIds };
     }
 
     return this.db.part.findMany({
@@ -67,13 +82,11 @@ export class PartsService {
   // Vérification compatibilité (T-01 du BLOC 12 — critique)
   async checkCompatibility(partId: string, make: string, model: string, year: number): Promise<{ compatible: boolean; alternatives?: Part[] }> {
     const part = await this.findOne(partId);
-    const vehicles = part.compatibleVehicles as unknown as CompatibleVehicle[];
-
-    const compatible = vehicles.some(
-      (v) =>
-        v.make.toLowerCase() === make.toLowerCase() &&
-        v.model.toLowerCase() === model.toLowerCase() &&
-        v.years.includes(year),
+    const compatible = this.matchesCompatibleVehicle(
+      part.compatibleVehicles as unknown as CompatibleVehicle[] | null,
+      make,
+      model,
+      year,
     );
 
     if (!compatible) {
@@ -95,5 +108,28 @@ export class PartsService {
     }
 
     return { compatible: true };
+  }
+
+  private matchesCompatibleVehicle(
+    vehicles: CompatibleVehicle[] | null | undefined,
+    make?: string,
+    model?: string,
+    year?: number,
+  ): boolean {
+    if (!vehicles?.length) return false;
+
+    return vehicles.some((vehicle) => {
+      const makeMatch = make
+        ? vehicle.make.toLowerCase() === make.toLowerCase()
+        : true;
+      const modelMatch = model
+        ? vehicle.model.toLowerCase() === model.toLowerCase()
+        : true;
+      const yearMatch = year
+        ? Array.isArray(vehicle.years) && vehicle.years.includes(year)
+        : true;
+
+      return makeMatch && modelMatch && yearMatch;
+    });
   }
 }

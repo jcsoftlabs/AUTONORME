@@ -21,6 +21,18 @@ export default function ModelSelectionSection() {
   const [models, setModels] = useState<FeaturedModel[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const quickCategories = [
+    { key: 'brakes', href: `/${locale}/pieces?category=FREINAGE` },
+    { key: 'engine', href: `/${locale}/pieces?category=MOTEUR` },
+    { key: 'suspension', href: `/${locale}/pieces?category=SUSPENSION` },
+    { key: 'electrical', href: `/${locale}/pieces?category=ELECTRIQUE` },
+  ];
+
+  const trustCards = [
+    { value: '24h', label: t('catalog_trust_1') },
+    { value: '5 000+', label: t('catalog_trust_2') },
+    { value: 'FR/HT/EN', label: t('catalog_trust_3') },
+  ];
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -75,6 +87,40 @@ export default function ModelSelectionSection() {
   return (
     <section className={styles.modelSelection}>
       <div className={styles.container}>
+        <div className={styles.catalogUtilityGrid}>
+          <div className={styles.catalogPromoCard}>
+            <span className={styles.catalogPromoEyebrow}>{t('catalog_promo_eyebrow')}</span>
+            <h2 className={styles.catalogPromoTitle}>{t('catalog_promo_title')}</h2>
+            <p className={styles.catalogPromoBody}>{t('catalog_promo_body')}</p>
+
+            <div className={styles.catalogCategoryRow}>
+              {quickCategories.map((category) => (
+                <Link key={category.key} href={category.href} className={styles.catalogCategoryChip}>
+                  {t(`catalog_category_${category.key}`)}
+                </Link>
+              ))}
+            </div>
+
+            <div className={styles.catalogTrustGrid}>
+              {trustCards.map((card) => (
+                <div key={card.label} className={styles.catalogTrustCard}>
+                  <span className={styles.catalogTrustValue}>{card.value}</span>
+                  <span className={styles.catalogTrustLabel}>{card.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.catalogOfferCard}>
+            <span className={styles.catalogOfferEyebrow}>{t('catalog_offer_eyebrow')}</span>
+            <div className={styles.catalogOfferTitle}>{t('catalog_offer_title')}</div>
+            <p className={styles.catalogOfferBody}>{t('catalog_offer_body')}</p>
+            <Link href={`/${locale}/pieces`} className={styles.catalogOfferButton}>
+              {t('catalog_offer_cta')}
+            </Link>
+          </div>
+        </div>
+
         <div className={styles.header}>
           <div className={styles.titleWrapper}>
             <h2 className={styles.title}>{t('shop_by_model_title')}</h2>

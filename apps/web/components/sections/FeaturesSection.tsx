@@ -7,6 +7,12 @@ import styles from '../homepage.module.css';
 export default function FeaturesSection() {
   const locale = useLocale();
   const t = useTranslations('Features');
+  const quickSearches = [
+    { label: t('quick_1'), href: '/pieces?category=FREINAGE' },
+    { label: t('quick_2'), href: '/pieces?category=MOTEUR' },
+    { label: t('quick_3'), href: '/pieces?category=ELECTRIQUE' },
+    { label: t('quick_4'), href: '/garages' },
+  ];
   const features = [
     {
       tag: 'GAR',
@@ -50,6 +56,17 @@ export default function FeaturesSection() {
             <span style={{ color: 'var(--color-primary-500)' }}>{t('title_line_2')}</span>
           </h2>
           <p className="section-subtitle">{t('subtitle')}</p>
+        </div>
+
+        <div className={styles.featureQuickRow}>
+          <span className={styles.featureQuickLabel}>{t('quick_label')}</span>
+          <div className={styles.featureQuickLinks}>
+            {quickSearches.map((item) => (
+              <Link key={item.label} href={`/${locale}${item.href}`} className={styles.featureQuickLink}>
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className={styles.featureGrid}>
