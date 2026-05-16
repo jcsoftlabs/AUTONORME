@@ -41,8 +41,11 @@ export default function Header() {
     { href: '/maintenance', label: t('maintenance') },
     { href: '/autobot', label: t('autobot') },
   ];
-
-  const trustItems = [t('trust_fit'), t('trust_network'), t('trust_support')];
+  const utilityLinks = [
+    { href: '/a-propos', label: t('support_center'), icon: 'support' },
+    { href: 'tel:+50900000000', label: t('call_us'), icon: 'phone', external: true },
+    { href: '/blog', label: t('blog'), icon: 'blog' },
+  ];
 
   return (
     <header
@@ -73,7 +76,7 @@ export default function Header() {
             minHeight: '2rem',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             gap: '1rem',
             fontSize: '0.74rem',
             fontWeight: 700,
@@ -81,11 +84,6 @@ export default function Header() {
           }}
         >
           <span>{t('promo_bar')}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'rgba(255,255,255,0.9)' }}>
-            {trustItems.map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -96,7 +94,7 @@ export default function Header() {
             gridTemplateColumns: 'auto minmax(280px, 1fr) auto',
             alignItems: 'center',
             gap: '0.85rem',
-            minHeight: '4.9rem',
+            minHeight: '5.25rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -136,11 +134,11 @@ export default function Header() {
               <Image
                 src="/log.png"
                 alt="AUTONORME"
-                width={178}
-                height={40}
+                width={224}
+                height={50}
                 unoptimized
                 priority
-                style={{ objectFit: 'contain', width: 'auto', height: '40px' }}
+                style={{ objectFit: 'contain', width: 'auto', height: '50px' }}
               />
             </Link>
           </div>
@@ -293,130 +291,246 @@ export default function Header() {
         </div>
       </div>
 
-      {isMenuOpen && (
+      {/* ── Overlay sombre derrière le drawer ───────────────────── */}
+      <div
+        onClick={() => setIsMenuOpen(false)}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.45)',
+          zIndex: 998,
+          opacity: isMenuOpen ? 1 : 0,
+          visibility: isMenuOpen ? 'visible' : 'hidden',
+          transition: 'opacity 0.25s ease, visibility 0.25s ease',
+          backdropFilter: 'blur(2px)',
+        }}
+      />
+
+      {/* ── Drawer plein écran (style référence) ─────────────────── */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 999,
+          background: '#FFFFFF',
+          display: 'flex',
+          flexDirection: 'column',
+          transform: isMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflowY: 'auto',
+        }}
+      >
+        {/* ── Top bar : ✕ Menu / Account / Cart ── */}
         <div
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: '2px solid var(--color-primary-900)',
+            padding: '0 1.25rem',
+            minHeight: '3.5rem',
+            flexShrink: 0,
             background: '#FFFFFF',
-            borderTop: '1px solid rgba(15, 23, 42, 0.08)',
-            padding: '1rem',
-            boxShadow: '0 18px 30px rgba(15, 23, 42, 0.08)',
           }}
         >
-          <div className="container">
-            <div
+          {/* Bouton fermer */}
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--color-primary-900)',
+              fontWeight: 800,
+              fontSize: '0.82rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              padding: '0.5rem',
+            }}
+          >
+            {/* Croix ✕ */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            {t('menu')}
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            {/* Account */}
+            <Link
+              href={`/${locale}/compte/login`}
+              onClick={() => setIsMenuOpen(false)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                background: 'var(--color-neutral-100)',
-                borderRadius: '0.95rem',
-                padding: '0.8rem 1rem',
-                marginBottom: '1rem',
+                gap: '0.4rem',
+                textDecoration: 'none',
+                color: 'var(--color-primary-900)',
+                fontWeight: 800,
+                fontSize: '0.82rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '0.5rem',
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
               </svg>
-              <input
-                type="text"
-                placeholder={t('search_placeholder')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  color: 'var(--color-neutral-800)',
-                  fontSize: '1rem',
-                  width: '100%',
-                }}
-              />
-            </div>
+              {t('login')}
+            </Link>
 
-            <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.55rem', margin: 0, padding: 0 }}>
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={`/${locale}${link.href}`}
-                    onClick={() => setIsMenuOpen(false)}
-                    style={{
-                      display: 'block',
-                      padding: '0.95rem 1rem',
-                      borderRadius: '0.95rem',
-                      color: 'var(--color-neutral-800)',
-                      background: 'var(--color-neutral-50)',
-                      fontWeight: 800,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <div
+            {/* Cart */}
+            <Link
+              href={`/${locale}/panier`}
+              onClick={() => setIsMenuOpen(false)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '0.75rem',
-                marginTop: '1rem',
-                paddingTop: '1rem',
-                borderTop: '1px solid rgba(15, 23, 42, 0.08)',
+                gap: '0.4rem',
+                textDecoration: 'none',
+                color: 'var(--color-primary-900)',
+                fontWeight: 800,
+                fontSize: '0.82rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '0.5rem',
+                position: 'relative',
               }}
             >
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {trustItems.map((item) => (
-                  <span
-                    key={item}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      minHeight: '2.2rem',
-                      padding: '0.35rem 0.8rem',
-                      borderRadius: '999px',
-                      background: 'rgba(0, 46, 122, 0.06)',
-                      color: 'var(--color-primary-900)',
-                      fontSize: '0.82rem',
-                      fontWeight: 800,
-                    }}
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <LanguageSwitcher isSolid={true} />
-                <Link
-                  href={`/${locale}/compte/login`}
-                  onClick={() => setIsMenuOpen(false)}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              {mounted && itemCount > 0 && (
+                <span
                   style={{
-                    display: 'inline-flex',
+                    position: 'absolute',
+                    top: '2px',
+                    right: '2px',
+                    background: 'var(--color-accent-gold)',
+                    color: 'var(--color-primary-900)',
+                    fontSize: '0.6rem',
+                    fontWeight: 800,
+                    width: '16px',
+                    height: '16px',
+                    borderRadius: '50%',
+                    display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: '44px',
-                    padding: '0 1rem',
-                    borderRadius: '999px',
-                    background: 'var(--color-primary-900)',
-                    color: '#FFFFFF',
-                    textDecoration: 'none',
-                    fontWeight: 700,
                   }}
                 >
-                  {t('login')}
-                </Link>
-              </div>
-            </div>
+                  {itemCount}
+                </span>
+              )}
+              <span style={{ background: 'var(--color-primary-900)', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800 }}>
+                {mounted ? itemCount : 0}
+              </span>
+            </Link>
           </div>
         </div>
-      )}
+
+        {/* ── Liste des liens ── */}
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, flex: 1 }}>
+          {utilityLinks.map((link) => (
+            <li key={link.href} style={{ borderBottom: '1px solid #e5e7eb' }}>
+              {link.external ? (
+                <a
+                  href={link.href}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1.1rem',
+                    minHeight: '4rem',
+                    padding: '0 1.5rem',
+                    color: '#111827',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                  }}
+                >
+                  {link.icon === 'phone' && (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-900)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                  )}
+                  <span>{link.label}</span>
+                </a>
+              ) : (
+                <Link
+                  href={`/${locale}${link.href}`}
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1.1rem',
+                    minHeight: '4rem',
+                    padding: '0 1.5rem',
+                    color: '#111827',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                  }}
+                >
+                  {link.icon === 'support' && (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-900)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                  )}
+                  {link.icon === 'blog' && (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-900)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      <line x1="8" y1="7" x2="16" y2="7" />
+                      <line x1="8" y1="11" x2="16" y2="11" />
+                    </svg>
+                  )}
+                  <span>{link.label}</span>
+                  <span style={{ marginLeft: 'auto', color: 'var(--color-primary-900)', fontSize: '1.1rem' }}>›</span>
+                </Link>
+              )}
+            </li>
+          ))}
+
+          {navLinks.map((link) => (
+            <li key={link.href} style={{ borderBottom: '1px solid #e5e7eb' }}>
+              <Link
+                href={`/${locale}${link.href}`}
+                onClick={() => setIsMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  minHeight: '4rem',
+                  padding: '0 1.5rem',
+                  color: '#111827',
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                }}
+              >
+                <span>{link.label}</span>
+                <span style={{ color: 'var(--color-primary-900)', fontSize: '1.1rem' }}>›</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <style>{`
         @media (max-width: 1024px) {
           .nav-desktop { display: none !important; }
           .nav-mobile-btn { display: flex !important; }
-
           header .container > div {
             grid-template-columns: auto 1fr auto !important;
             min-height: 4.8rem !important;
