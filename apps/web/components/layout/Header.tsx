@@ -52,8 +52,6 @@ export default function Header() {
     { href: '/blog', label: t('blog'), icon: 'blog' },
   ];
 
-  const allLinks = [...utilityLinks, ...navLinks];
-
   return (
     <header
       style={{
