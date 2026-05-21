@@ -130,19 +130,6 @@ export default function HeroSection() {
               <div className={styles.heroSelectorGrid}>
                 <select
                   className={styles.heroSelect}
-                  value={year}
-                  onChange={(event) => setYear(event.target.value)}
-                >
-                  <option value="">{t('selector_year')}</option>
-                  {years.map((entry) => (
-                    <option key={entry} value={entry}>
-                      {entry}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  className={styles.heroSelect}
                   value={make}
                   onChange={(event) => {
                     setMake(event.target.value);
@@ -167,6 +154,19 @@ export default function HeroSection() {
                   {models.map((entry) => (
                     <option key={entry.value} value={entry.value}>
                       {entry.label}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  className={styles.heroSelect}
+                  value={year}
+                  onChange={(event) => setYear(event.target.value)}
+                >
+                  <option value="">{t('selector_year')}</option>
+                  {years.map((entry) => (
+                    <option key={entry} value={entry}>
+                      {entry}
                     </option>
                   ))}
                 </select>
