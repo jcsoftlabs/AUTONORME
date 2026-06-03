@@ -184,11 +184,32 @@
   }
 
   .productGrid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .productVisual {
-    height: 10rem;
+    height: 8.5rem;
+  }
+
+  .productBody {
+    padding: 0.85rem;
+  }
+
+  .productName {
+    font-size: 0.94rem;
+  }
+
+  .productFitment {
+    min-height: 0;
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .productAction {
+    min-height: 2.35rem;
+    margin-top: 0.75rem;
+    font-size: 0.76rem;
   }
 }
 
