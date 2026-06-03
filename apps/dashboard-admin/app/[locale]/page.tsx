@@ -20,6 +20,11 @@ type DashboardSummary = {
   };
 };
 
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+};
+
 export default function AdminDashboardPage() {
   const t = useTranslations('Dashboard');
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -30,8 +35,8 @@ export default function AdminDashboardPage() {
 
     const load = async () => {
       try {
-        const data = await fetchApi('/dashboard/summary') as DashboardSummary;
-        if (active) setSummary(data);
+        const response = await fetchApi('/dashboard/summary') as ApiResponse<DashboardSummary>;
+        if (active) setSummary(response?.data ?? null);
       } catch (error) {
         console.error('Failed to load dashboard summary:', error);
         if (active) setSummary(null);
@@ -66,9 +71,9 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
           <div className="admin-card min-h-[300px]">
             <h2 className="text-xl font-semibold mb-6">Derniers garages</h2>
-            {summary?.recent.garages.length ? (
+            {(summary?.recent?.garages ?? []).length ? (
               <ul className="space-y-4">
-                {summary.recent.garages.map((garage) => (
+                {(summary?.recent?.garages ?? []).map((garage) => (
                   <li key={garage.id} className="flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3">
                     <div>
                       <p className="font-semibold text-gray-900">{garage.name}</p>
@@ -86,9 +91,9 @@ export default function AdminDashboardPage() {
           </div>
           <div className="admin-card min-h-[300px]">
             <h2 className="text-xl font-semibold mb-6">Dernières commandes</h2>
-            {summary?.recent.orders.length ? (
+            {(summary?.recent?.orders ?? []).length ? (
               <ul className="space-y-4">
-                {summary.recent.orders.map((order) => (
+                {(summary?.recent?.orders ?? []).map((order) => (
                   <li key={order.id} className="flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3">
                     <div>
                       <p className="font-semibold text-gray-900">{order.user.name}</p>
