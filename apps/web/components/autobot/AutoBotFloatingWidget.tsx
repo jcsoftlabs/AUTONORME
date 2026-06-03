@@ -171,7 +171,12 @@ export default function AutoBotFloatingWidget() {
         onClick={() => setIsOpen((value) => !value)}
         aria-label={t('widget_trigger')}
       >
-        {t('widget_bubble')}
+        <span className={styles.widgetTriggerMark} aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <span>{t('widget_bubble')}</span>
       </button>
     </div>
   );
