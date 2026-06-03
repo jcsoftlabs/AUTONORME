@@ -1434,6 +1434,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-xl);
   margin-top: 2rem;
+  padding-inline: clamp(1rem, 3vw, 2rem);
 }
 
 .footerGrid {
@@ -1875,6 +1876,29 @@
 
   .statsIntro {
     padding-right: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .footerTop {
+    padding-inline: 1rem;
+  }
+
+  .footerGrid {
+    gap: 1.5rem;
+  }
+
+  .footerColumnTitle {
+    margin-bottom: 0.85rem;
+  }
+
+  .footerList {
+    gap: 0.6rem;
+  }
+
+  .footerLink {
+    display: inline-flex;
+    padding: 0.15rem 0;
   }
 }
 
