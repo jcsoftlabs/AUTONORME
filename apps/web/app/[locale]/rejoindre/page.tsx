@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import Header from '../../../components/layout/Header';
 import Footer from '../../../components/layout/Footer';
+import JoinInterestForm from '../../../components/join/JoinInterestForm';
 import styles from '../../../components/editorial.module.css';
 
 export default async function JoinPage({
@@ -12,11 +13,7 @@ export default async function JoinPage({
   const { locale } = await params;
   const t = await getTranslations('JoinPage');
 
-  const tracks = [1, 2].map((item) => ({
-    kicker: t(`track_${item}_kicker`),
-    title: t(`track_${item}_title`),
-    body: t(`track_${item}_body`),
-  }));
+  const bullets = [t('highlight_1'), t('highlight_2'), t('highlight_3')];
 
   return (
     <main className={styles.pageShell}>
@@ -30,7 +27,7 @@ export default async function JoinPage({
             <p className={styles.heroBody}>{t('subtitle')}</p>
 
             <div className={styles.heroHighlights}>
-              {[t('highlight_1'), t('highlight_2'), t('highlight_3')].map((item) => (
+              {bullets.map((item) => (
                 <span key={item} className={styles.highlightChip}>
                   {item}
                 </span>
@@ -57,7 +54,10 @@ export default async function JoinPage({
       <section className={styles.section}>
         <div className="container">
           <div className={styles.grid2}>
-            {tracks.map((track) => (
+            {[
+              { kicker: t('track_1_kicker'), title: t('track_1_title'), body: t('track_1_body') },
+              { kicker: t('track_2_kicker'), title: t('track_2_title'), body: t('track_2_body') },
+            ].map((track) => (
               <article key={track.title} className={styles.card}>
                 <div className={styles.cardKicker}>{track.kicker}</div>
                 <h2 className={styles.cardTitle}>{track.title}</h2>
@@ -71,23 +71,13 @@ export default async function JoinPage({
       <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>{t('steps_title')}</h2>
-            <p className={styles.sectionText}>{t('steps_body')}</p>
+            <h2 className={styles.sectionTitle}>{t('form_title')}</h2>
+            <p className={styles.sectionText}>{t('form_body')}</p>
           </div>
 
-          <div className={styles.timeline}>
-            {[1, 2, 3].map((item) => (
-              <div key={item} className={styles.timelineItem}>
-                <div className={styles.timelineStep}>{t(`step_${item}_label`)}</div>
-                <div className={styles.timelineContent}>
-                  <h3 className={styles.cardTitle}>{t(`step_${item}_title`)}</h3>
-                  <p className={styles.cardText}>{t(`step_${item}_body`)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <JoinInterestForm locale={locale} />
 
-          <div className={styles.ctaBand}>
+          <div className={styles.ctaBand} style={{ marginTop: '2rem' }}>
             <h3>{t('cta_title')}</h3>
             <p>{t('cta_body')}</p>
             <div className={styles.ctaLinks}>
