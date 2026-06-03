@@ -50,10 +50,7 @@ export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boo
     },
     {
       label: 'Système',
-      items: [
-        { label: t('users'), path: '/users', icon: '👥' },
-        { label: t('settings'), path: '/settings', icon: '⚙️' },
-      ],
+      items: [],
     },
   ];
 

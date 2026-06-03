@@ -55,10 +55,10 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title={t('stats.totalUsers')} value={loading ? '…' : formatNumber(summary?.totals.totalUsers)} trend="Base" icon="👥" />
-          <StatCard title={t('stats.activeGarages')} value={loading ? '…' : formatNumber(summary?.totals.activeGarages)} trend="Actifs" icon="🛠️" />
-          <StatCard title={t('stats.pendingValidations')} value={loading ? '…' : formatNumber(summary?.totals.pendingValidations)} trend="À traiter" isWarning icon="⏳" />
-          <StatCard title={t('stats.totalOrders')} value={loading ? '…' : formatNumber(summary?.totals.totalOrders)} trend="Historique" icon="📦" />
+          <StatCard title={t('stats.totalUsers')} value={loading ? '…' : formatNumber(summary?.totals?.totalUsers)} trend="Base" icon="👥" />
+          <StatCard title={t('stats.activeGarages')} value={loading ? '…' : formatNumber(summary?.totals?.activeGarages)} trend="Actifs" icon="🛠️" />
+          <StatCard title={t('stats.pendingValidations')} value={loading ? '…' : formatNumber(summary?.totals?.pendingValidations)} trend="À traiter" isWarning icon="⏳" />
+          <StatCard title={t('stats.totalOrders')} value={loading ? '…' : formatNumber(summary?.totals?.totalOrders)} trend="Historique" icon="📦" />
         </div>
 
         <AnalyticsCharts hasData={Boolean(summary)} />
