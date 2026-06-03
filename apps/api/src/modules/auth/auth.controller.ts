@@ -28,7 +28,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Envoyer un OTP par email Resend ou téléphone legacy' })
   sendOtp(@Body() dto: SendOtpDto) {
-    return this.authService.sendOtp({ phone: dto.phone, email: dto.email });
+    return this.authService.sendOtp({ phone: dto.phone, email: dto.email }, dto.mode ?? 'login');
   }
 
   @Public()
@@ -39,7 +39,11 @@ export class AuthController {
     @Body() dto: VerifyOtpDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.verifyOtp({ phone: dto.phone, email: dto.email }, dto.code);
+    const result = await this.authService.verifyOtp(
+      { phone: dto.phone, email: dto.email },
+      dto.code,
+      dto.mode ?? 'login',
+    );
 
     if (result.requires2FA) {
       return result; // Renvoie { requires2FA: true, tempToken: "..." } sans setter de cookie

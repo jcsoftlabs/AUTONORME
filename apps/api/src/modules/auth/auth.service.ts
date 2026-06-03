@@ -12,6 +12,7 @@ import * as qrcode from 'qrcode';
 import { DatabaseService } from '../database/database.service';
 import { OtpService } from './otp.service';
 import { ErrorCodes } from '@autonorme/types';
+import type { OtpAuthMode } from './dto/send-otp.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,8 +23,10 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
-  async sendOtp(target: { phone?: string; email?: string }): Promise<{ message: string }> {
+  async sendOtp(target: { phone?: string; email?: string }, mode: OtpAuthMode = 'login'): Promise<{ message: string }> {
     const identifier = this.getOtpIdentifier(target);
+    await this.assertAuthModeAllowed(target, mode);
+
     const isEmailOtp = identifier.includes('@');
     const providerKey = isEmailOtp ? 'RESEND_API_KEY' : 'SENTDM_API_KEY';
     const isDevOtpMode = !this.config.get<string>(providerKey) || this.config.get<string>(providerKey) === 'CHANGE_ME';
@@ -41,7 +44,7 @@ export class AuthService {
     return { message: isDevOtpMode ? 'Code démo envoyé (123456)' : 'Code envoyé avec succès' };
   }
 
-  async verifyOtp(target: { phone?: string; email?: string }, code: string): Promise<{
+  async verifyOtp(target: { phone?: string; email?: string }, code: string, mode: OtpAuthMode = 'login'): Promise<{
     requires2FA?: boolean;
     tempToken?: string;
     accessToken?: string;
@@ -49,6 +52,8 @@ export class AuthService {
     user?: any;
   }> {
     const identifier = this.getOtpIdentifier(target);
+    await this.assertAuthModeAllowed(target, mode);
+
     const otp = await this.db.otpCode.findFirst({
       where: { phone: identifier, code, used: false, expiresAt: { gt: new Date() } },
       orderBy: { createdAt: 'desc' },
@@ -65,9 +70,7 @@ export class AuthService {
 
     const email = target.email?.trim().toLowerCase();
     const phone = target.phone?.trim();
-    let user = email
-      ? await this.db.user.findUnique({ where: { email } })
-      : await this.db.user.findUnique({ where: { phone } });
+    let user = await this.findUserByOtpTarget(target);
     if (!user) {
       user = await this.db.user.create({
         data: {
@@ -193,5 +196,37 @@ export class AuthService {
     if (phone) return phone;
 
     throw new BadRequestException('Email ou téléphone requis');
+  }
+
+  private async findUserByOtpTarget(target: { phone?: string; email?: string }) {
+    const email = target.email?.trim().toLowerCase();
+    if (email) {
+      return this.db.user.findUnique({ where: { email } });
+    }
+
+    const phone = target.phone?.trim();
+    if (phone) {
+      return this.db.user.findUnique({ where: { phone } });
+    }
+
+    return null;
+  }
+
+  private async assertAuthModeAllowed(target: { phone?: string; email?: string }, mode: OtpAuthMode): Promise<void> {
+    const existingUser = await this.findUserByOtpTarget(target);
+
+    if (mode === 'login' && !existingUser) {
+      throw new BadRequestException({
+        code: 'AUTH_ACCOUNT_NOT_FOUND',
+        message: 'Aucun compte ne correspond à cet email. Créez un compte avant de vous connecter.',
+      });
+    }
+
+    if (mode === 'register' && existingUser) {
+      throw new BadRequestException({
+        code: 'AUTH_ACCOUNT_ALREADY_EXISTS',
+        message: 'Un compte existe déjà avec cet email. Connectez-vous plutôt.',
+      });
+    }
   }
 }

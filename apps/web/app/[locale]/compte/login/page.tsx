@@ -62,7 +62,7 @@ export default function LoginPage() {
 
       await fetchApi('/auth/send-otp', {
         method: 'POST',
-        body: JSON.stringify({ email: normalizedEmail }),
+        body: JSON.stringify({ email: normalizedEmail, mode }),
       });
       
       setStep(2);
@@ -80,7 +80,7 @@ export default function LoginPage() {
     try {
       const result = await fetchApi<{ accessToken: string; user: { id: string; phone?: string; email?: string; name?: string; role: string } }>('/auth/verify-otp', {
         method: 'POST',
-        body: JSON.stringify({ email: normalizedEmail, code: otp }),
+        body: JSON.stringify({ email: normalizedEmail, code: otp, mode }),
       });
 
       login(buildStoredUser(result.user), result.accessToken);

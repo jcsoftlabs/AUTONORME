@@ -1,5 +1,6 @@
-import { IsEmail, IsOptional, IsString, Matches, Length, ValidateIf } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, Matches, Length, ValidateIf } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type { OtpAuthMode } from './send-otp.dto';
 
 export class VerifyOtpDto {
   @ApiPropertyOptional({ example: '+50912345678' })
@@ -18,4 +19,9 @@ export class VerifyOtpDto {
   @Length(6, 6)
   @Matches(/^\d{6}$/, { message: 'Le code doit contenir exactement 6 chiffres' })
   code!: string;
+
+  @ApiPropertyOptional({ enum: ['login', 'register'], default: 'login' })
+  @IsIn(['login', 'register'])
+  @IsOptional()
+  mode?: OtpAuthMode;
 }
