@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
-  const adminEmail = 'services@autonormesolutions.com';
+  const [email, setEmail] = useState('services@autonormesolutions.com');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: adminEmail, mode: 'login' }),
+        body: JSON.stringify({ email, mode: 'login' }),
       });
       if (response.ok) {
         setStep('otp');
@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: adminEmail, code: otp, mode: 'login' }),
+        body: JSON.stringify({ email, code: otp, mode: 'login' }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -114,8 +114,8 @@ export default function AdminLoginPage() {
               </label>
               <input
                 type="email"
-                value={adminEmail}
-                readOnly
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="services@autonormesolutions.com"
                 style={{
                   width: '100%', padding: '0.875rem 1rem',
@@ -128,7 +128,7 @@ export default function AdminLoginPage() {
                 }}
               />
               <p style={{ fontSize: '0.8rem', color: '#6B7280', marginTop: '0.5rem' }}>
-                Seul ce compte administrateur est autorisé sur cet écran.
+                Entrez l&apos;email admin autorisé à recevoir le code OTP.
               </p>
             </div>
             <button
@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
                 required
               />
               <p style={{ fontSize: '0.8rem', color: '#6B7280', marginTop: '0.5rem', textAlign: 'center' }}>
-                Code envoyé au {adminEmail}
+                Code envoyé au {email}
               </p>
             </div>
             <button
