@@ -54,6 +54,7 @@ export default function Header() {
     { href: '/a-propos', labelKey: 'support_center', icon: 'support' },
     { href: 'tel:+50900000000', labelKey: 'call_us', icon: 'phone', external: true },
     { href: '/blog', labelKey: 'blog', icon: 'blog' },
+    { href: '/rejoindre', labelKey: 'join_network', icon: 'join' },
   ];
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -320,6 +321,21 @@ export default function Header() {
                               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                             </svg>
                           )}
+                          {link.icon === 'join' && (
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="var(--color-primary-900)"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M12 5v14" />
+                              <path d="M5 12h14" />
+                            </svg>
+                          )}
                           {t(link.labelKey)}
                         </span>
                         <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
@@ -488,6 +504,28 @@ export default function Header() {
             <div className="nav-desktop">
               <LanguageSwitcher isSolid={solidHeader} />
             </div>
+
+            {/* Join network button */}
+            <Link
+              href={`/${locale}/rejoindre`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                minHeight: '44px',
+                padding: '0.58rem 0.95rem',
+                borderRadius: '999px',
+                textDecoration: 'none',
+                color: '#FFFFFF',
+                background: 'var(--color-primary-900)',
+                border: '1px solid var(--color-primary-900)',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <span>{t('join_network')}</span>
+            </Link>
 
             {/* Login button */}
             <Link
