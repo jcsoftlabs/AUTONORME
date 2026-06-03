@@ -5,9 +5,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
-  const [phone, setPhone] = useState('+509');
+  const adminEmail = 'services@autonormesolutions.com';
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
+  const [step, setStep] = useState<'email' | 'otp'>('email');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone }),
+        body: JSON.stringify({ email: adminEmail, mode: 'login' }),
       });
       if (response.ok) {
         setStep('otp');
@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code: otp }),
+        body: JSON.stringify({ email: adminEmail, code: otp, mode: 'login' }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -106,17 +106,17 @@ export default function AdminLoginPage() {
         {/* Divider */}
         <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '2rem' }} />
 
-        {step === 'phone' ? (
+        {step === 'email' ? (
           <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#374151', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Numéro de téléphone
+                Email d'administration
               </label>
               <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+509 XXXX XXXX"
+                type="email"
+                value={adminEmail}
+                readOnly
+                placeholder="services@autonormesolutions.com"
                 style={{
                   width: '100%', padding: '0.875rem 1rem',
                   border: '2px solid #E5E7EB', borderRadius: '12px',
@@ -124,11 +124,12 @@ export default function AdminLoginPage() {
                   outline: 'none', fontFamily: 'Inter, sans-serif',
                   transition: 'border-color 0.2s',
                   boxSizing: 'border-box',
+                  background: '#F9FAFB',
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#1565C0'}
-                onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
-                required
               />
+              <p style={{ fontSize: '0.8rem', color: '#6B7280', marginTop: '0.5rem' }}>
+                Seul ce compte administrateur est autorisé sur cet écran.
+              </p>
             </div>
             <button
               type="submit"
@@ -171,7 +172,7 @@ export default function AdminLoginPage() {
                 required
               />
               <p style={{ fontSize: '0.8rem', color: '#6B7280', marginTop: '0.5rem', textAlign: 'center' }}>
-                Code envoyé au {phone}
+                Code envoyé au {adminEmail}
               </p>
             </div>
             <button
@@ -190,7 +191,7 @@ export default function AdminLoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => setStep('phone')}
+              onClick={() => setStep('email')}
               style={{
                 width: '100%', padding: '0.75rem',
                 background: 'transparent', color: '#6B7280',
@@ -198,7 +199,7 @@ export default function AdminLoginPage() {
                 fontSize: '0.875rem', fontFamily: 'Inter, sans-serif',
               }}
             >
-              ← Modifier le numéro
+              ← Retour
             </button>
           </form>
         )}
