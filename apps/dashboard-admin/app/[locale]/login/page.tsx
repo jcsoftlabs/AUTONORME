@@ -110,7 +110,7 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#374151', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Email d'administration
+                Email d&apos;administration
               </label>
               <input
                 type="email"
