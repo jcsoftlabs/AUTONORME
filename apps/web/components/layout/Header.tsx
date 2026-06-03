@@ -17,6 +17,7 @@ export default function Header() {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -32,6 +33,7 @@ export default function Header() {
 
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsSearchOpen(false);
   }, [pathname]);
 
   const isHomePage =
@@ -62,6 +64,7 @@ export default function Header() {
     const params = new URLSearchParams({ q: query });
     router.push(`/${locale}/pieces?${params.toString()}`);
     setIsMenuOpen(false);
+    setIsSearchOpen(false);
   };
 
   return (
@@ -387,56 +390,99 @@ export default function Header() {
             />
           </Link>
 
-          {/* ── RIGHT: Search + actions ── */}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="nav-desktop"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              width: 'min(34vw, 28rem)',
-              minHeight: '3rem',
-              padding: '0 1rem',
-              borderRadius: '0.95rem',
-              border: solidHeader
-                ? '1px solid rgba(15, 23, 42, 0.1)'
-                : '1px solid rgba(255,255,255,0.24)',
-              background: solidHeader ? '#FFFFFF' : 'rgba(255,255,255,0.12)',
-              boxShadow: solidHeader ? '0 8px 18px rgba(15, 23, 42, 0.05)' : 'none',
-            }}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={solidHeader ? 'var(--color-neutral-500)' : 'rgba(255,255,255,0.75)'}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-              type="search"
-              placeholder={t('search_placeholder')}
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              style={{
-                width: '100%',
-                border: 'none',
-                outline: 'none',
-                background: 'transparent',
-                color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
-                fontSize: '0.96rem',
-                fontWeight: 500,
-              }}
-            />
-          </form>
-
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+            <div className="nav-desktop" style={{ position: 'relative' }}>
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen((value) => !value)}
+                aria-label={t('search_placeholder')}
+                style={{
+                  color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '44px',
+                  minWidth: '44px',
+                  borderRadius: '999px',
+                  background: solidHeader
+                    ? 'rgba(15, 23, 42, 0.05)'
+                    : 'rgba(255,255,255,0.12)',
+                  border: solidHeader
+                    ? '1px solid rgba(15, 23, 42, 0.08)'
+                    : '1px solid rgba(255,255,255,0.2)',
+                  cursor: 'pointer',
+                }}
+              >
+                <svg
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+
+              {isSearchOpen && (
+                <form
+                  onSubmit={handleSearchSubmit}
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 0.65rem)',
+                    right: 0,
+                    zIndex: 220,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.65rem',
+                    width: 'min(22rem, calc(100vw - 2rem))',
+                    minHeight: '3.25rem',
+                    padding: '0 0.85rem',
+                    borderRadius: '0.9rem',
+                    border: '1px solid rgba(15, 23, 42, 0.1)',
+                    background: '#FFFFFF',
+                    boxShadow: '0 18px 36px rgba(15, 23, 42, 0.16)',
+                  }}
+                >
+                  <input
+                    type="search"
+                    placeholder={t('search_placeholder')}
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      border: 'none',
+                      outline: 'none',
+                      background: 'transparent',
+                      color: 'var(--color-neutral-800)',
+                      fontSize: '0.95rem',
+                      fontWeight: 500,
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    aria-label={t('search_placeholder')}
+                    style={{
+                      width: '2.2rem',
+                      height: '2.2rem',
+                      borderRadius: '999px',
+                      border: 'none',
+                      background: 'var(--color-primary-700)',
+                      color: '#FFFFFF',
+                      cursor: 'pointer',
+                      fontWeight: 900,
+                    }}
+                  >
+                    →
+                  </button>
+                </form>
+              )}
+            </div>
 
             {/* Language switcher – desktop only */}
             <div className="nav-desktop">

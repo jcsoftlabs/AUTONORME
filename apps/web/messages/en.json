@@ -338,7 +338,14 @@
     "public_access": "Public access",
     "conversation_start": "Start of conversation",
     "network_error": "I can't reach AutoBot right now. Please check your connection and try again.",
-    "disclaimer": "AutoBot can make mistakes. Always verify important information before a repair or purchase."
+    "disclaimer": "AutoBot can make mistakes. Always verify important information before a repair or purchase.",
+    "widget_title": "AutoBot by AUTONORME",
+    "widget_trigger": "Open AutoBot",
+    "widget_close": "Close AutoBot",
+    "widget_welcome": "Hello, I am AutoBot. Describe a problem, a part, or a garage need.",
+    "widget_placeholder": "Ask your question...",
+    "widget_send": "Send message",
+    "widget_typing": "AutoBot is typing..."
   },
   "MaintenancePage": {
     "eyebrow": "Maintenance planner",

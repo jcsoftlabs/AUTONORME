@@ -332,7 +332,14 @@
     "public_access": "Aksè piblik",
     "conversation_start": "Kòmansman konvèsasyon an",
     "network_error": "Mwen pa rive jwenn AutoBot pou kounye a. Tcheke koneksyon ou epi eseye ankò.",
-    "disclaimer": "AutoBot ka fè erè. Toujou verifye enfòmasyon enpòtan yo anvan yon reparasyon oswa yon acha."
+    "disclaimer": "AutoBot ka fè erè. Toujou verifye enfòmasyon enpòtan yo anvan yon reparasyon oswa yon acha.",
+    "widget_title": "AutoBot by AUTONORME",
+    "widget_trigger": "Louvri AutoBot",
+    "widget_close": "Fèmen AutoBot",
+    "widget_welcome": "Bonjou, mwen se AutoBot. Dekri yon pwoblèm, yon pyès oswa yon bezwen garaj.",
+    "widget_placeholder": "Poze kesyon ou...",
+    "widget_send": "Voye mesaj la",
+    "widget_typing": "AutoBot ap ekri..."
   },
   "MaintenancePage": {
     "eyebrow": "Planifikatè antretyen",
