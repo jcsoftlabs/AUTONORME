@@ -45,4 +45,14 @@ export class CreateGarageDto {
   @IsString()
   @IsOptional()
   imageUrl?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  ownerEmail?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  ownerName?: string;
 }

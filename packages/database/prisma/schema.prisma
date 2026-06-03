@@ -266,6 +266,7 @@ model User {
   notifications Notification[]
   reviews       Review[]
   refreshTokens RefreshToken[]
+  ownedGarages  Garage[]
   supplier      Supplier?
 
   @@index([phone])
@@ -399,6 +400,7 @@ model Garage {
   id           String   @id @default(uuid())
   /// ID de l'utilisateur propriétaire du garage (role: GARAGE)
   ownerId      String?
+  owner        User?    @relation(fields: [ownerId], references: [id])
   name         String
   /// Slug URL-friendly unique
   slug         String   @unique
@@ -426,6 +428,7 @@ model Garage {
   records      MaintenanceRecord[]
 
   @@index([isVerified, isActive])
+  @@index([ownerId])
   @@map("garages")
 }
 

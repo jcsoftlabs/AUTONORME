@@ -17,6 +17,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { GaragesModule } from './modules/garages/garages.module';
+import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { PartsModule } from './modules/parts/parts.module';
 import { OrdersModule } from './modules/orders/orders.module';
@@ -49,6 +50,7 @@ import { ContentModule } from './modules/content/content.module';
     UsersModule,
     VehiclesModule,
     GaragesModule,
+    SuppliersModule,
     AppointmentsModule,
     PartsModule,
     OrdersModule,

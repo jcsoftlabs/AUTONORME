@@ -11,6 +11,8 @@ interface AddGarageModalProps {
 export default function AddGarageModal({ onClose, onSuccess }: AddGarageModalProps) {
   const [formData, setFormData] = useState({
     name: '',
+    ownerName: '',
+    ownerEmail: '',
     phone: '',
     address: '',
     city: 'Port-au-Prince',
@@ -92,6 +94,29 @@ export default function AddGarageModal({ onClose, onSuccess }: AddGarageModalPro
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Ex: Garage Moderne"
+                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition-all font-bold"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nom du propriétaire</label>
+              <input
+                type="text"
+                value={formData.ownerName}
+                onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
+                placeholder="Nom du contact"
+                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition-all font-bold"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email du compte</label>
+              <input
+                type="email"
+                required
+                value={formData.ownerEmail}
+                onChange={(e) => setFormData({ ...formData, ownerEmail: e.target.value })}
+                placeholder="proprietaire@garage.ht"
                 className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition-all font-bold"
               />
             </div>

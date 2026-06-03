@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import type { Garage } from '@prisma/client';
-import { ErrorCodes } from '@autonorme/types';
+import { ErrorCodes, Role } from '@autonorme/types';
 import { CreateGarageDto } from './dto/create-garage.dto';
 import slugify from 'slugify';
 
@@ -74,11 +74,37 @@ export class GaragesService {
 
   async create(dto: CreateGarageDto): Promise<Garage> {
     const slug = slugify(dto.name, { lower: true, strict: true }) + '-' + Math.random().toString(36).substr(2, 5);
+    const owner = dto.ownerEmail
+      ? await this.db.user.upsert({
+          where: { email: dto.ownerEmail },
+          update: {
+            name: dto.ownerName ?? dto.name,
+            role: Role.GARAGE,
+            isActive: true,
+            phone: null,
+          },
+          create: {
+            email: dto.ownerEmail,
+            name: dto.ownerName ?? dto.name,
+            role: Role.GARAGE,
+            isActive: true,
+          },
+        })
+      : null;
     
     return this.db.garage.create({
       data: {
-        ...dto,
+        name: dto.name,
+        address: dto.address,
+        city: dto.city,
+        lat: dto.lat,
+        lng: dto.lng,
+        phone: dto.phone,
+        description: dto.description,
+        specialties: dto.specialties ?? [],
+        imageUrl: dto.imageUrl,
         slug,
+        ownerId: owner?.id,
         isActive: true,
         isVerified: true, // Admin-created garages are verified by default
       },
