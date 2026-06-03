@@ -41,6 +41,11 @@ type Part = {
   isActive: boolean;
 };
 
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+};
+
 type PartFormState = {
   id?: string;
   name: string;
@@ -123,12 +128,12 @@ export default function AdminPartsPage() {
       if (category) params.set('category', category);
 
       const [partsData, suppliersData] = await Promise.all([
-        fetchApi(`/parts/admin/all${params.toString() ? `?${params}` : ''}`) as Promise<Part[]>,
-        fetchApi('/parts/admin/suppliers') as Promise<Supplier[]>,
+        fetchApi(`/parts/admin/all${params.toString() ? `?${params}` : ''}`) as Promise<ApiResponse<Part[]>>,
+        fetchApi('/parts/admin/suppliers') as Promise<ApiResponse<Supplier[]>>,
       ]);
 
-      setParts(partsData);
-      setSuppliers(suppliersData);
+      setParts(Array.isArray(partsData?.data) ? partsData.data : []);
+      setSuppliers(Array.isArray(suppliersData?.data) ? suppliersData.data : []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impossible de charger les pièces.');
     } finally {
@@ -307,7 +312,7 @@ export default function AdminPartsPage() {
   };
 
   const formatPrice = (value: string | number) =>
-    `${Number(value).toLocaleString('fr-HT', { maximumFractionDigits: 0 })} HTG`;
+    `${new Intl.NumberFormat('fr-HT', { maximumFractionDigits: 0 }).format(Number(value))} HTG`;
 
   return (
     <div className="space-y-6">
