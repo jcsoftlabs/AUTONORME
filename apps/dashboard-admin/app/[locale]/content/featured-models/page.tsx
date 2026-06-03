@@ -223,9 +223,9 @@ export default function FeaturedModelsPage() {
               >
                 {editingModel?.imageUrl ? (
                   <>
-                    <img src={editingModel.imageUrl} className="w-full h-full object-cover" />
+                    <img src={editingModel.imageUrl} alt={editingModel.title || 'Aperçu du modèle'} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                      <span className="text-white font-bold">Changer l'image</span>
+                      <span className="text-white font-bold">Changer l&apos;image</span>
                     </div>
                   </>
                 ) : (
@@ -273,7 +273,7 @@ export default function FeaturedModelsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Titre d'affichage (Optionnel)</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Titre d&apos;affichage (Optionnel)</label>
                 <input 
                   type="text" 
                   value={editingModel?.title || ''} 
