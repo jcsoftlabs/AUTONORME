@@ -68,9 +68,10 @@ export class CreatePartDto {
   @IsOptional()
   warrantyInfo?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ description: 'Optionnel pour les pièces génériques' })
   @IsUUID()
-  supplierId!: string;
+  @IsOptional()
+  supplierId?: string;
 
   @ApiProperty({ type: [CompatibleVehicleDto] })
   @IsArray()

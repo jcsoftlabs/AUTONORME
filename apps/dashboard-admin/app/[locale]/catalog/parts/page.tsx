@@ -312,7 +312,7 @@ export default function AdminPartsPage() {
       condition: form.condition,
       sku: form.sku.trim() || undefined,
       warrantyInfo: form.warrantyInfo.trim() || undefined,
-      supplierId: form.supplierId,
+      supplierId: form.supplierId || undefined,
       compatibleVehicles,
       oemReference: form.oemReference.trim() || undefined,
       priceHtg: Number(form.priceHtg),
@@ -531,14 +531,15 @@ export default function AdminPartsPage() {
                   </select>
                 </Field>
                 <Field label="Fournisseur">
-                  <select required value={form.supplierId} onChange={(event) => updateForm('supplierId', event.target.value)} className="form-input">
-                    <option value="">Sélectionner un fournisseur</option>
+                  <select value={form.supplierId} onChange={(event) => updateForm('supplierId', event.target.value)} className="form-input">
+                    <option value="">Pièce générique / aucun fournisseur</option>
                     {activeSuppliers.map((supplier) => (
                       <option key={supplier.id} value={supplier.id}>
                         {supplier.shopName}{supplier.city ? ` — ${supplier.city}` : ''}
                       </option>
                     ))}
                   </select>
+                  <p className="mt-1 text-xs text-gray-500">Laissez vide pour une pièce générique hors fournisseur.</p>
                 </Field>
                 <Field label="Localisation">
                   <input required value={form.location} onChange={(event) => updateForm('location', event.target.value)} className="form-input" placeholder="Entrepôt Delmas 33" />
@@ -553,7 +554,8 @@ export default function AdminPartsPage() {
                   <input value={form.sku} onChange={(event) => updateForm('sku', event.target.value)} className="form-input" />
                 </Field>
                 <Field label="Référence OEM">
-                  <input value={form.oemReference} onChange={(event) => updateForm('oemReference', event.target.value)} className="form-input" />
+                  <input value={form.oemReference} onChange={(event) => updateForm('oemReference', event.target.value)} className="form-input" placeholder="Référence fabricant, pas le numéro de série" />
+                  <p className="mt-1 text-xs text-gray-500">La référence OEM identifie la pièce d&apos;origine du fabricant, pas le numéro de série du véhicule.</p>
                 </Field>
               </div>
 

@@ -514,8 +514,8 @@ model Part {
   condition          PartCondition @default(NEW)
   sku                String?
   warrantyInfo       String?
-  supplierId         String
-  supplier           Supplier      @relation(fields: [supplierId], references: [id])
+  supplierId         String?
+  supplier           Supplier?     @relation(fields: [supplierId], references: [id])
   /// JSON: [{ make: "Toyota", model: "RAV4", years: [2015, 2016, 2017, 2018] }]
   compatibleVehicles Json
   /// Référence OEM du fabricant

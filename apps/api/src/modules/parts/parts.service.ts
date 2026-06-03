@@ -59,10 +59,8 @@ export class PartsService {
   }
 
   async create(dto: CreatePartDto): Promise<Part> {
-    await this.ensureSupplierExists(dto.supplierId);
-
     return this.db.part.create({
-      data: this.toPartData(dto) as Prisma.PartUncheckedCreateInput,
+      data: this.toPartData(dto, true) as Prisma.PartUncheckedCreateInput,
     });
   }
 
@@ -74,7 +72,7 @@ export class PartsService {
 
     return this.db.part.update({
       where: { id },
-      data: this.toPartData(dto) as Prisma.PartUncheckedUpdateInput,
+      data: this.toPartData(dto, false) as Prisma.PartUncheckedUpdateInput,
     });
   }
 
@@ -238,7 +236,10 @@ export class PartsService {
     }
   }
 
-  private toPartData(dto: CreatePartDto | UpdatePartDto): Prisma.PartUncheckedCreateInput | Prisma.PartUncheckedUpdateInput {
+  private toPartData(
+    dto: CreatePartDto | UpdatePartDto,
+    isCreate: boolean,
+  ): Prisma.PartUncheckedCreateInput | Prisma.PartUncheckedUpdateInput {
     const data: Prisma.PartUncheckedCreateInput | Prisma.PartUncheckedUpdateInput = {};
 
     if (dto.name !== undefined) data.name = dto.name;
@@ -246,9 +247,25 @@ export class PartsService {
     if (dto.description !== undefined) data.description = dto.description || null;
     if (dto.category !== undefined) data.category = dto.category;
     if (dto.condition !== undefined) data.condition = dto.condition;
-    if (dto.sku !== undefined) data.sku = dto.sku || null;
+    if (dto.sku !== undefined) {
+      if (dto.sku.trim()) {
+        data.sku = dto.sku.trim();
+      } else if (isCreate) {
+        data.sku = this.generateSku({
+          name: dto.name ?? 'ITEM',
+          brand: dto.brand ?? 'GEN',
+          category: dto.category ?? 'AUTRE',
+        });
+      }
+    } else if (isCreate) {
+      data.sku = this.generateSku({
+        name: dto.name ?? 'ITEM',
+        brand: dto.brand ?? 'GEN',
+        category: dto.category ?? 'AUTRE',
+      });
+    }
     if (dto.warrantyInfo !== undefined) data.warrantyInfo = dto.warrantyInfo || null;
-    if (dto.supplierId !== undefined) data.supplierId = dto.supplierId;
+    if (dto.supplierId !== undefined && dto.supplierId) data.supplierId = dto.supplierId;
     if (dto.compatibleVehicles !== undefined) data.compatibleVehicles = dto.compatibleVehicles as unknown as Prisma.InputJsonValue;
     if (dto.oemReference !== undefined) data.oemReference = dto.oemReference || null;
     if (dto.priceHtg !== undefined) data.priceHtg = dto.priceHtg;
@@ -260,5 +277,22 @@ export class PartsService {
     if (dto.isActive !== undefined) data.isActive = dto.isActive;
 
     return data;
+  }
+
+  private generateSku(dto: { name: string; brand?: string; category: string }): string {
+    const category = this.normalizeSkuPart(dto.category).slice(0, 4) || 'PART';
+    const brand = this.normalizeSkuPart(dto.brand ?? 'GEN').slice(0, 4) || 'GEN';
+    const name = this.normalizeSkuPart(dto.name).slice(0, 6) || 'ITEM';
+    const stamp = Date.now().toString(36).toUpperCase().slice(-5);
+    const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
+    return `${category}-${brand}-${name}-${stamp}${rand}`;
+  }
+
+  private normalizeSkuPart(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, '');
   }
 }
