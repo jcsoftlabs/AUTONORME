@@ -1490,8 +1490,6 @@
 }
 
 .footerTop {
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-xl);
   margin-top: 2rem;
   padding-inline: clamp(1rem, 3vw, 2rem);
   padding-top: 1.25rem;
@@ -1830,8 +1828,8 @@
 
 .footerGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(180px, 0.8fr));
-  gap: var(--space-3xl);
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 1.2fr;
+  gap: var(--space-2xl);
 }
 
 .footerBrandText {
@@ -1921,9 +1919,12 @@
 @media (max-width: 1100px) {
   .heroContent,
   .statsWrap,
-  .autobotWrap,
-  .footerGrid {
+  .autobotWrap {
     grid-template-columns: 1fr;
+  }
+
+  .footerGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .featureGrid,
@@ -2121,7 +2122,8 @@
   .heroSelectorGrid,
   .heroMeta,
   .heroPanelFooter,
-  .statsGrid {
+  .statsGrid,
+  .footerGrid {
     grid-template-columns: 1fr;
   }
 
