@@ -24,7 +24,7 @@
     "home": "Akèy",
     "garages": "Garaj",
     "parts": "Pyès otomobil",
-    "autobot": "AutoBot",
+    "autobot": "Ciara",
     "maintenance": "Antretyen",
     "about": "Sou nou",
     "join": "Rejwenn nou",
@@ -138,10 +138,10 @@
     "total": "Total: {amount}"
   },
   "autobot": {
-    "title": "AutoBot",
+    "title": "Ciara",
     "subtitle": "Asistan otomobil AUTONORME ou a",
     "placeholder": "Poze kesyon ou...",
-    "typing": "AutoBot ap ekri...",
+    "typing": "Ciara ap ekri...",
     "escalate": "Pale ak yon konseye",
     "new_conversation": "Nouvo konvèsasyon"
   },

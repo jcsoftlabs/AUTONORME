@@ -106,7 +106,7 @@ export default function AutoBotFloatingWidget() {
         <section className={styles.widgetPanel} aria-label={t('widget_title')}>
           <div className={styles.widgetHeader}>
             <div className={styles.widgetHeaderInfo}>
-              <div className={styles.widgetAvatar}>AI</div>
+              <div className={styles.widgetAvatar}>C</div>
               <div>
                 <div className={styles.widgetTitle}>{t('widget_title')}</div>
                 <div className={styles.widgetMeta}>
@@ -171,7 +171,7 @@ export default function AutoBotFloatingWidget() {
         onClick={() => setIsOpen((value) => !value)}
         aria-label={t('widget_trigger')}
       >
-        AI
+        {t('widget_bubble')}
       </button>
     </div>
   );

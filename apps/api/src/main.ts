@@ -60,7 +60,7 @@ async function bootstrap(): Promise<void> {
       .addTag('garages', 'Annuaire et rendez-vous')
       .addTag('parts', 'Catalogue AUTOparts')
       .addTag('orders', 'Commandes et paiements')
-      .addTag('autobot', 'Assistant IA AutoBot')
+      .addTag('autobot', 'Ciara, assistante IA AUTONORME')
       .addTag('maintenance', 'Plans et rappels de maintenance')
       .addTag('notifications', 'Centre de notifications')
       .build();

@@ -16,7 +16,7 @@ export default function ChatMessage({ message }: { message: Message }) {
     <div
       className={`${styles.messageRow} ${isUser ? styles.messageRowUser : styles.messageRowAssistant}`}
     >
-      {!isUser && <div className={styles.assistantAvatar}>AI</div>}
+      {!isUser && <div className={styles.assistantAvatar}>C</div>}
 
       <div
         className={`${styles.messageBubble} ${

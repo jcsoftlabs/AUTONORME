@@ -14,10 +14,10 @@ import type { User } from '@prisma/client';
 export class AutobotController {
   constructor(private readonly autobotService: AutobotService) {}
 
-  // Route publique — AutoBot accessible sans compte (BLOC 4)
+  // Route publique — Ciara accessible sans compte (BLOC 4)
   @Public()
   @Post('chat')
-  @ApiOperation({ summary: 'Chat avec AutoBot (public ou authentifié)' })
+  @ApiOperation({ summary: 'Chat avec Ciara (public ou authentifié)' })
   async chat(
     @Body() dto: ChatDto,
     @CurrentUser() user?: User,

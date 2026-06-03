@@ -24,7 +24,7 @@
     "home": "Home",
     "garages": "Garages",
     "parts": "Auto parts",
-    "autobot": "AutoBot",
+    "autobot": "Ciara",
     "maintenance": "Maintenance",
     "about": "About",
     "join": "Join",
@@ -138,10 +138,10 @@
     "total": "Total: {amount}"
   },
   "autobot": {
-    "title": "AutoBot",
+    "title": "Ciara",
     "subtitle": "Your AUTONORME automotive assistant",
     "placeholder": "Ask your question...",
-    "typing": "AutoBot is typing...",
+    "typing": "Ciara is typing...",
     "escalate": "Talk to an advisor",
     "new_conversation": "New conversation"
   },

@@ -132,7 +132,7 @@ export default function AutoBotInterface() {
       <section className={styles.chatShell}>
         <div className={styles.chatHeader}>
           <div className={styles.chatHeaderInfo}>
-            <div className={styles.chatAvatar}>AI</div>
+            <div className={styles.chatAvatar}>C</div>
             <div>
               <div className={styles.chatHeaderTitle}>{t('title')}</div>
               <div className={styles.chatHeaderMeta}>
@@ -153,7 +153,7 @@ export default function AutoBotInterface() {
 
           {isLoading && (
             <div className={styles.loadingWrap}>
-              <div className={styles.assistantAvatar}>AI</div>
+              <div className={styles.assistantAvatar}>C</div>
               <div className={styles.typingBubble}>
                 <span className={styles.typingDot}></span>
                 <span className={styles.typingDot}></span>

@@ -24,7 +24,7 @@
     "home": "Accueil",
     "garages": "Garages",
     "parts": "Pièces auto",
-    "autobot": "AutoBot",
+    "autobot": "Ciara",
     "maintenance": "Maintenance",
     "about": "À propos",
     "join": "Rejoindre",
@@ -138,10 +138,10 @@
     "total": "Total : {amount}"
   },
   "autobot": {
-    "title": "AutoBot",
+    "title": "Ciara",
     "subtitle": "Votre assistant automobile AUTONORME",
     "placeholder": "Posez votre question...",
-    "typing": "AutoBot écrit...",
+    "typing": "Ciara écrit...",
     "escalate": "Parler à un conseiller",
     "new_conversation": "Nouvelle conversation"
   },

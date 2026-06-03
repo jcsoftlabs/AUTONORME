@@ -41,14 +41,14 @@ export class AutobotGateway implements OnGatewayConnection, OnGatewayDisconnect 
       } else {
         client.userId = `anon_${client.id}`;
       }
-      this.logger.log(`AutoBot WS connected: ${client.userId}`);
+      this.logger.log(`Ciara WS connected: ${client.userId}`);
     } catch {
       client.userId = `anon_${client.id}`;
     }
   }
 
   handleDisconnect(client: AuthenticatedSocket): void {
-    this.logger.log(`AutoBot WS disconnected: ${client.userId}`);
+    this.logger.log(`Ciara WS disconnected: ${client.userId}`);
   }
 
   @SubscribeMessage('chat')
@@ -62,8 +62,8 @@ export class AutobotGateway implements OnGatewayConnection, OnGatewayDisconnect 
       const reply = await this.autobotService.chat(userId, 'WEB', payload.message, payload.history ?? []);
       client.emit('reply', { message: reply });
     } catch (err) {
-      this.logger.error('AutoBot chat error', err);
-      client.emit('error', { message: 'AutoBot temporairement indisponible' });
+      this.logger.error('Ciara chat error', err);
+      client.emit('error', { message: 'Ciara temporairement indisponible' });
     } finally {
       client.emit('thinking', { status: false });
     }

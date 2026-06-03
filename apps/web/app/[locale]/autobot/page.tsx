@@ -5,11 +5,11 @@ import styles from '../../../components/autobot/autobot.module.css';
 import { getTranslations } from 'next-intl/server';
 
 export const metadata = {
-  title: 'AutoBot IA — Votre Assistant Automobile Intelligent',
-  description: 'Discutez avec AutoBot, l\'IA d\'AUTONORME conçue pour répondre à toutes vos questions sur les pièces automobiles et les garages.',
+  title: 'Ciara — Votre assistante automobile intelligente',
+  description: 'Discutez avec Ciara, l\'assistante IA d\'AUTONORME conçue pour répondre à vos questions sur les pièces automobiles et les garages.',
   openGraph: {
-    title: 'AutoBot IA — Votre Assistant Automobile Intelligent',
-    description: 'Discutez avec AutoBot, l\'IA d\'AUTONORME conçue pour répondre à toutes vos questions.',
+    title: 'Ciara — Votre assistante automobile intelligente',
+    description: 'Discutez avec Ciara, l\'assistante IA d\'AUTONORME conçue pour répondre à vos questions.',
     url: 'https://autonorme.com/autobot',
     siteName: 'AUTONORME',
     images: [
@@ -17,7 +17,7 @@ export const metadata = {
         url: '/og-autobot.png',
         width: 1200,
         height: 630,
-        alt: 'AutoBot AUTONORME',
+        alt: 'Ciara AUTONORME',
       },
     ],
     locale: 'fr_FR',
