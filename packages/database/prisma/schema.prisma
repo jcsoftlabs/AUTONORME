@@ -25,6 +25,12 @@ enum Role {
   SUPER_ADMIN
 }
 
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
 enum ReminderStatus {
   PENDING
   SENT
@@ -240,23 +246,24 @@ model RefreshToken {
 
 /// Utilisateur de la plateforme AUTONORME
 model User {
-  id            String    @id @default(uuid())
+  id                 String        @id @default(uuid())
   /// Numéro de téléphone haïtien — identifiant unique (+509 XXXX XXXX)
-  phone         String?   @unique
+  phone              String?       @unique
   /// Email de connexion quand l'OTP est envoyé via Resend
-  email         String?   @unique
-  name          String
-  role          Role      @default(CLIENT)
+  email              String?       @unique
+  name               String
+  role               Role          @default(CLIENT)
+  accountStatus      AccountStatus @default(ACTIVE)
   /// Langue préférée : fr | ht | en
-  locale        String    @default("fr")
-   isActive           Boolean   @default(true)
+  locale             String        @default("fr")
+  isActive           Boolean       @default(true)
   avatarUrl          String?
   /// Secret TOTP Google Authenticator
   twoFactorSecret    String?
   /// Indicateur d'activation du 2FA
-  isTwoFactorEnabled Boolean   @default(false)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  isTwoFactorEnabled Boolean       @default(false)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
   // Relations
   vehicles      Vehicle[]
@@ -281,51 +288,51 @@ model User {
 
 /// Véhicule enregistré par un client
 model Vehicle {
-  id           String    @id @default(uuid())
-  userId       String
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  make         String
-  model        String
-  trim         String?
-  year         Int
-  bodyType     VehicleBodyType?
+  id                    String            @id @default(uuid())
+  userId                String
+  user                  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  make                  String
+  model                 String
+  trim                  String?
+  year                  Int
+  bodyType              VehicleBodyType?
   /// Numéro VIN — 17 caractères alphanumériques
-  vin          String?   @unique
+  vin                   String?           @unique
   /// essence | diesel | hybride
-  fuelType     FuelType
-  transmission TransmissionType?
-  engine       String?
-  drivetrain   DrivetrainType?
-  mileage      Int?
+  fuelType              FuelType
+  transmission          TransmissionType?
+  engine                String?
+  drivetrain            DrivetrainType?
+  mileage               Int?
   averageMonthlyMileage Int?
-  color        String?
+  color                 String?
   /// Plaque d'immatriculation haïtienne
-  plate        String?
-  usageType    VehicleUsageType?
-  primaryCity  String?
-  primaryZone  String?
-  isPrimaryVehicle Boolean @default(false)
-  status       VehicleStatus @default(ACTIVE)
-  purchaseDate DateTime?
-  purchaseMileage Int?
-  ownershipType OwnershipType @default(OWNER)
-  source       VehicleSource @default(MANUAL)
-  tireSize     String?
-  batterySpec  String?
-  oilSpec      String?
-  coolantSpec  String?
-  brakeSpec    String?
-  vehicleScore Int?
+  plate                 String?
+  usageType             VehicleUsageType?
+  primaryCity           String?
+  primaryZone           String?
+  isPrimaryVehicle      Boolean           @default(false)
+  status                VehicleStatus     @default(ACTIVE)
+  purchaseDate          DateTime?
+  purchaseMileage       Int?
+  ownershipType         OwnershipType     @default(OWNER)
+  source                VehicleSource     @default(MANUAL)
+  tireSize              String?
+  batterySpec           String?
+  oilSpec               String?
+  coolantSpec           String?
+  brakeSpec             String?
+  vehicleScore          Int?
   vehicleScoreUpdatedAt DateTime?
-  historyCompleteness Int?
+  historyCompleteness   Int?
   maintenanceDiscipline Int?
-  dataConfidenceScore Int?
-  locale       String?   @default("fr")
-  lastActivityAt DateTime?
-  isActive     Boolean   @default(true)
-  archivedAt   DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  dataConfidenceScore   Int?
+  locale                String?           @default("fr")
+  lastActivityAt        DateTime?
+  isActive              Boolean           @default(true)
+  archivedAt            DateTime?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
 
   // Relations
   records            MaintenanceRecord[]
@@ -347,22 +354,22 @@ model Vehicle {
 
 /// Historique d'interventions sur un véhicule
 model MaintenanceRecord {
-  id             String   @id @default(uuid())
+  id             String        @id @default(uuid())
   vehicleId      String
-  vehicle        Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type           String
   status         ServiceStatus @default(COMPLETED)
   date           DateTime
   nextDueDate    DateTime?
   nextDueMileage Int?
   garageId       String?
-  garage         Garage?  @relation(fields: [garageId], references: [id])
+  garage         Garage?       @relation(fields: [garageId], references: [id])
   garageName     String?
   mileageAt      Int?
-  totalCostHtg   Decimal? @db.Decimal(10, 2)
+  totalCostHtg   Decimal?      @db.Decimal(10, 2)
   notes          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   installedParts PartsInstallation[]
   documents      VehicleDocument[]
@@ -373,18 +380,18 @@ model MaintenanceRecord {
 
 /// Rappels de maintenance planifiés
 model MaintenanceReminder {
-  id         String         @id @default(uuid())
-  vehicleId  String
-  vehicle    Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  type       String
-  dueDate    DateTime
-  dueMileage Int?
-  status     ReminderStatus @default(PENDING)
-  priority   ReminderPriority @default(MEDIUM)
-  notifiedAt DateTime?
+  id          String           @id @default(uuid())
+  vehicleId   String
+  vehicle     Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type        String
+  dueDate     DateTime
+  dueMileage  Int?
+  status      ReminderStatus   @default(PENDING)
+  priority    ReminderPriority @default(MEDIUM)
+  notifiedAt  DateTime?
   confirmedAt DateTime?
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@index([vehicleId])
   @@index([dueDate, status])
@@ -499,32 +506,32 @@ model Supplier {
 
 /// Pièce automobile dans le catalogue AUTOparts
 model Part {
-  id                 String      @id @default(uuid())
+  id                 String        @id @default(uuid())
   name               String
   brand              String?
-  description        String?     @db.Text
+  description        String?       @db.Text
   category           PartCategory
   condition          PartCondition @default(NEW)
   sku                String?
   warrantyInfo       String?
   supplierId         String
-  supplier           Supplier    @relation(fields: [supplierId], references: [id])
+  supplier           Supplier      @relation(fields: [supplierId], references: [id])
   /// JSON: [{ make: "Toyota", model: "RAV4", years: [2015, 2016, 2017, 2018] }]
   compatibleVehicles Json
   /// Référence OEM du fabricant
   oemReference       String?
   /// Prix en Gourde haïtienne
-  priceHtg           Decimal     @db.Decimal(10, 2)
-  stockQty           Int         @default(0)
+  priceHtg           Decimal       @db.Decimal(10, 2)
+  stockQty           Int           @default(0)
   /// Localisation physique (ex: "Entrepôt Delmas 33")
   location           String
-  importAvailable    Boolean     @default(false)
+  importAvailable    Boolean       @default(false)
   importDelayDays    Int?
   /// URLs Cloudinary des images
   images             String[]
-  isActive           Boolean     @default(true)
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+  isActive           Boolean       @default(true)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
   // Relations
   orderItems         OrderItem[]
@@ -601,14 +608,14 @@ model Invoice {
 
 /// Session de conversation avec AutoBot
 model Conversation {
-  id      String              @id @default(uuid())
-  userId  String
-  user    User                @relation(fields: [userId], references: [id])
-  channel ConversationChannel
+  id        String              @id @default(uuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id])
+  channel   ConversationChannel
   /// Array JSON: [{ role: "user"|"assistant", content: "...", timestamp: "..." }]
-  messages Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  messages  Json
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
 
   @@index([userId])
   @@index([channel])
@@ -673,49 +680,49 @@ model VehicleInspection {
 }
 
 model VehicleIncident {
-  id               String           @id @default(uuid())
+  id               String            @id @default(uuid())
   vehicleId        String
-  vehicle          Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle          Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   incidentType     IncidentType
   incidentDate     DateTime
   description      String
   severity         IncidentSeverity?
-  estimatedCostHtg Decimal?         @db.Decimal(10, 2)
+  estimatedCostHtg Decimal?          @db.Decimal(10, 2)
   resolvedAt       DateTime?
-  createdAt        DateTime         @default(now())
+  createdAt        DateTime          @default(now())
 
   @@index([vehicleId, incidentDate])
   @@map("vehicle_incidents")
 }
 
 model VehicleDocument {
-  id                  String             @id @default(uuid())
+  id                  String              @id @default(uuid())
   vehicleId           String
-  vehicle             Vehicle            @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle             Vehicle             @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   maintenanceRecordId String?
-  maintenanceRecord   MaintenanceRecord? @relation(fields: [maintenanceRecordId], references: [id])
+  maintenanceRecord   MaintenanceRecord?  @relation(fields: [maintenanceRecordId], references: [id])
   type                VehicleDocumentType
   title               String
   fileUrl             String
   mimeType            String?
   issuedAt            DateTime?
   expiresAt           DateTime?
-  createdAt           DateTime           @default(now())
+  createdAt           DateTime            @default(now())
 
   @@index([vehicleId, type])
   @@map("vehicle_documents")
 }
 
 model VehicleRiskFlag {
-  id         String           @id @default(uuid())
+  id         String              @id @default(uuid())
   vehicleId  String
-  vehicle    Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle    Vehicle             @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type       VehicleRiskFlagType
-  severity   IncidentSeverity @default(MEDIUM)
+  severity   IncidentSeverity    @default(MEDIUM)
   message    String
-  isResolved Boolean          @default(false)
+  isResolved Boolean             @default(false)
   resolvedAt DateTime?
-  createdAt  DateTime         @default(now())
+  createdAt  DateTime            @default(now())
 
   @@index([vehicleId, isResolved])
   @@map("vehicle_risk_flags")

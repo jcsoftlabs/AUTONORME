@@ -41,6 +41,14 @@ export class OtpService {
     return this.sendPhone(identifier, code);
   }
 
+  async sendInvitation(identifier: string, payload: { name: string; role: 'GARAGE' | 'SUPPLIER' }): Promise<void> {
+    if (identifier.includes('@')) {
+      return this.sendInvitationEmail(identifier, payload);
+    }
+
+    this.logger.warn(`Invitation téléphone non supportée pour ${identifier}`);
+  }
+
   private async sendEmail(email: string, code: string): Promise<void> {
     const apiKey = this.config.get<string>('RESEND_API_KEY');
     const from = this.config.get<string>('RESEND_FROM_EMAIL', 'AUTONORME <onboarding@resend.dev>');
@@ -85,6 +93,48 @@ export class OtpService {
       this.logger.error(`Échec envoi OTP email → ${masked}`, error);
       throw new InternalServerErrorException('Échec envoi code OTP');
     }
+  }
+
+  private async sendInvitationEmail(email: string, payload: { name: string; role: 'GARAGE' | 'SUPPLIER' }): Promise<void> {
+    const apiKey = this.config.get<string>('RESEND_API_KEY');
+    const from = this.config.get<string>('RESEND_FROM_EMAIL', 'AUTONORME <onboarding@resend.dev>');
+    const masked = email.replace(/(^.).*(@.*$)/, '$1***$2');
+    const roleLabel = payload.role === 'GARAGE' ? 'garage' : 'fournisseur';
+
+    if (!apiKey || apiKey === 'CHANGE_ME') {
+      this.logger.warn(`[DEV MODE] Invitation email pour ${masked} (${roleLabel})`);
+      return;
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [email],
+        subject: 'Votre accès professionnel AUTONORME',
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111827">
+            <h1 style="color:#001F5C;margin-bottom:8px">Bienvenue sur AUTONORME</h1>
+            <p style="font-size:16px;line-height:1.6">Votre compte ${roleLabel} pour <strong>${payload.name}</strong> a été préparé.</p>
+            <p style="font-size:16px;line-height:1.6">Vous pouvez maintenant vous connecter avec votre email et le code OTP reçu à chaque connexion.</p>
+            <p style="font-size:14px;color:#6B7280">Si vous n'êtes pas à l'origine de cette création de compte, ignorez cet email.</p>
+          </div>
+        `,
+        text: `Votre compte ${roleLabel} AUTONORME a été préparé pour ${payload.name}.`,
+      }),
+    });
+
+    if (!response.ok) {
+      const details = await response.text();
+      this.logger.error(`Resend invitation failed → ${masked}: ${details}`);
+      throw new InternalServerErrorException('Échec envoi invitation');
+    }
+
+    this.logger.log(`Invitation envoyée → ${masked}`);
   }
 
   private async sendPhone(phone: string, code: string): Promise<void> {

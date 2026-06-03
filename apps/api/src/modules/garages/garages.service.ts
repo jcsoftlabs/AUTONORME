@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import type { Garage } from '@prisma/client';
 import { ErrorCodes, Role } from '@autonorme/types';
 import { CreateGarageDto } from './dto/create-garage.dto';
+import { OtpService } from '../auth/otp.service';
 import slugify from 'slugify';
 
 export interface GarageSearchParams {
@@ -16,7 +17,7 @@ export interface GarageSearchParams {
 
 @Injectable()
 export class GaragesService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(private readonly db: DatabaseService, private readonly otpService: OtpService) {}
 
   async findAll(params: GarageSearchParams): Promise<Garage[]> {
     const { specialty, page = 1, limit = 20 } = params;
@@ -81,6 +82,7 @@ export class GaragesService {
             name: dto.ownerName ?? dto.name,
             role: Role.GARAGE,
             isActive: true,
+            accountStatus: 'PENDING',
             phone: null,
           },
           create: {
@@ -88,11 +90,12 @@ export class GaragesService {
             name: dto.ownerName ?? dto.name,
             role: Role.GARAGE,
             isActive: true,
+            accountStatus: 'PENDING',
           },
         })
       : null;
-    
-    return this.db.garage.create({
+
+    const garage = await this.db.garage.create({
       data: {
         name: dto.name,
         address: dto.address,
@@ -106,8 +109,14 @@ export class GaragesService {
         slug,
         ownerId: owner?.id,
         isActive: true,
-        isVerified: true, // Admin-created garages are verified by default
+        isVerified: true,
       },
     });
+
+    if (owner?.email) {
+      await this.otpService.sendInvitation(owner.email, { name: dto.name, role: 'GARAGE' });
+    }
+
+    return garage;
   }
 }

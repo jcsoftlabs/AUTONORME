@@ -81,6 +81,13 @@ export class AuthService {
       });
     }
 
+    if (user.accountStatus === 'PENDING') {
+      user = await this.db.user.update({
+        where: { id: user.id },
+        data: { accountStatus: 'ACTIVE', isActive: true },
+      });
+    }
+
     // Vérification du 2FA pour les admins
     if (user.isTwoFactorEnabled && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN')) {
       const tempToken = this.jwt.sign({ sub: user.id, requires2fa: true }, { expiresIn: '5m' });
