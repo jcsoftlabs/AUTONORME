@@ -12,7 +12,7 @@ export default function GarageDashboardHome() {
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Bienvenue, Garage Moderne !</h1>
-          <p className="text-gray-500">Voici le résumé de votre activité pour aujourd'hui.</p>
+          <p className="text-gray-500">Voici le résumé de votre activité pour aujourd&apos;hui.</p>
         </div>
 
         {/* Stats Grid */}

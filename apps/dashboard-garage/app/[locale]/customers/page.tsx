@@ -12,7 +12,7 @@ export default function CustomersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Ma Clientèle</h1>
-            <p className="text-gray-500 text-sm">Retrouvez l'historique et les contacts de vos clients.</p>
+            <p className="text-gray-500 text-sm">Retrouvez l&apos;historique et les contacts de vos clients.</p>
           </div>
         </div>
 

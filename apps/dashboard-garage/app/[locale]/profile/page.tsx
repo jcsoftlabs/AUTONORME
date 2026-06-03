@@ -62,7 +62,7 @@ export default function GarageProfilePage() {
 
           {/* Horaires d'ouverture */}
           <div className="admin-card md:col-span-2 space-y-4">
-            <h3 className="font-bold text-gray-900 border-b border-gray-50 pb-2 mb-4">Horaires d'ouverture</h3>
+            <h3 className="font-bold text-gray-900 border-b border-gray-50 pb-2 mb-4">Horaires d&apos;ouverture</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'].map((day) => (
                 <div key={day} className="p-3 bg-gray-50 rounded-xl">

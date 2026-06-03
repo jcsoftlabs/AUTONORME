@@ -43,7 +43,7 @@ export default function GarageLayout({ children }: { children: React.ReactNode }
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-400 hidden sm:inline">Dashboard</span>
               <span className="text-gray-200 hidden sm:inline">/</span>
-              <span className="font-semibold">Vue d'ensemble</span>
+              <span className="font-semibold">Vue d&apos;ensemble</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
