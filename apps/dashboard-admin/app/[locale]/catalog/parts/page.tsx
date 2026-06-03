@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchApi } from '@/lib/api';
 
 type PartCategory = 'FREINAGE' | 'MOTEUR' | 'SUSPENSION' | 'ELECTRIQUE' | 'CARROSSERIE' | 'AUTRE';
@@ -57,7 +57,8 @@ type PartFormState = {
   location: string;
   importAvailable: boolean;
   importDelayDays: string;
-  imagesText: string;
+  images: string[];
+  imageInputUrl: string;
   compatibilityRows: Array<{ make: string; model: string; yearsText: string }>;
   isActive: boolean;
 };
@@ -92,7 +93,8 @@ const emptyForm: PartFormState = {
   location: '',
   importAvailable: false,
   importDelayDays: '',
-  imagesText: '',
+  images: [],
+  imageInputUrl: '',
   compatibilityRows: [{ make: '', model: '', yearsText: '' }],
   isActive: true,
 };
@@ -104,9 +106,11 @@ export default function AdminPartsPage() {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState<PartFormState>(emptyForm);
+  const imageFileInputRef = useRef<HTMLInputElement>(null);
 
   const activeSuppliers = useMemo(
     () => suppliers.filter((supplier) => supplier.isActive),
@@ -167,7 +171,8 @@ export default function AdminPartsPage() {
       location: part.location,
       importAvailable: part.importAvailable,
       importDelayDays: part.importDelayDays ? String(part.importDelayDays) : '',
-      imagesText: (part.images ?? []).join('\n'),
+      images: part.images ?? [],
+      imageInputUrl: '',
       compatibilityRows: compatibleVehicles.length
         ? compatibleVehicles.map((vehicle) => ({
             make: vehicle.make,
@@ -209,6 +214,67 @@ export default function AdminPartsPage() {
         ...previous.compatibilityRows,
         { make: '', model: '', yearsText: '' },
       ],
+    }));
+  };
+
+  const uploadPartImage = async (file: File) => {
+    const token = localStorage.getItem('admin_token');
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload?folder=parts`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || `Erreur serveur: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.data?.url || result.url;
+  };
+
+  const handleImagesUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    if (!files.length) return;
+
+    setUploadingImages(true);
+    setError('');
+
+    try {
+      const uploadedUrls = await Promise.all(files.map((file) => uploadPartImage(file)));
+      setForm((previous) => ({
+        ...previous,
+        images: [
+          ...previous.images,
+          ...uploadedUrls.filter((url): url is string => Boolean(url)),
+        ],
+      }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Impossible d'uploader l'image.");
+    } finally {
+      setUploadingImages(false);
+      event.target.value = '';
+    }
+  };
+
+  const addImageUrl = () => {
+    const url = form.imageInputUrl.trim();
+    if (!url) return;
+    setForm((previous) => ({
+      ...previous,
+      images: [...previous.images, url],
+      imageInputUrl: '',
+    }));
+  };
+
+  const removeImage = (index: number) => {
+    setForm((previous) => ({
+      ...previous,
+      images: previous.images.filter((_, currentIndex) => currentIndex !== index),
     }));
   };
 
@@ -256,10 +322,7 @@ export default function AdminPartsPage() {
       importDelayDays: form.importAvailable && form.importDelayDays
         ? Number(form.importDelayDays)
         : undefined,
-      images: form.imagesText
-        .split('\n')
-        .map((url) => url.trim())
-        .filter(Boolean),
+      images: form.images,
       isActive: form.isActive,
     };
   };
@@ -498,8 +561,58 @@ export default function AdminPartsPage() {
                 <textarea value={form.description} onChange={(event) => updateForm('description', event.target.value)} className="form-input min-h-[96px]" />
               </Field>
 
-              <Field label="Images Cloudinary ou URLs publiques (une par ligne)">
-                <textarea value={form.imagesText} onChange={(event) => updateForm('imagesText', event.target.value)} className="form-input min-h-[86px]" placeholder="https://..." />
+              <Field label="Images produit">
+                <div className="space-y-3">
+                  <div
+                    onClick={() => imageFileInputRef.current?.click()}
+                    className="flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-center transition-colors hover:border-primary-300 hover:bg-primary-50/40"
+                  >
+                    <span className="text-3xl">📸</span>
+                    <span className="mt-2 text-sm font-semibold text-gray-700">Uploader des photos</span>
+                    <span className="text-xs text-gray-500">PNG, JPG, WEBP jusqu&apos;à 10MB par image</span>
+                    <span className="mt-2 text-xs font-medium text-primary-700">Cliquez pour sélectionner un ou plusieurs fichiers</span>
+                  </div>
+                  <input
+                    ref={imageFileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleImagesUpload}
+                  />
+                  <div className="flex gap-2">
+                    <input
+                      value={form.imageInputUrl}
+                      onChange={(event) => updateForm('imageInputUrl', event.target.value)}
+                      className="form-input flex-1"
+                      placeholder="Ou collez une URL Cloudinary"
+                    />
+                    <button type="button" onClick={addImageUrl} className="btn-secondary px-4">
+                      Ajouter
+                    </button>
+                  </div>
+                  {uploadingImages && (
+                    <div className="rounded-xl bg-primary-50 px-4 py-3 text-sm font-medium text-primary-700">
+                      Upload des images en cours...
+                    </div>
+                  )}
+                  {form.images.length > 0 && (
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                      {form.images.map((image, index) => (
+                        <div key={`${image}-${index}`} className="group relative overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                          <img src={image} alt={`Aperçu ${index + 1}`} className="h-28 w-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-[10px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100"
+                          >
+                            Retirer
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </Field>
 
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
