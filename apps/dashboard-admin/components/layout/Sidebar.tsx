@@ -37,6 +37,12 @@ export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boo
       ],
     },
     {
+      label: 'Catalogue',
+      items: [
+        { label: t('parts'), path: '/catalog/parts', icon: '🔩' },
+      ],
+    },
+    {
       label: 'Contenu',
       items: [
         { label: t('featuredModels'), path: '/content/featured-models', icon: '🚗' },

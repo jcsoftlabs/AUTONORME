@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { ErrorCodes, PartCategory } from '@autonorme/types';
-import type { Part } from '@prisma/client';
+import type { Part, Prisma, Supplier } from '@prisma/client';
+import { CreatePartDto } from './dto/create-part.dto';
+import { UpdatePartDto } from './dto/update-part.dto';
 
 export interface PartSearchParams {
   make?: string;
@@ -22,6 +24,72 @@ interface CompatibleVehicle {
 @Injectable()
 export class PartsService {
   constructor(private readonly db: DatabaseService) {}
+
+  async findAllAdmin(params: PartSearchParams = {}): Promise<Part[]> {
+    const { q, category, page = 1, limit = 50 } = params;
+    const query = q?.trim();
+
+    return this.db.part.findMany({
+      where: {
+        ...(category ? { category } : {}),
+        ...(query
+          ? {
+              OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { brand: { contains: query, mode: 'insensitive' } },
+                { sku: { contains: query, mode: 'insensitive' } },
+                { oemReference: { contains: query, mode: 'insensitive' } },
+                { supplier: { is: { shopName: { contains: query, mode: 'insensitive' } } } },
+              ],
+            }
+          : {}),
+      },
+      include: { supplier: { select: { shopName: true, city: true } } },
+      orderBy: { updatedAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+  }
+
+  async findSuppliersForAdmin(): Promise<Pick<Supplier, 'id' | 'shopName' | 'city' | 'isActive'>[]> {
+    return this.db.supplier.findMany({
+      select: { id: true, shopName: true, city: true, isActive: true },
+      orderBy: { shopName: 'asc' },
+    });
+  }
+
+  async create(dto: CreatePartDto): Promise<Part> {
+    await this.ensureSupplierExists(dto.supplierId);
+
+    return this.db.part.create({
+      data: this.toPartData(dto) as Prisma.PartUncheckedCreateInput,
+    });
+  }
+
+  async update(id: string, dto: UpdatePartDto): Promise<Part> {
+    await this.ensurePartExists(id);
+    if (dto.supplierId) {
+      await this.ensureSupplierExists(dto.supplierId);
+    }
+
+    return this.db.part.update({
+      where: { id },
+      data: this.toPartData(dto) as Prisma.PartUncheckedUpdateInput,
+    });
+  }
+
+  async toggleActive(id: string, isActive: boolean): Promise<Part> {
+    await this.ensurePartExists(id);
+
+    return this.db.part.update({
+      where: { id },
+      data: { isActive },
+    });
+  }
+
+  async remove(id: string): Promise<Part> {
+    return this.toggleActive(id, false);
+  }
 
   async findAll(params: PartSearchParams): Promise<Part[]> {
     const { make, model, year, q, category, page = 1, limit = 20 } = params;
@@ -154,5 +222,43 @@ export class PartsService {
 
       return makeMatch && modelMatch && yearMatch;
     });
+  }
+
+  private async ensureSupplierExists(supplierId: string): Promise<void> {
+    const supplier = await this.db.supplier.findUnique({ where: { id: supplierId } });
+    if (!supplier) {
+      throw new BadRequestException({ message: 'Fournisseur introuvable' });
+    }
+  }
+
+  private async ensurePartExists(id: string): Promise<void> {
+    const part = await this.db.part.findUnique({ where: { id } });
+    if (!part) {
+      throw new NotFoundException({ code: ErrorCodes.PART_NOT_FOUND, message: 'Pièce introuvable' });
+    }
+  }
+
+  private toPartData(dto: CreatePartDto | UpdatePartDto): Prisma.PartUncheckedCreateInput | Prisma.PartUncheckedUpdateInput {
+    const data: Prisma.PartUncheckedCreateInput | Prisma.PartUncheckedUpdateInput = {};
+
+    if (dto.name !== undefined) data.name = dto.name;
+    if (dto.brand !== undefined) data.brand = dto.brand || null;
+    if (dto.description !== undefined) data.description = dto.description || null;
+    if (dto.category !== undefined) data.category = dto.category;
+    if (dto.condition !== undefined) data.condition = dto.condition;
+    if (dto.sku !== undefined) data.sku = dto.sku || null;
+    if (dto.warrantyInfo !== undefined) data.warrantyInfo = dto.warrantyInfo || null;
+    if (dto.supplierId !== undefined) data.supplierId = dto.supplierId;
+    if (dto.compatibleVehicles !== undefined) data.compatibleVehicles = dto.compatibleVehicles as unknown as Prisma.InputJsonValue;
+    if (dto.oemReference !== undefined) data.oemReference = dto.oemReference || null;
+    if (dto.priceHtg !== undefined) data.priceHtg = dto.priceHtg;
+    if (dto.stockQty !== undefined) data.stockQty = dto.stockQty;
+    if (dto.location !== undefined) data.location = dto.location;
+    if (dto.importAvailable !== undefined) data.importAvailable = dto.importAvailable;
+    if (dto.importDelayDays !== undefined) data.importDelayDays = dto.importDelayDays ?? null;
+    if (dto.images !== undefined) data.images = dto.images.filter(Boolean);
+    if (dto.isActive !== undefined) data.isActive = dto.isActive;
+
+    return data;
   }
 }
