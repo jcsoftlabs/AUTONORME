@@ -622,7 +622,7 @@
 @media (max-width: 768px) {
   .widgetRoot {
     right: 0.75rem;
-    bottom: 16px;
+    bottom: 0.85rem;
   }
 
   .widgetTrigger {

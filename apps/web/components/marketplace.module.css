@@ -752,3 +752,31 @@
     gap: 0.5rem;
   }
 }
+
+@media (max-width: 480px) {
+  .productGrid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .productSection {
+    padding: 0.95rem;
+  }
+
+  .productVisual {
+    min-height: 9.5rem;
+  }
+
+  .productMeta {
+    align-items: start;
+  }
+
+  .partBottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .supplierMeta {
+    text-align: left;
+  }
+}
