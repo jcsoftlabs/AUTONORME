@@ -377,59 +377,6 @@ export default function Header() {
 
           {/* ── RIGHT: Search + actions ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
-            {/* Search bar – desktop only */}
-            <div className="nav-desktop">
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  minHeight: '3rem',
-                  padding: '0 1rem',
-                  borderRadius: '0.95rem',
-                  border: solidHeader
-                    ? '1px solid rgba(15, 23, 42, 0.1)'
-                    : '1px solid rgba(255,255,255,0.24)',
-                  background: solidHeader
-                    ? '#FFFFFF'
-                    : 'rgba(255,255,255,0.12)',
-                  boxShadow: solidHeader
-                    ? '0 8px 18px rgba(15, 23, 42, 0.05)'
-                    : 'none',
-                }}
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={
-                    solidHeader
-                      ? 'var(--color-neutral-500)'
-                      : 'rgba(255,255,255,0.75)'
-                  }
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder={t('search_placeholder')}
-                  style={{
-                    width: '100%',
-                    border: 'none',
-                    outline: 'none',
-                    background: 'transparent',
-                    color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
-                    fontSize: '0.96rem',
-                    fontWeight: 500,
-                  }}
-                />
-              </div>
-            </div>
 
             {/* Language switcher – desktop only */}
             <div className="nav-desktop">

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { VEHICLE_DATA, YEARS } from '@autonorme/types';
 import styles from '../homepage.module.css';
@@ -93,7 +94,11 @@ export default function HeroSection() {
 
     async function fetchCatalog() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/content/vehicle-catalog`);
+        const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiBase = configuredApiUrl.endsWith('/api/v1')
+          ? configuredApiUrl
+          : `${configuredApiUrl}/api/v1`;
+        const response = await fetch(`${apiBase}/content/vehicle-catalog`);
         const result = await response.json();
         const makesData = result?.data?.makes ?? result?.makes;
 
@@ -125,6 +130,12 @@ export default function HeroSection() {
       <div className="container">
         <div className={styles.heroContentSimple}>
           <h1 className={styles.heroSimpleTitle}>{t('selector_title')}</h1>
+          <p className={styles.heroLeadCompact}>{t('hero_focus_subtitle')}</p>
+          <div className={styles.heroTrustRow}>
+            <span className={styles.heroTrustPill}>{t('trust_1')}</span>
+            <span className={styles.heroTrustPill}>{t('trust_2')}</span>
+            <span className={styles.heroTrustPill}>{t('trust_3')}</span>
+          </div>
           <div className={styles.heroSelectorShell}>
             <div className={styles.heroSelectorCardSimple}>
               <div className={styles.heroSelectorGrid}>
@@ -182,6 +193,19 @@ export default function HeroSection() {
                   {t('selector_cta')}
                 </button>
               </div>
+
+              <div className={styles.mobileQuickActions}>
+                <Link href={`/${locale}/pieces`} className={styles.mobileQuickAction}>
+                  {t('catalog_parts')}
+                </Link>
+                <Link href={`/${locale}/garages`} className={styles.mobileQuickAction}>
+                  {t('find_garage')}
+                </Link>
+              </div>
+
+              <p className={styles.mobileTrustNote}>
+                {t('trust_2')} · {t('trust_3')}
+              </p>
             </div>
           </div>
         </div>

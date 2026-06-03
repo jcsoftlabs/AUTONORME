@@ -47,7 +47,11 @@ export default function ModelSelectionSection() {
   useEffect(() => {
     async function fetchModels() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/content/featured-models`);
+        const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiBase = configuredApiUrl.endsWith('/api/v1')
+          ? configuredApiUrl
+          : `${configuredApiUrl}/api/v1`;
+        const response = await fetch(`${apiBase}/content/featured-models`);
         const result = await response.json();
         if (result.success) {
           setModels(result.data);

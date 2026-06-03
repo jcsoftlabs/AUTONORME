@@ -24,8 +24,11 @@ type Garage = {
 };
 
 async function getGarage(slug: string): Promise<Garage | null> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const response = await fetch(`${apiUrl}/api/v1/garages/${slug}`, {
+  const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiBase = configuredApiUrl.endsWith('/api/v1')
+    ? configuredApiUrl
+    : `${configuredApiUrl}/api/v1`;
+  const response = await fetch(`${apiBase}/garages/${slug}`, {
     next: { revalidate: 60 },
   });
 

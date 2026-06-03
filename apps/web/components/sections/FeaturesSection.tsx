@@ -15,7 +15,7 @@ export default function FeaturesSection() {
   ];
   const features = [
     {
-      tag: 'GAR',
+      tag: '🚗',
       color: 'var(--color-primary-700)',
       colorLight: 'var(--color-primary-100)',
       title: t('garage_title'),
@@ -25,7 +25,7 @@ export default function FeaturesSection() {
       highlights: [t('garage_highlight_1'), t('garage_highlight_2'), t('garage_highlight_3')],
     },
     {
-      tag: 'PRT',
+      tag: '🔧',
       color: 'var(--color-primary-500)',
       colorLight: 'var(--color-primary-50)',
       title: t('parts_title'),
@@ -35,7 +35,7 @@ export default function FeaturesSection() {
       highlights: [t('parts_highlight_1'), t('parts_highlight_2'), t('parts_highlight_3')],
     },
     {
-      tag: 'AI',
+      tag: '💬',
       color: 'var(--color-accent-purple)',
       colorLight: '#EDE9FE',
       title: t('autobot_title'),
