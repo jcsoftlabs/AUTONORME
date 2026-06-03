@@ -20,11 +20,6 @@ type DashboardSummary = {
   };
 };
 
-type ApiResponse<T> = {
-  success: boolean;
-  data: T;
-};
-
 export default function AdminDashboardPage() {
   const t = useTranslations('Dashboard');
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -35,8 +30,8 @@ export default function AdminDashboardPage() {
 
     const load = async () => {
       try {
-        const response = await fetchApi('/dashboard/summary') as ApiResponse<DashboardSummary>;
-        if (active) setSummary(response?.data ?? null);
+        const data = await fetchApi('/dashboard/summary') as DashboardSummary;
+        if (active) setSummary(data ?? null);
       } catch (error) {
         console.error('Failed to load dashboard summary:', error);
         if (active) setSummary(null);

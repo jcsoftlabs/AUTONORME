@@ -41,11 +41,6 @@ type Part = {
   isActive: boolean;
 };
 
-type ApiResponse<T> = {
-  success: boolean;
-  data: T;
-};
-
 type PartFormState = {
   id?: string;
   name: string;
@@ -128,12 +123,12 @@ export default function AdminPartsPage() {
       if (category) params.set('category', category);
 
       const [partsData, suppliersData] = await Promise.all([
-        fetchApi(`/parts/admin/all${params.toString() ? `?${params}` : ''}`) as Promise<ApiResponse<Part[]>>,
-        fetchApi('/parts/admin/suppliers') as Promise<ApiResponse<Supplier[]>>,
+        fetchApi(`/parts/admin/all${params.toString() ? `?${params}` : ''}`) as Promise<Part[]>,
+        fetchApi('/parts/admin/suppliers') as Promise<Supplier[]>,
       ]);
 
-      setParts(Array.isArray(partsData?.data) ? partsData.data : []);
-      setSuppliers(Array.isArray(suppliersData?.data) ? suppliersData.data : []);
+      setParts(Array.isArray(partsData) ? partsData : []);
+      setSuppliers(Array.isArray(suppliersData) ? suppliersData : []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impossible de charger les pièces.');
     } finally {

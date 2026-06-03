@@ -1,5 +1,10 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
+type ApiEnvelope<T> = {
+  success: boolean;
+  data: T;
+};
+
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
@@ -19,5 +24,10 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     throw new Error(error.message || 'Erreur API');
   }
 
-  return response.json();
+  const payload = await response.json();
+  if (payload && typeof payload === 'object' && 'data' in payload) {
+    return (payload as ApiEnvelope<unknown>).data;
+  }
+
+  return payload;
 }
