@@ -27,6 +27,7 @@ import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { ContentModule } from './modules/content/content.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { ContentModule } from './modules/content/content.module';
     NotificationsModule,
     UploadModule,
     ContentModule,
+    DashboardModule,
   ],
   providers: [
     // Guards globaux (appliqués sur toutes les routes)
