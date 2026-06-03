@@ -398,11 +398,11 @@ export default function Header() {
             <Image
               src="/log.png"
               alt="AUTONORME"
-              width={224}
-              height={50}
+              width={280}
+              height={62}
               unoptimized
               priority
-              style={{ objectFit: 'contain', width: 'auto', height: '50px' }}
+              style={{ objectFit: 'contain', width: 'auto', height: '62px' }}
             />
           </Link>
 
