@@ -55,7 +55,7 @@ async function bootstrap(): Promise<void> {
       )
       .setVersion('1.0')
       .addBearerAuth()
-      .addTag('auth', 'Authentification OTP + JWT')
+      .addTag('auth', 'Authentification OTP email + JWT')
       .addTag('vehicles', 'Gestion des véhicules')
       .addTag('garages', 'Annuaire et rendez-vous')
       .addTag('parts', 'Catalogue AUTOparts')

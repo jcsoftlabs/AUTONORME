@@ -6,7 +6,8 @@ import { DatabaseService } from '../../modules/database/database.service';
 
 interface JwtPayload {
   sub: string;
-  phone: string;
+  phone?: string;
+  email?: string;
   role: string;
 }
 

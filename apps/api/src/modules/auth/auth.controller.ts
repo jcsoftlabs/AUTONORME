@@ -26,9 +26,9 @@ export class AuthController {
   @Public()
   @Post('send-otp')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Envoyer un OTP par WhatsApp/SMS' })
+  @ApiOperation({ summary: 'Envoyer un OTP par email Resend ou téléphone legacy' })
   sendOtp(@Body() dto: SendOtpDto) {
-    return this.authService.sendOtp(dto.phone);
+    return this.authService.sendOtp({ phone: dto.phone, email: dto.email });
   }
 
   @Public()
@@ -39,7 +39,7 @@ export class AuthController {
     @Body() dto: VerifyOtpDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.verifyOtp(dto.phone, dto.code);
+    const result = await this.authService.verifyOtp({ phone: dto.phone, email: dto.email }, dto.code);
 
     if (result.requires2FA) {
       return result; // Renvoie { requires2FA: true, tempToken: "..." } sans setter de cookie

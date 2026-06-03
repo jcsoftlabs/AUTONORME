@@ -6,9 +6,10 @@ import { useAuthStore } from '../../../../lib/store/useAuthStore';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
+import { fetchApi } from '../../../../lib/api-client';
 
 type Mode = 'login' | 'register';
-type Step = 1 | 2 | 3; // 1: phone, 2: OTP, 3: profile (register only)
+type Step = 1 | 2 | 3; // 1: email, 2: OTP, 3: profile (register only)
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,24 +19,24 @@ export default function LoginPage() {
 
   const [mode, setMode] = useState<Mode>('login');
   const [step, setStep] = useState<Step>(1);
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const isLocalDevApi = (process.env.NEXT_PUBLIC_API_URL || '').includes('localhost') || (process.env.NEXT_PUBLIC_API_URL || '').includes('127.0.0.1');
+  const normalizedEmail = email.trim().toLowerCase();
 
-  const normalizedPhone = `+509${phone.replace(/\D/g, '')}`;
-
-  const buildStoredUser = (apiUser: { id: string; phone: string; name?: string; role: string }) => {
+  const buildStoredUser = (apiUser: { id: string; phone?: string; email?: string; name?: string; role: string }) => {
     const parts = apiUser.name?.trim().split(/\s+/).filter(Boolean) || [];
     return {
       id: apiUser.id,
       phone: apiUser.phone,
+      email: apiUser.email,
       role: apiUser.role,
       name: apiUser.name,
-      firstName: parts[0] || t('customer_fallback'),
+      firstName: parts[0] || apiUser.email?.split('@')[0] || t('customer_fallback'),
       lastName: parts.slice(1).join(' ') || undefined,
     };
   };
@@ -43,7 +44,7 @@ export default function LoginPage() {
   const resetFlow = (newMode: Mode) => {
     setMode(newMode);
     setStep(1);
-    setPhone('');
+    setEmail('');
     setOtp('');
     setFirstName('');
     setLastName('');
@@ -55,11 +56,14 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
     try {
-      if (phone.replace(/\D/g, '').length !== 8) throw new Error(t('error_invalid_phone'));
-      
-      // MODE FACTICE : On simule l'envoi au lieu d'appeler l'API
-      console.log('MODE FACTICE: Envoi OTP vers', normalizedPhone);
-      await new Promise(resolve => setTimeout(resolve, 800));
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+        throw new Error('Adresse email invalide');
+      }
+
+      await fetchApi('/auth/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email: normalizedEmail }),
+      });
       
       setStep(2);
     } catch (err: any) {
@@ -74,22 +78,12 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
     try {
-      // MODE FACTICE : On accepte 123456 ou n'importe quoi si on veut bypasser
-      if (otp !== '123456') {
-        throw new Error("Code incorrect (Utilisez 123456 pour le test)");
-      }
+      const result = await fetchApi<{ accessToken: string; user: { id: string; phone?: string; email?: string; name?: string; role: string } }>('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email: normalizedEmail, code: otp }),
+      });
 
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // On crée un utilisateur factice pour la session
-      const mockUser = {
-        id: 'user-demo-' + Math.random().toString(36).substr(2, 9),
-        phone: normalizedPhone,
-        role: 'CLIENT',
-        name: 'Client Test',
-      };
-
-      login(buildStoredUser(mockUser), 'mock-jwt-token-for-demo');
+      login(buildStoredUser(result.user), result.accessToken);
       router.push(`/${locale}/compte`);
     } catch (err: any) {
       setError(err.message || t('error_verify_code'));
@@ -105,7 +99,7 @@ export default function LoginPage() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       if (!firstName.trim()) throw new Error(t('error_first_name_required'));
-      login({ id: 'user-new', phone, role: 'CLIENT', firstName, lastName }, 'mock-jwt-token');
+      login({ id: 'user-new', email: normalizedEmail, role: 'CLIENT', firstName, lastName }, 'mock-jwt-token');
       router.push(`/${locale}/compte`);
     } catch (err: any) {
       setError(err.message || t('error_create_account'));
@@ -130,12 +124,12 @@ export default function LoginPage() {
   const stepDescs = {
     login: {
       1: t('login_step1_desc'),
-      2: t('code_sent_to', { phone: `+509 ${phone}` }),
+      2: t('code_sent_to', { phone: normalizedEmail }),
       3: '',
     },
     register: {
       1: t('register_step1_desc'),
-      2: t('verification_sent_to', { phone: `+509 ${phone}` }),
+      2: t('verification_sent_to', { phone: normalizedEmail }),
       3: t('register_step3_desc'),
     },
   };
@@ -236,28 +230,23 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Step 1: Phone */}
+            {/* Step 1: Email */}
             {step === 1 && (
               <form onSubmit={handleSendOtp}>
                 <div style={{ marginBottom: 'var(--space-lg)' }}>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>
-                    {t('phone_label')}
+                    Email
                   </label>
-                  <div style={{ display: 'flex' }}>
-                    <span style={{ background: 'var(--color-neutral-100)', padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRight: 'none', borderRadius: 'var(--radius-md) 0 0 var(--radius-md)', color: 'var(--color-neutral-600)', fontSize: '0.9375rem', whiteSpace: 'nowrap' }}>
-                      🇭🇹 +509
-                    </span>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder={t('phone_digits_placeholder')}
-                      required
-                      style={{ flex: 1, padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRadius: '0 var(--radius-md) var(--radius-md) 0', fontSize: '1rem', outline: 'none', minHeight: '48px' }}
-                    />
-                  </div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="vous@example.com"
+                    required
+                    style={{ width: '100%', padding: '0.75rem 1rem', border: '1px solid var(--color-neutral-300)', borderRadius: 'var(--radius-md)', fontSize: '1rem', outline: 'none', minHeight: '48px', boxSizing: 'border-box' }}
+                  />
                 </div>
-                <button type="submit" disabled={isLoading || !phone} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', minHeight: '48px' }}>
+                <button type="submit" disabled={isLoading || !email} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', minHeight: '48px' }}>
                   {isLoading ? t('sending') : mode === 'login' ? t('btn_receive_code') : t('continue')}
                 </button>
               </form>
@@ -286,7 +275,7 @@ export default function LoginPage() {
                 </button>
                 <div style={{ textAlign: 'center' }}>
                   <button type="button" onClick={() => { setStep(1); setOtp(''); setError(''); }} style={{ background: 'none', border: 'none', color: 'var(--color-primary-600)', fontSize: '0.875rem', cursor: 'pointer', textDecoration: 'underline', minHeight: '44px' }}>
-                    {t('edit_phone')}
+                    Modifier l&apos;email
                   </button>
                 </div>
               </form>

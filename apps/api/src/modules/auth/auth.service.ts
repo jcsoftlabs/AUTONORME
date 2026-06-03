@@ -22,31 +22,35 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
-  async sendOtp(phone: string): Promise<{ message: string }> {
-    const isDevOtpMode = !this.config.get<string>('SENTDM_API_KEY') || this.config.get<string>('SENTDM_API_KEY') === 'CHANGE_ME';
+  async sendOtp(target: { phone?: string; email?: string }): Promise<{ message: string }> {
+    const identifier = this.getOtpIdentifier(target);
+    const isEmailOtp = identifier.includes('@');
+    const providerKey = isEmailOtp ? 'RESEND_API_KEY' : 'SENTDM_API_KEY';
+    const isDevOtpMode = !this.config.get<string>(providerKey) || this.config.get<string>(providerKey) === 'CHANGE_ME';
     const code = isDevOtpMode ? '123456' : String(Math.floor(100000 + Math.random() * 900000));
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
     await this.db.otpCode.updateMany({
-      where: { phone, used: false },
+      where: { phone: identifier, used: false },
       data: { used: true },
     });
 
-    await this.db.otpCode.create({ data: { phone, code, expiresAt } });
-    await this.otpService.send(phone, code);
+    await this.db.otpCode.create({ data: { phone: identifier, code, expiresAt } });
+    await this.otpService.send(identifier, code);
 
     return { message: isDevOtpMode ? 'Code démo envoyé (123456)' : 'Code envoyé avec succès' };
   }
 
-  async verifyOtp(phone: string, code: string): Promise<{
+  async verifyOtp(target: { phone?: string; email?: string }, code: string): Promise<{
     requires2FA?: boolean;
     tempToken?: string;
     accessToken?: string;
     refreshToken?: string;
     user?: any;
   }> {
+    const identifier = this.getOtpIdentifier(target);
     const otp = await this.db.otpCode.findFirst({
-      where: { phone, code, used: false, expiresAt: { gt: new Date() } },
+      where: { phone: identifier, code, used: false, expiresAt: { gt: new Date() } },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -59,9 +63,19 @@ export class AuthService {
 
     await this.db.otpCode.update({ where: { id: otp.id }, data: { used: true } });
 
-    let user = await this.db.user.findUnique({ where: { phone } });
+    const email = target.email?.trim().toLowerCase();
+    const phone = target.phone?.trim();
+    let user = email
+      ? await this.db.user.findUnique({ where: { email } })
+      : await this.db.user.findUnique({ where: { phone } });
     if (!user) {
-      user = await this.db.user.create({ data: { phone, name: phone } });
+      user = await this.db.user.create({
+        data: {
+          email,
+          phone,
+          name: email ?? phone ?? identifier,
+        },
+      });
     }
 
     // Vérification du 2FA pour les admins
@@ -92,7 +106,7 @@ export class AuthService {
       data: { token: newToken, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
     });
 
-    const payload = { sub: record.user.id, phone: record.user.phone, role: record.user.role };
+    const payload = { sub: record.user.id, phone: record.user.phone, email: record.user.email, role: record.user.role };
     return { accessToken: this.jwt.sign(payload) };
   }
 
@@ -103,7 +117,7 @@ export class AuthService {
     if (!user) throw new NotFoundException('Utilisateur introuvable');
 
     const secret = authenticator.generateSecret();
-    const otpauthUrl = authenticator.keyuri(user.phone, 'AUTONORME', secret);
+    const otpauthUrl = authenticator.keyuri(user.email ?? user.phone ?? user.id, 'AUTONORME', secret);
 
     await this.db.user.update({
       where: { id: userId },
@@ -152,7 +166,7 @@ export class AuthService {
   // ── Helper ─────────────────────────────────────────────────────────────────
 
   private async generateAuthResult(user: any) {
-    const payload = { sub: user.id, phone: user.phone, role: user.role };
+    const payload = { sub: user.id, phone: user.phone, email: user.email, role: user.role };
     const accessToken = this.jwt.sign(payload);
 
     const refreshToken = crypto.randomBytes(64).toString('hex');
@@ -167,7 +181,17 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      user: { id: user.id, phone: user.phone, name: user.name, role: user.role },
+      user: { id: user.id, phone: user.phone, email: user.email, name: user.name, role: user.role },
     };
+  }
+
+  private getOtpIdentifier(target: { phone?: string; email?: string }): string {
+    const email = target.email?.trim().toLowerCase();
+    if (email) return email;
+
+    const phone = target.phone?.trim();
+    if (phone) return phone;
+
+    throw new BadRequestException('Email ou téléphone requis');
   }
 }

@@ -206,9 +206,10 @@ enum VehicleRiskFlagType {
 // AUTHENTIFICATION
 // ─────────────────────────────────────────────────────────
 
-/// Code OTP envoyé par WhatsApp ou SMS pour l'authentification
+/// Code OTP envoyé par email ou téléphone pour l'authentification
 model OtpCode {
   id        String   @id @default(uuid())
+  /// Identifiant de destination: email ou téléphone selon le canal
   phone     String
   code      String
   expiresAt DateTime
@@ -241,7 +242,9 @@ model RefreshToken {
 model User {
   id            String    @id @default(uuid())
   /// Numéro de téléphone haïtien — identifiant unique (+509 XXXX XXXX)
-  phone         String    @unique
+  phone         String?   @unique
+  /// Email de connexion quand l'OTP est envoyé via Resend
+  email         String?   @unique
   name          String
   role          Role      @default(CLIENT)
   /// Langue préférée : fr | ht | en
@@ -266,6 +269,7 @@ model User {
   supplier      Supplier?
 
   @@index([phone])
+  @@index([email])
   @@index([role])
   @@map("users")
 }

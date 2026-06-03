@@ -1,11 +1,17 @@
-import { IsString, Matches, Length } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsOptional, IsString, Matches, Length, ValidateIf } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class VerifyOtpDto {
-  @ApiProperty({ example: '+50912345678' })
+  @ApiPropertyOptional({ example: '+50912345678' })
   @IsString()
+  @IsOptional()
   @Matches(/^\+509\d{8}$/)
-  phone!: string;
+  phone?: string;
+
+  @ApiPropertyOptional({ example: 'client@autonormesolutions.com' })
+  @ValidateIf((dto: VerifyOtpDto) => !dto.phone || dto.email !== undefined)
+  @IsEmail()
+  email?: string;
 
   @ApiProperty({ example: '123456', description: 'Code OTP 6 chiffres' })
   @IsString()
