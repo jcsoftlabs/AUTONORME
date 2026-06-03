@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import LanguageSwitcher from '../shared/LanguageSwitcher';
 import { useCartStore } from '../../lib/store/useCartStore';
@@ -12,11 +12,13 @@ export default function Header() {
   const t = useTranslations('Header');
   const locale = useLocale();
   const pathname = usePathname();
+  const router = useRouter();
   const itemCount = useCartStore((state) => state.getItemCount());
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     setMounted(true);
@@ -51,6 +53,16 @@ export default function Header() {
     { href: 'tel:+50900000000', labelKey: 'call_us', icon: 'phone', external: true },
     { href: '/blog', labelKey: 'blog', icon: 'blog' },
   ];
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    const params = new URLSearchParams({ q: query });
+    router.push(`/${locale}/pieces?${params.toString()}`);
+    setIsMenuOpen(false);
+  };
 
   return (
     <header
@@ -376,6 +388,54 @@ export default function Header() {
           </Link>
 
           {/* ── RIGHT: Search + actions ── */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="nav-desktop"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              width: 'min(34vw, 28rem)',
+              minHeight: '3rem',
+              padding: '0 1rem',
+              borderRadius: '0.95rem',
+              border: solidHeader
+                ? '1px solid rgba(15, 23, 42, 0.1)'
+                : '1px solid rgba(255,255,255,0.24)',
+              background: solidHeader ? '#FFFFFF' : 'rgba(255,255,255,0.12)',
+              boxShadow: solidHeader ? '0 8px 18px rgba(15, 23, 42, 0.05)' : 'none',
+            }}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={solidHeader ? 'var(--color-neutral-500)' : 'rgba(255,255,255,0.75)'}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="search"
+              placeholder={t('search_placeholder')}
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              style={{
+                width: '100%',
+                border: 'none',
+                outline: 'none',
+                background: 'transparent',
+                color: solidHeader ? 'var(--color-neutral-800)' : '#FFFFFF',
+                fontSize: '0.96rem',
+                fontWeight: 500,
+              }}
+            />
+          </form>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
 
             {/* Language switcher – desktop only */}

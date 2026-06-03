@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -45,12 +45,17 @@ export default function PartsCatalog() {
   const makeParam = searchParams.get('make');
   const modelParam = searchParams.get('model');
   const yearParam = searchParams.get('year');
+  const qParam = searchParams.get('q') ?? '';
   
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(qParam);
   const [category, setCategory] = useState<string>('ALL');
 
+  useEffect(() => {
+    setSearch(qParam);
+  }, [qParam]);
+
   const { data: parts, isLoading, error } = useQuery<Part[]>({
-    queryKey: ['parts', category, makeParam, modelParam, yearParam],
+    queryKey: ['parts', category, makeParam, modelParam, yearParam, search],
     queryFn: () =>
       fetchApi('/parts', {
         params: {
@@ -58,22 +63,12 @@ export default function PartsCatalog() {
           ...(makeParam ? { make: makeParam } : {}),
           ...(modelParam ? { model: modelParam } : {}),
           ...(yearParam ? { year: yearParam } : {}),
+          ...(search.trim() ? { q: search.trim() } : {}),
         },
       }),
   });
 
-  const filteredParts = (parts ?? []).filter((part) => {
-    const query = search.trim().toLowerCase();
-    if (!query) return true;
-
-    return (
-      part.name.toLowerCase().includes(query) ||
-      (part.supplier?.shopName ?? '').toLowerCase().includes(query) ||
-      (part.supplier?.city ?? '').toLowerCase().includes(query) ||
-      (part.oemReference ?? '').toLowerCase().includes(query) ||
-      part.category.toLowerCase().includes(query)
-    );
-  });
+  const results = parts ?? [];
 
   const formatPrice = (value: string | number) =>
     Number(value).toLocaleString(locale === 'en' ? 'en-US' : 'fr-HT');
@@ -141,7 +136,7 @@ export default function PartsCatalog() {
           <div className={styles.catalogResultsHeader}>
             <div className={styles.resultsMeta}>
               <span>
-                {filteredParts.length} {t('results_count')}
+                {results.length} {t('results_count')}
               </span>
               <span>{t('results_hint')}</span>
             </div>
@@ -162,7 +157,7 @@ export default function PartsCatalog() {
 
           {error && <div className={styles.errorBox}>{t('load_error')}</div>}
 
-          {!isLoading && !error && filteredParts.length === 0 && (
+          {!isLoading && !error && results.length === 0 && (
             <div className={styles.stateBox}>
               <h3 className={styles.stateTitle}>{t('empty_title')}</h3>
               <p className={styles.panelText}>
@@ -172,7 +167,7 @@ export default function PartsCatalog() {
           )}
 
           <div className={styles.partsGrid}>
-            {filteredParts.map((part) => (
+            {results.map((part) => (
               <Link href={`/${locale}/pieces/${part.id}`} key={part.id} style={{ textDecoration: 'none' }}>
                 <article className={styles.partCard}>
                   <div className={styles.partVisual}>{part.category.slice(0, 2)}</div>

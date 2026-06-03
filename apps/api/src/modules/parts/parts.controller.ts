@@ -19,12 +19,14 @@ export class PartsController {
   @ApiQuery({ name: 'make', required: false, type: String })
   @ApiQuery({ name: 'model', required: false, type: String })
   @ApiQuery({ name: 'year', required: false, type: Number })
+  @ApiQuery({ name: 'q', required: false, type: String })
   @ApiQuery({ name: 'page', required: false, type: Number })
   findAll(
     @Query('category') category?: PartCategory,
     @Query('make') make?: string,
     @Query('model') model?: string,
     @Query('year') year?: number,
+    @Query('q') q?: string,
     @Query('page') page?: number,
   ) {
     return this.partsService.findAll({
@@ -32,6 +34,7 @@ export class PartsController {
       make,
       model,
       year: year ? Number(year) : undefined,
+      q,
       page: page ? Number(page) : 1,
     });
   }

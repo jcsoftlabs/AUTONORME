@@ -7,6 +7,7 @@ export interface PartSearchParams {
   make?: string;
   model?: string;
   year?: number;
+  q?: string;
   category?: PartCategory;
   page?: number;
   limit?: number;
@@ -23,12 +24,33 @@ export class PartsService {
   constructor(private readonly db: DatabaseService) {}
 
   async findAll(params: PartSearchParams): Promise<Part[]> {
-    const { make, model, year, category, page = 1, limit = 20 } = params;
+    const { make, model, year, q, category, page = 1, limit = 20 } = params;
 
     const where: any = { isActive: true };
+    const query = q?.trim();
 
     if (category) {
       where.category = category;
+    }
+
+    if (query) {
+      const normalizedCategory = query
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase();
+
+      where.OR = [
+        { name: { contains: query, mode: 'insensitive' } },
+        { brand: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } },
+        { oemReference: { contains: query, mode: 'insensitive' } },
+        { location: { contains: query, mode: 'insensitive' } },
+        { supplier: { is: { shopName: { contains: query, mode: 'insensitive' } } } },
+        { supplier: { is: { city: { contains: query, mode: 'insensitive' } } } },
+        ...(Object.values(PartCategory).includes(normalizedCategory as PartCategory)
+          ? [{ category: normalizedCategory as PartCategory }]
+          : []),
+      ];
     }
 
     // Filtrage dynamique par compatibilité véhicule (JSONB PostgreSQL)
@@ -37,6 +59,7 @@ export class PartsService {
         where: {
           isActive: true,
           ...(category ? { category } : {}),
+          ...(where.OR ? { OR: where.OR } : {}),
         },
         select: { id: true, compatibleVehicles: true },
       });
