@@ -13,6 +13,18 @@ type Supplier = {
   isActive: boolean;
 };
 
+type VehicleCatalogModel = {
+  value: string;
+  label: string;
+  years: number[];
+};
+
+type VehicleCatalogMake = {
+  value: string;
+  label: string;
+  models: VehicleCatalogModel[];
+};
+
 type CompatibleVehicle = {
   make: string;
   model: string;
@@ -102,6 +114,7 @@ const emptyForm: PartFormState = {
 export default function AdminPartsPage() {
   const [parts, setParts] = useState<Part[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [vehicleCatalog, setVehicleCatalog] = useState<VehicleCatalogMake[]>([]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
@@ -126,13 +139,15 @@ export default function AdminPartsPage() {
       if (query.trim()) params.set('q', query.trim());
       if (category) params.set('category', category);
 
-      const [partsData, suppliersData] = await Promise.all([
+      const [partsData, suppliersData, catalogData] = await Promise.all([
         fetchApi(`/parts/admin/all${params.toString() ? `?${params}` : ''}`) as Promise<Part[]>,
         fetchApi('/parts/admin/suppliers') as Promise<Supplier[]>,
+        fetchApi('/content/vehicle-catalog') as Promise<{ makes: VehicleCatalogMake[] }>,
       ]);
 
       setParts(Array.isArray(partsData) ? partsData : []);
       setSuppliers(Array.isArray(suppliersData) ? suppliersData : []);
+      setVehicleCatalog(Array.isArray(catalogData?.makes) ? catalogData.makes : []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impossible de charger les pièces.');
     } finally {
@@ -146,7 +161,14 @@ export default function AdminPartsPage() {
   }, []);
 
   const openCreateModal = () => {
-    setForm({ ...emptyForm, supplierId: activeSuppliers[0]?.id ?? '' });
+    const defaultVehicle = vehicleCatalog[0]?.models[0];
+    setForm({
+      ...emptyForm,
+      supplierId: activeSuppliers[0]?.id ?? '',
+      compatibilityRows: defaultVehicle
+        ? [{ make: vehicleCatalog[0]?.value ?? '', model: defaultVehicle.value, yearsText: defaultVehicle.years.slice(0, 3).join(', ') }]
+        : emptyForm.compatibilityRows,
+    });
     setIsModalOpen(true);
   };
 
@@ -208,11 +230,18 @@ export default function AdminPartsPage() {
   };
 
   const addCompatibilityRow = () => {
+    const defaultVehicle = vehicleCatalog[0]?.models[0];
     setForm((previous) => ({
       ...previous,
       compatibilityRows: [
         ...previous.compatibilityRows,
-        { make: '', model: '', yearsText: '' },
+        defaultVehicle
+          ? {
+              make: vehicleCatalog[0]?.value ?? '',
+              model: defaultVehicle.value,
+              yearsText: defaultVehicle.years.slice(0, 3).join(', '),
+            }
+          : { make: '', model: '', yearsText: '' },
       ],
     }));
   };
@@ -630,8 +659,34 @@ export default function AdminPartsPage() {
                 <div className="space-y-3">
                   {form.compatibilityRows.map((row, index) => (
                     <div key={index} className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_1fr_auto]">
-                      <input value={row.make} onChange={(event) => updateCompatibilityRow(index, 'make', event.target.value)} className="form-input" placeholder="Marque" />
-                      <input value={row.model} onChange={(event) => updateCompatibilityRow(index, 'model', event.target.value)} className="form-input" placeholder="Modèle" />
+                      <div>
+                        <input
+                          list={`vehicle-makes-${index}`}
+                          value={row.make}
+                          onChange={(event) => updateCompatibilityRow(index, 'make', event.target.value)}
+                          className="form-input"
+                          placeholder="Marque"
+                        />
+                        <datalist id={`vehicle-makes-${index}`}>
+                          {vehicleCatalog.map((make) => (
+                            <option key={make.value} value={make.label} />
+                          ))}
+                        </datalist>
+                      </div>
+                      <div>
+                        <input
+                          list={`vehicle-models-${index}-${row.make || 'all'}`}
+                          value={row.model}
+                          onChange={(event) => updateCompatibilityRow(index, 'model', event.target.value)}
+                          className="form-input"
+                          placeholder="Modèle"
+                        />
+                        <datalist id={`vehicle-models-${index}-${row.make || 'all'}`}>
+                          {(vehicleCatalog.find((make) => make.label === row.make || make.value === row.make)?.models ?? vehicleCatalog.flatMap((make) => make.models)).map((model) => (
+                            <option key={`${model.value}-${model.label}`} value={model.label} />
+                          ))}
+                        </datalist>
+                      </div>
                       <input value={row.yearsText} onChange={(event) => updateCompatibilityRow(index, 'yearsText', event.target.value)} className="form-input" placeholder="2018, 2019, 2020" />
                       <button type="button" onClick={() => removeCompatibilityRow(index)} className="rounded-lg bg-white px-3 py-2 text-sm text-red-500 shadow-sm">
                         Retirer
