@@ -621,18 +621,18 @@
 
 @media (max-width: 768px) {
   .widgetRoot {
-    right: 1rem;
-    bottom: 88px;
+    right: 0.75rem;
+    bottom: 16px;
   }
 
   .widgetTrigger {
-    min-width: 8.8rem;
-    height: 3.45rem;
-    padding: 0 1.1rem;
-    font-size: 1rem;
+    min-width: 7.9rem;
+    height: 3rem;
+    padding: 0 0.95rem;
+    font-size: 0.9rem;
   }
 
   .widgetPanel {
-    width: calc(100vw - 2rem);
+    width: min(calc(100vw - 1.5rem), 23rem);
   }
 }

@@ -725,4 +725,30 @@
   .detailStats {
     grid-template-columns: 1fr;
   }
+
+  .productGrid {
+    gap: 0.65rem;
+  }
+
+  .productVisual {
+    min-height: 8.5rem;
+  }
+
+  .productSection {
+    padding: 0.85rem;
+    border-radius: 1.1rem;
+  }
+
+  .partMeta {
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .partPrice {
+    font-size: 1rem;
+  }
+
+  .partBottom {
+    gap: 0.5rem;
+  }
 }
