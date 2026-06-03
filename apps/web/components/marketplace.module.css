@@ -755,20 +755,21 @@
 
 @media (max-width: 480px) {
   .productGrid {
-    grid-template-columns: 1fr;
-    gap: 0.85rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
   }
 
   .productSection {
-    padding: 0.95rem;
+    padding: 0.8rem;
   }
 
   .productVisual {
-    min-height: 9.5rem;
+    min-height: 7.8rem;
   }
 
   .productMeta {
     align-items: start;
+    gap: 0.35rem;
   }
 
   .partBottom {
@@ -778,5 +779,16 @@
 
   .supplierMeta {
     text-align: left;
+  }
+
+  .partMeta {
+    font-size: 0.72rem;
+    line-height: 1.28;
+    overflow-wrap: anywhere;
+  }
+
+  .partPrice {
+    font-size: 0.95rem;
+    white-space: normal;
   }
 }
