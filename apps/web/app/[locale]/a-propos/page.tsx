@@ -95,7 +95,7 @@ export default async function AboutPage({
               <Link href={`/${locale}/rejoindre`} className={`${styles.ctaLink} ${styles.ctaLinkPrimary}`}>
                 {t('cta_primary')}
               </Link>
-              <Link href={`/${locale}/blog`} className={`${styles.ctaLink} ${styles.ctaLinkSecondary}`}>
+              <Link href={`/${locale}/forum`} className={`${styles.ctaLink} ${styles.ctaLinkSecondary}`}>
                 {t('cta_secondary')}
               </Link>
             </div>

@@ -9,7 +9,8 @@
     "find_garage": "Jwenn yon garaj",
     "search_placeholder": "Kisa w ap chèche?",
     "menu": "Meni",
-    "blog": "Blog AUTONORME",
+    "blog": "Fowòm AUTONORME",
+    "forum": "Fowòm AUTONORME",
     "support_center": "Sant asistans",
     "join_network": "Antre nan rezo a",
     "call_us": "Rele nou",
@@ -28,7 +29,8 @@
     "maintenance": "Antretyen",
     "autobot": "Ciara IA",
     "about": "Konsènan nou",
-    "blog": "Blog",
+    "blog": "Fowòm",
+    "forum": "Fowòm",
     "join": "Rejwenn nou",
     "contact": "Kontak",
     "dash_garage": "Dachbòd Garaj",
@@ -415,7 +417,7 @@
     "cta_title": "Ou vle swiv pwojè a pi pre?",
     "cta_body": "Eksplore kontni nou yo, dekouvri platfòm nan epi wè kijan pou antre nan ekosistèm AUTONORME a.",
     "cta_primary": "Rejwenn AUTONORME",
-    "cta_secondary": "Li blog la"
+    "cta_secondary": "Ale nan fowòm nan"
   },
   "JoinPage": {
     "eyebrow": "Rejwenn rezo a",
@@ -461,6 +463,27 @@
     "cta_body": "Gade plan antretyen an oswa sèvi ak Ciara pou fè yon dout tounen pwochen aksyon ki itil la.",
     "cta_primary": "Wè antretyen an",
     "cta_secondary": "Pale ak Ciara"
+  },
+  "ForumPage": {
+    "eyebrow": "Fowòm AUTONORME",
+    "title": "Diskisyon pa sijè",
+    "subtitle": "Kliyan, garaj ak founisè ka poze kesyon, pataje eksperyans epi reponn lòt manm yo.",
+    "new_thread": "Kreye yon sijè",
+    "login_hint": "Konekte pou pibliye oswa reponn.",
+    "login_cta": "Konekte",
+    "reply": "Reponn",
+    "reply_placeholder": "Ekri yon repons klè ak itil…",
+    "create_placeholder": "Tit sijè a",
+    "submit_thread": "Pibliye sijè a",
+    "submit_reply": "Repons ou",
+    "no_threads": "Pa gen sijè pou kounye a.",
+    "category_general": "Jeneral",
+    "category_client": "Kliyan",
+    "category_garage": "Garaj",
+    "category_supplier": "Founisè",
+    "category_maintenance": "Antretyen",
+    "category_parts": "Pyès",
+    "category_autobot": "Ciara"
   },
   "Account": {
     "login_title": "Byenveni",

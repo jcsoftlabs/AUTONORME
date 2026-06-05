@@ -9,7 +9,8 @@
     "find_garage": "Find a garage",
     "search_placeholder": "What are you looking for?",
     "menu": "Menu",
-    "blog": "AUTONORME Blog",
+    "blog": "AUTONORME Forum",
+    "forum": "Forum",
     "support_center": "Support Center",
     "join_network": "Join the network",
     "call_us": "Call us",
@@ -28,7 +29,8 @@
     "maintenance": "Maintenance",
     "autobot": "Ciara AI",
     "about": "About",
-    "blog": "Blog",
+    "blog": "Forum",
+    "forum": "Forum",
     "join": "Join us",
     "contact": "Contact",
     "dash_garage": "Garage Dashboard",
@@ -421,7 +423,7 @@
     "cta_title": "Want to follow the project more closely?",
     "cta_body": "Explore our content, discover the platform, and see how to join the AUTONORME ecosystem.",
     "cta_primary": "Join AUTONORME",
-    "cta_secondary": "Read the blog"
+    "cta_secondary": "Go to forum"
   },
   "JoinPage": {
     "eyebrow": "Join the network",
@@ -467,6 +469,27 @@
     "cta_body": "Check the maintenance planner or use Ciara to turn a doubt into the next useful action.",
     "cta_primary": "See maintenance",
     "cta_secondary": "Talk to Ciara"
+  },
+  "ForumPage": {
+    "eyebrow": "AUTONORME Forum",
+    "title": "Topic-based discussions",
+    "subtitle": "Customers, garages, and suppliers can ask questions, share experience, and answer one another.",
+    "new_thread": "Start a topic",
+    "login_hint": "Log in to post or reply.",
+    "login_cta": "Log in",
+    "reply": "Reply",
+    "reply_placeholder": "Write a clear, useful reply…",
+    "create_placeholder": "Thread title",
+    "submit_thread": "Post topic",
+    "submit_reply": "Your reply",
+    "no_threads": "No topics yet.",
+    "category_general": "General",
+    "category_client": "Customers",
+    "category_garage": "Garages",
+    "category_supplier": "Suppliers",
+    "category_maintenance": "Maintenance",
+    "category_parts": "Parts",
+    "category_autobot": "Ciara"
   },
   "Account": {
     "login_title": "Welcome",

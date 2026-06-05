@@ -9,7 +9,8 @@
     "find_garage": "Trouver un garage",
     "search_placeholder": "Que cherchez-vous ?",
     "menu": "Menu",
-    "blog": "Blog AUTONORME",
+    "blog": "Forum AUTONORME",
+    "forum": "Forum AUTONORME",
     "support_center": "Centre d'assistance",
     "join_network": "Rejoindre le réseau",
     "call_us": "Nous appeler",
@@ -28,7 +29,8 @@
     "maintenance": "Maintenance",
     "autobot": "Ciara IA",
     "about": "À propos",
-    "blog": "Blog",
+    "blog": "Forum",
+    "forum": "Forum",
     "join": "Rejoindre",
     "contact": "Contact",
     "dash_garage": "Dashboard Garage",
@@ -421,7 +423,7 @@
     "cta_title": "Vous voulez suivre le projet de plus près ?",
     "cta_body": "Explorez nos contenus, découvrez la plateforme et voyez comment rejoindre l'écosystème AUTONORME.",
     "cta_primary": "Rejoindre AUTONORME",
-    "cta_secondary": "Lire le blog"
+    "cta_secondary": "Aller au forum"
   },
   "JoinPage": {
     "eyebrow": "Rejoindre le réseau",
@@ -467,6 +469,27 @@
     "cta_body": "Consultez le plan de maintenance ou passez par Ciara pour transformer un doute en prochaine action utile.",
     "cta_primary": "Voir la maintenance",
     "cta_secondary": "Parler à Ciara"
+  },
+  "ForumPage": {
+    "eyebrow": "Forum AUTONORME",
+    "title": "Discussions par sujet",
+    "subtitle": "Clients, garagistes et fournisseurs peuvent poser une question, partager une expérience et répondre aux autres membres.",
+    "new_thread": "Créer un sujet",
+    "login_hint": "Connectez-vous pour publier ou répondre.",
+    "login_cta": "Se connecter",
+    "reply": "Répondre",
+    "reply_placeholder": "Écrivez une réponse claire et utile…",
+    "create_placeholder": "Titre du sujet",
+    "submit_thread": "Publier le sujet",
+    "submit_reply": "Votre réponse",
+    "no_threads": "Aucun sujet pour le moment.",
+    "category_general": "Général",
+    "category_client": "Clients",
+    "category_garage": "Garages",
+    "category_supplier": "Fournisseurs",
+    "category_maintenance": "Maintenance",
+    "category_parts": "Pièces",
+    "category_autobot": "Ciara"
   },
   "Account": {
     "login_title": "Bienvenue",

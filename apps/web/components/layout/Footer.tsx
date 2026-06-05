@@ -19,7 +19,7 @@ export default function Footer() {
 
   const companyLinks = [
     { href: `/${locale}/a-propos`, label: t('about') },
-    { href: `/${locale}/blog`, label: t('blog') },
+    { href: `/${locale}/forum`, label: t('forum') },
     { href: `/${locale}/rejoindre`, label: t('join') },
   ];
 

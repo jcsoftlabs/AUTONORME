@@ -53,7 +53,7 @@ export default function Header() {
   const utilityLinks = [
     { href: '/a-propos', labelKey: 'support_center', icon: 'support' },
     { href: 'tel:+50900000000', labelKey: 'call_us', icon: 'phone', external: true },
-    { href: '/blog', labelKey: 'blog', icon: 'blog' },
+    { href: '/forum', labelKey: 'forum', icon: 'blog' },
     { href: '/rejoindre', labelKey: 'join_network', icon: 'join' },
   ];
 

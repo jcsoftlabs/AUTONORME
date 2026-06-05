@@ -29,6 +29,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { ContentModule } from './modules/content/content.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { JoinRequestsModule } from './modules/join-requests/join-requests.module';
+import { ForumModule } from './modules/forum/forum.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { JoinRequestsModule } from './modules/join-requests/join-requests.module
     ContentModule,
     DashboardModule,
     JoinRequestsModule,
+    ForumModule,
   ],
   providers: [
     // Guards globaux (appliqués sur toutes les routes)

@@ -37,6 +37,22 @@ enum JoinRequestStatus {
   REJECTED
 }
 
+enum ForumThreadStatus {
+  OPEN
+  LOCKED
+  ARCHIVED
+}
+
+enum ForumThreadCategory {
+  GENERAL
+  CLIENT
+  GARAGE
+  SUPPLIER
+  MAINTENANCE
+  PIECES
+  AUTOBOT
+}
+
 enum ReminderStatus {
   PENDING
   SENT
@@ -281,11 +297,52 @@ model User {
   refreshTokens RefreshToken[]
   ownedGarages  Garage[]
   supplier      Supplier?
+  forumThreads  ForumThread[]
+  forumPosts    ForumPost[]
 
   @@index([phone])
   @@index([email])
   @@index([role])
   @@map("users")
+}
+
+model ForumThread {
+  id             String              @id @default(uuid())
+  title          String
+  slug           String              @unique
+  category       ForumThreadCategory @default(GENERAL)
+  status         ForumThreadStatus   @default(OPEN)
+  body           String              @db.Text
+  authorId       String
+  author         User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  votes          Int                 @default(0)
+  repliesCount   Int                 @default(0)
+  isPinned       Boolean             @default(false)
+  lastActivityAt DateTime            @default(now())
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  posts          ForumPost[]
+
+  @@index([category, status, lastActivityAt])
+  @@index([authorId])
+  @@map("forum_threads")
+}
+
+model ForumPost {
+  id        String      @id @default(uuid())
+  threadId  String
+  thread    ForumThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body      String      @db.Text
+  votes     Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([threadId, createdAt])
+  @@index([authorId])
+  @@map("forum_posts")
 }
 
 model JoinRequest {
