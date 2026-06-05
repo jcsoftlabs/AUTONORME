@@ -17,6 +17,7 @@ type Supplier = {
   shopName: string;
   city?: string | null;
   zones: string[];
+  isVerified?: boolean;
 };
 
 type Part = {
@@ -166,6 +167,11 @@ export default async function PartDetailsPage({
             <div style={{ marginTop: '1.2rem', color: 'var(--color-primary-600)', fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {part.brand || part.supplier?.shopName || t('supplier_fallback')}
             </div>
+            {part.supplier?.isVerified && (
+              <div className={styles.heroHighlight} style={{ marginTop: '0.75rem', width: 'fit-content' }}>
+                {t('certified_seller')}
+              </div>
+            )}
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2.2rem', margin: '0.2rem 0 0.6rem', lineHeight: 1.1, color: 'var(--color-neutral-900)' }}>
               {part.name}
             </h1>

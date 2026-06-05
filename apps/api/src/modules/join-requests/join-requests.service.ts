@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JoinRequestStatus } from '@prisma/client';
 import { DatabaseService } from '../database/database.service';
+import { Role } from '@autonorme/types';
+import { OtpService } from '../auth/otp.service';
 
 type CreateJoinRequestInput = {
   type: string;
@@ -19,6 +21,7 @@ export class JoinRequestsService {
   constructor(
     private readonly db: DatabaseService,
     private readonly config: ConfigService,
+    private readonly otpService: OtpService,
   ) {}
 
   async create(data: CreateJoinRequestInput) {
@@ -52,6 +55,10 @@ export class JoinRequestsService {
       throw new NotFoundException('Demande introuvable');
     }
 
+    if (status === JoinRequestStatus.APPROVED) {
+      await this.preparePartnerAccess(existing);
+    }
+
     return this.db.joinRequest.update({
       where: { id },
       data: {
@@ -59,6 +66,37 @@ export class JoinRequestsService {
         adminNote: adminNote?.trim() || null,
         reviewedAt: new Date(),
       },
+    });
+  }
+
+  private async preparePartnerAccess(request: {
+    type: string;
+    companyName: string;
+    contactName: string;
+    email: string;
+  }) {
+    const role = request.type === 'garage' ? Role.GARAGE : Role.SUPPLIER;
+
+    const user = await this.db.user.upsert({
+      where: { email: request.email },
+      update: {
+        name: request.contactName || request.companyName,
+        role,
+        isActive: true,
+        accountStatus: 'PENDING',
+      },
+      create: {
+        email: request.email,
+        name: request.contactName || request.companyName,
+        role,
+        isActive: true,
+        accountStatus: 'PENDING',
+      },
+    });
+
+    await this.otpService.sendApprovalInstructions(user.email ?? request.email, {
+      name: request.companyName,
+      role: request.type === 'garage' ? 'GARAGE' : 'SUPPLIER',
     });
   }
 

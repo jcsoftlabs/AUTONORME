@@ -44,7 +44,7 @@ export class PartsService {
             }
           : {}),
       },
-      include: { supplier: { select: { shopName: true, city: true } } },
+      include: { supplier: { select: { shopName: true, city: true, isVerified: true } } },
       orderBy: { updatedAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
@@ -150,7 +150,7 @@ export class PartsService {
 
     return this.db.part.findMany({
       where,
-      include: { supplier: { select: { shopName: true, city: true } } },
+      include: { supplier: { select: { shopName: true, city: true, isVerified: true } } },
       orderBy: { stockQty: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
@@ -160,7 +160,7 @@ export class PartsService {
   async findOne(id: string): Promise<Part> {
     const part = await this.db.part.findUnique({
       where: { id },
-      include: { supplier: { select: { shopName: true, city: true, zones: true } } },
+      include: { supplier: { select: { shopName: true, city: true, zones: true, isVerified: true } } },
     });
     if (!part || !part.isActive) {
       throw new NotFoundException({ code: ErrorCodes.PART_NOT_FOUND, message: 'Pièce introuvable' });

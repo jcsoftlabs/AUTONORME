@@ -49,6 +49,14 @@ export class OtpService {
     this.logger.warn(`Invitation téléphone non supportée pour ${identifier}`);
   }
 
+  async sendApprovalInstructions(identifier: string, payload: { name: string; role: 'GARAGE' | 'SUPPLIER' }): Promise<void> {
+    if (identifier.includes('@')) {
+      return this.sendApprovalEmail(identifier, payload);
+    }
+
+    this.logger.warn(`Instructions d'approbation téléphone non supportées pour ${identifier}`);
+  }
+
   private async sendEmail(email: string, code: string): Promise<void> {
     const apiKey = this.config.get<string>('RESEND_API_KEY');
     const from = this.config.get<string>('RESEND_FROM_EMAIL', 'AUTONORME <onboarding@resend.dev>');
@@ -135,6 +143,62 @@ export class OtpService {
     }
 
     this.logger.log(`Invitation envoyée → ${masked}`);
+  }
+
+  private async sendApprovalEmail(email: string, payload: { name: string; role: 'GARAGE' | 'SUPPLIER' }): Promise<void> {
+    const apiKey = this.config.get<string>('RESEND_API_KEY');
+    const from = this.config.get<string>('RESEND_FROM_EMAIL', 'AUTONORME <onboarding@resend.dev>');
+    const masked = email.replace(/(^.).*(@.*$)/, '$1***$2');
+    const roleLabel = payload.role === 'GARAGE' ? 'garage' : 'fournisseur';
+    const portalUrl = this.config.get<string>(
+      payload.role === 'GARAGE'
+        ? 'GARAGE_PORTAL_URL'
+        : 'SUPPLIER_PORTAL_URL',
+      payload.role === 'GARAGE'
+        ? 'https://garage.autonormesolutions.com'
+        : 'https://supplier.autonormesolutions.com',
+    );
+
+    if (!apiKey || apiKey === 'CHANGE_ME') {
+      this.logger.warn(`[DEV MODE] Instructions d'approbation pour ${masked} (${roleLabel})`);
+      return;
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [email],
+        subject: `Votre espace ${roleLabel} AUTONORME est prêt`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#111827">
+            <h1 style="color:#001F5C;margin-bottom:8px">Votre espace AUTONORME est prêt</h1>
+            <p style="font-size:16px;line-height:1.6">Bonjour ${payload.name}, votre accès ${roleLabel} a été approuvé.</p>
+            <p style="font-size:16px;line-height:1.6">Connectez-vous via <strong>${portalUrl}</strong> avec votre email. Un code OTP vous sera envoyé à chaque connexion.</p>
+            <ol style="font-size:15px;line-height:1.8;padding-left:20px">
+              <li>Ouvrez ${portalUrl}</li>
+              <li>Saisissez votre email</li>
+              <li>Récupérez le code OTP reçu par email</li>
+              <li>Accédez à votre espace ${roleLabel}</li>
+            </ol>
+            <p style="font-size:14px;color:#6B7280">Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>
+          </div>
+        `,
+        text: `Bonjour ${payload.name}, votre espace ${roleLabel} AUTONORME est prêt. Connectez-vous via ${portalUrl} avec votre email, puis utilisez le code OTP reçu.`,
+      }),
+    });
+
+    if (!response.ok) {
+      const details = await response.text();
+      this.logger.error(`Resend approval failed → ${masked}: ${details}`);
+      throw new InternalServerErrorException('Échec envoi instructions');
+    }
+
+    this.logger.log(`Instructions d'approbation envoyées → ${masked}`);
   }
 
   private async sendPhone(phone: string, code: string): Promise<void> {

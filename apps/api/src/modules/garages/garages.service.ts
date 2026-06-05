@@ -60,10 +60,28 @@ export class GaragesService {
   }
 
   async verify(id: string, isVerified: boolean): Promise<Garage> {
-    return this.db.garage.update({
+    const garage = await this.db.garage.findUnique({
+      where: { id },
+      include: { owner: { select: { email: true, name: true } } },
+    });
+
+    if (!garage) {
+      throw new NotFoundException({ code: ErrorCodes.GARAGE_NOT_FOUND, message: 'Garage introuvable' });
+    }
+
+    const updated = await this.db.garage.update({
       where: { id },
       data: { isVerified },
     });
+
+    if (isVerified && garage.owner?.email) {
+      await this.otpService.sendApprovalInstructions(garage.owner.email, {
+        name: garage.name,
+        role: 'GARAGE',
+      });
+    }
+
+    return updated;
   }
 
   async toggleActive(id: string, isActive: boolean): Promise<Garage> {

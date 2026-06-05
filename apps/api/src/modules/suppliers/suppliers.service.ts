@@ -17,7 +17,25 @@ export class SuppliersService {
   }
 
   async verify(id: string, isVerified: boolean): Promise<Supplier> {
-    return this.db.supplier.update({ where: { id }, data: { isVerified } });
+    const supplier = await this.db.supplier.findUnique({
+      where: { id },
+      include: { user: { select: { email: true, name: true } } },
+    });
+
+    if (!supplier) {
+      throw new NotFoundException('Fournisseur introuvable');
+    }
+
+    const updated = await this.db.supplier.update({ where: { id }, data: { isVerified } });
+
+    if (isVerified && supplier.user?.email) {
+      await this.otpService.sendApprovalInstructions(supplier.user.email, {
+        name: supplier.shopName,
+        role: 'SUPPLIER',
+      });
+    }
+
+    return updated;
   }
 
   async toggleActive(id: string, isActive: boolean): Promise<Supplier> {

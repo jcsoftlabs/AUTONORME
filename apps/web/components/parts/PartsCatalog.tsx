@@ -12,6 +12,7 @@ import styles from '../marketplace.module.css';
 type SupplierSummary = {
   shopName: string;
   city?: string | null;
+  isVerified?: boolean;
 };
 
 type Part = {
@@ -179,6 +180,9 @@ export default function PartsCatalog() {
                       </span>
                     </div>
                     <div className={styles.partBrand}>{part.brand || part.supplier?.shopName || t('supplier_fallback')}</div>
+                    {part.supplier?.isVerified && (
+                      <span className={styles.verifiedBadge}>{t('certified_seller')}</span>
+                    )}
                     <h4 className={styles.partName}>{part.name}</h4>
                     <div className={styles.partMeta}>
                       {t('reference_short')} {part.oemReference || t('reference_missing')}
