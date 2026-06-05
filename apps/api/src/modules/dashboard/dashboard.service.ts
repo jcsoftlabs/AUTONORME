@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { AccountStatus, Role } from '@prisma/client';
+import { AccountStatus, JoinRequestStatus, Role } from '@prisma/client';
 
 @Injectable()
 export class DashboardService {
@@ -12,6 +12,7 @@ export class DashboardService {
       activeGarages,
       pendingGarages,
       pendingSuppliers,
+      pendingJoinRequests,
       totalOrders,
       recentGarages,
       recentSuppliers,
@@ -21,6 +22,7 @@ export class DashboardService {
       this.db.garage.count({ where: { isActive: true, isVerified: true } }),
       this.db.garage.count({ where: { isVerified: false } }),
       this.db.supplier.count({ where: { isVerified: false } }),
+      this.db.joinRequest.count({ where: { status: JoinRequestStatus.PENDING } }),
       this.db.order.count(),
       this.db.garage.findMany({
         orderBy: { createdAt: 'desc' },
@@ -39,7 +41,7 @@ export class DashboardService {
       }),
     ]);
 
-    const pendingValidations = pendingGarages + pendingSuppliers;
+    const pendingValidations = pendingGarages + pendingSuppliers + pendingJoinRequests;
 
     const adminUsers = await this.db.user.count({
       where: { role: { in: [Role.ADMIN, Role.SUPER_ADMIN] } },

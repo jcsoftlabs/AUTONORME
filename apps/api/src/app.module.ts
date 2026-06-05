@@ -28,6 +28,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { UploadModule } from './modules/upload/upload.module';
 import { ContentModule } from './modules/content/content.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { JoinRequestsModule } from './modules/join-requests/join-requests.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     UploadModule,
     ContentModule,
     DashboardModule,
+    JoinRequestsModule,
   ],
   providers: [
     // Guards globaux (appliqués sur toutes les routes)

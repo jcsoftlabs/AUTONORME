@@ -40,8 +40,8 @@ export default function JoinInterestForm({ locale }: { locale: string }) {
 
       setSuccess(
         type === 'garage'
-          ? 'Demande envoyée. Un membre AUTONORME vous recontactera pour la suite.'
-          : 'Demande envoyée. Votre dossier fournisseur sera examiné par l’équipe.',
+          ? 'Demande envoyée. Elle est maintenant en attente de validation par AUTONORME.'
+          : 'Demande envoyée. Elle est maintenant en attente de validation par AUTONORME.',
       );
       event.currentTarget.reset();
     } catch (err) {

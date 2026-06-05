@@ -34,6 +34,7 @@ export default function Sidebar({ isSidebarOpen, onClose }: { isSidebarOpen: boo
       items: [
         { label: t('garages'), path: '/partners/garages', icon: '🛠️' },
         { label: t('suppliers'), path: '/partners/suppliers', icon: '📦' },
+        { label: 'Demandes', path: '/partners/onboarding', icon: '📝' },
       ],
     },
     {
