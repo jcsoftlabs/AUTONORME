@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../../../lib/store/useAuthStore';
 import { useLocale } from 'next-intl';
+import { fetchApi } from '../../../lib/api-client';
 
 export default function SupplierLoginPage() {
   const [phone, setPhone] = useState('');
@@ -17,24 +18,30 @@ export default function SupplierLoginPage() {
 
   const handleSendOtp = async () => {
     setLoading(true);
-    // Simulation d'envoi OTP
-    await new Promise(r => setTimeout(r, 1000));
-    setStep(2);
-    setLoading(false);
+    try {
+      await fetchApi('/auth/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone: `+509${phone.replace(/\s+/g, '')}`, mode: 'login' }),
+      });
+      setStep(2);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyOtp = async () => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    const mockUser = {
-      id: 'supp-123',
-      phone: phone,
-      role: 'SUPPLIER',
-      shopName: 'Haïti AutoParts Center'
-    };
-    login(mockUser, 'fake-jwt-token');
-    router.push(`/${locale}`);
-    setLoading(false);
+    try {
+      const result = await fetchApi<{ accessToken: string; user: { id: string; phone?: string; email?: string; role: string; name?: string } }>('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone: `+509${phone.replace(/\s+/g, '')}`, code: otp, mode: 'login' }),
+      });
+
+      login({ ...result.user, shopName: result.user.name ?? 'Portail Fournisseur' }, result.accessToken);
+      router.push(`/${locale}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -27,6 +27,14 @@ export default function SupplierGuard({ children, locale }: SupplierGuardProps) 
     }
   }, [isMounted, isAuthenticated, isLoginPage, router, locale]);
 
+  useEffect(() => {
+    if (!isMounted || !isAuthenticated || isLoginPage) return;
+    if (user && user.role !== 'SUPPLIER') {
+      logout();
+      router.push(`/${locale}/login`);
+    }
+  }, [isMounted, isAuthenticated, isLoginPage, logout, router, locale, user]);
+
   if (isLoginPage) {
     return <>{children}</>;
   }

@@ -23,6 +23,18 @@ import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  private buildRefreshCookieOptions() {
+    const cookieDomain = process.env['AUTH_COOKIE_DOMAIN'];
+
+    return {
+      httpOnly: true,
+      secure: process.env['NODE_ENV'] === 'production',
+      sameSite: 'lax' as const,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
+    };
+  }
+
   @Public()
   @Post('send-otp')
   @HttpCode(HttpStatus.OK)
@@ -51,12 +63,7 @@ export class AuthController {
 
     // Set le vrai refresh token en cookie s'il y a un login normal
     if (result.refreshToken) {
-      res.cookie('refresh_token', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env['NODE_ENV'] === 'production',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+      res.cookie('refresh_token', result.refreshToken, this.buildRefreshCookieOptions());
     }
 
     return { accessToken: result.accessToken, user: result.user };
@@ -109,12 +116,7 @@ export class AuthController {
     const result = await this.authService.verifyTwoFactor(user.id, code);
 
     if (result.refreshToken) {
-      res.cookie('refresh_token', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env['NODE_ENV'] === 'production',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+      res.cookie('refresh_token', result.refreshToken, this.buildRefreshCookieOptions());
     }
 
     return { accessToken: result.accessToken, user: result.user };

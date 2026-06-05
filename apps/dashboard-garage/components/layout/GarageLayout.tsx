@@ -1,15 +1,45 @@
 'use client';
 
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import Sidebar from './Sidebar';
+import { useAuthStore } from '../../lib/store/useAuthStore';
 
 export default function GarageLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
+  const { isAuthenticated, user, logout } = useAuthStore();
   const isLoginPage = pathname.includes('/login');
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || isLoginPage) return;
+    if (!isAuthenticated) {
+      router.push(`/${locale}/login`);
+      return;
+    }
+    if (user && user.role !== 'GARAGE') {
+      logout();
+      router.push(`/${locale}/login`);
+    }
+  }, [isMounted, isAuthenticated, isLoginPage, logout, router, user, locale]);
+
   if (isLoginPage) return <>{children}</>;
+
+  if (!isMounted || !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-500">
+        Vérification des accès...
+      </div>
+    );
+  }
 
   return (
     <div className="admin-layout">

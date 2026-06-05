@@ -4,33 +4,46 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import { fetchApi } from '../../../lib/api-client';
+import { useAuthStore } from '../../../lib/store/useAuthStore';
 
 export default function GarageLoginPage() {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [step, setStep] = useState(1); // 1: Phone, 2: OTP
   const [loading, setLoading] = useState(false);
+  const { login } = useAuthStore();
   const router = useRouter();
   const locale = useLocale();
 
-  const handleSendCode = (e: React.FormEvent) => {
+  const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulation d'envoi de code
-    setTimeout(() => {
+    try {
+      await fetchApi('/auth/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone: `+509${phone.replace(/\s+/g, '')}`, mode: 'login' }),
+      });
       setStep(2);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulation de vérification
-    setTimeout(() => {
-      localStorage.setItem('garage_token', 'mock_token');
+    try {
+      const result = await fetchApi<{ accessToken: string; user: { id: string; phone?: string; email?: string; role: string; name?: string } }>('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone: `+509${phone.replace(/\s+/g, '')}`, code, mode: 'login' }),
+      });
+
+      login({ ...result.user, shopName: result.user.name ?? 'Garage Portal' }, result.accessToken);
       router.push(`/${locale}`);
-    }, 1000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
